@@ -1,0 +1,177 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block contenido %}
+	<script src="{% static 'js/jquery-1.12.3.js' %}" type="text/javascript"></script>
+
+	<form id="form" method="POST" class="post-form">{% csrf_token %}
+		<script>
+			var fun, variable, inferior, superior, coleccion;
+			$(document).ready(function() {
+
+				$("#acep").click(function() {
+					fun = $("#id_funcion").val();
+					variable = $("#id_variable").val();
+					inf = $("#id_inf").val();
+					sup = $("#id_sup").val();
+					if (inferior=='' || superior=='')
+						alert("derivarda común, ver como graficar");
+					else{
+						coleccion = [];
+						$('#atras').attr('disabled',true);
+						$('#sig').attr('disabled',false);
+						$.ajax({
+							url : "graficar_derivada",
+							type : "POST",
+							dataType: "json",
+							data : {
+											funcion : fun,
+											variable : variable,
+											inf : inf,
+											sup : sup,
+											limpiar : 1,
+											csrfmiddlewaretoken: '{{ csrf_token }}'
+											},
+							success : function(json) {
+								str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+								var datos = {
+											funcion:  json.server_response['funcion'],
+											derivada: json.server_response['derivada'],
+											img: str
+								}
+								coleccion.push(datos);
+								cont = 0;
+								$('#foo').attr("src", str);
+								$('#funct').html(" f(x) = "+json.server_response['funcion']);
+								$('#derivada').html(" f'(x) = "+json.server_response['derivada']);
+								$('#grafico').show();
+								$('#valores').show();
+								fun = json.server_response['derivada'];
+							},
+							error : function(xhr,errmsg,err) {
+								alert(xhr.responseText);
+							}
+						});
+						return false;
+					}
+				});
+
+				$("#sig").click(function(event) {
+						cont++;
+						$('#atras').removeAttr("disabled");
+						//si todavía no fue cargado
+						if (coleccion[cont] == undefined){
+							$.ajax({
+								url : "graficar_derivada",
+								type : "POST",
+								dataType: "json",
+								data : {
+												funcion : fun,
+												variable : variable,
+												inf : inf,
+												sup : sup,
+												limpiar: 0,
+												csrfmiddlewaretoken: '{{ csrf_token }}'
+												},
+								success : function(json) {
+									str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+									var datos = {
+												funcion:  json.server_response['funcion'],
+												derivada: json.server_response['derivada'],
+												img: str
+									}
+									if (parseInt(json.server_response['derivada'])==0)
+										$('#sig').attr('disabled',true);
+
+									coleccion.push(datos);
+									$('#foo').attr("src", str);
+									$('#funct').html(" f(x) = "+json.server_response['funcion']);
+									$('#derivada').html(" f'(x) = "+json.server_response['derivada']);
+									$('#grafico').show();
+									$('#valores').show();
+									fun = json.server_response['derivada'];
+								},
+								error : function(xhr,errmsg,err) {
+									alert(xhr.status + ": " + xhr.responseText);
+								}
+							});
+							return false;
+						}
+						else{
+							event.preventDefault();
+							$('#foo').attr("src", coleccion[cont]['img']);
+							$('#funct').html(" f(x) = "+coleccion[cont]['funcion']);
+							$('#derivada').html(" f'(x) = "+coleccion[cont]['derivada']);
+							$('#grafico').show();
+							$('#valores').show();
+							fun = coleccion[cont]['derivada'];
+							if (parseInt(coleccion[cont]['derivada'])==0)
+								$('#sig').attr('disabled',true);
+						}
+				});
+
+				$("#atras").click(function(event) {
+						event.preventDefault();
+						$('#sig').attr('disabled',false);
+						cont--;
+						if (cont == 0)
+								$('#atras').attr('disabled',true);
+								$('#foo').attr("src", coleccion[cont]['img']);
+								$('#funct').html(" f(x) = "+coleccion[cont]['funcion']);
+								$('#derivada').html(" f'(x) = "+coleccion[cont]['derivada']);
+								$('#grafico').show();
+								$('#valores').show();
+								fun = coleccion[cont]['derivada'];
+				});
+		    $('#cont').show();
+			});
+		</script>
+
+		<div style="width:100%; overflow:hidden;">
+	    <div class="table50" id="uno">
+	    	<div class="row">
+		    	{% if form.funcion %}
+		    	<div class="cell_b" style="width:20%">
+						Función:
+					</div>
+					<div id="fun" class="cell" style="width:40%">
+						{{form.funcion}}
+					</div>
+					<div class="cell_b" style="width:25%">
+						{{form.variable.label_tag}}
+					</div>
+					<div class="cell">
+						{{form.variable}}
+					</div>
+        </div>
+				<div class="row">
+          <br>
+          <div class="cell_b" style="width:20%">{{form.inf.label_tag}}</div>
+          <div class="cell"  style="width:40%">{{form.inf}}</div>
+	    		<div class="cell_b" style="width:25%">{{form.sup.label_tag}}</div>
+          <div class="cell">{{form.sup}}</div>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<div class="cell">
+						<button id="acep" name="aceptar" type="submit" class="boton">Derivar</button>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+			<br>
+  		<div class="table50" id="dos" style="float:left">
+  			<div class="panel" id="grafico">
+  				<div class="cell"><img id="foo" width="450" height="400"></div>
+				</div>
+			</div>
+			<div class="table50" style="float:right">
+				<div class="panel" id="valores">
+					<div class="cell_b" id="funct" style="width:30%"></div><br>
+					<div class="cell_b" id="derivada" style="width:30%"></div><br><br>
+					<div class="cell" align="center">
+						<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
+						<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
+					</div>
+  			</div>
+  		</div>
+	</div>
+</form>
+{% endblock contenido %}

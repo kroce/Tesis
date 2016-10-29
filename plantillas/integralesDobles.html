@@ -1,0 +1,204 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block titulo %} Evaluar Función {% endblock titulo %}
+{% block contenido %}
+	<script src="{% static 'js/jquery-1.12.3.js' %}" type="text/javascript"></script>
+
+	<form id="form" method="POST" class="post-form">{% csrf_token %}
+		<script>
+			$(document).ready(function() {
+
+				$("#graf").click(function() {
+					var fun = $("#id_funcion").val();
+					var variable = $("#id_variable").val();
+					var inferior = $("#id_inferior").val();
+					var superior = $("#id_superior").val();
+					var inferior1 = $("#id_inferior1").val();
+					var superior1 = $("#id_superior1").val();
+					if (inferior=='' || superior=='')
+						alert('Para graficar es necesario definir los limites')
+					else{
+						$.ajax({
+							url : "graficar3d",
+							type : "POST",
+							dataType: "json",
+							data : {
+											funcion : fun,
+											variable : variable,
+											inferior : inferior,
+											superior : superior,
+											inferior1 : inferior1,
+											superior1 : superior1,
+											csrfmiddlewaretoken: '{{ csrf_token }}'
+											},
+
+							success : function(json) {
+								str = "{% static 'imagenes/' %}"+json.server_response;
+								$('#foo').attr("src", str);
+								$('#grafico').show();
+								//$('#result').append( 'ServerResponse:' + json.server_response);
+							},
+							error : function(xhr,errmsg,err) {
+								alert(xhr.status + ": " + xhr.responseText);
+							}
+						});
+						return false;
+					}
+				});
+
+				if ($('#id_definida').attr('checked')){
+					$('#paneldef').show();
+				}
+
+				if ($('#id_formula_0').attr('checked')  && $('#id_numerica').attr('checked')){
+					$('#paneltabla').show();
+				}
+
+				if ($('#id_formula_1').attr('checked')  && $('#id_numerica').attr('checked')){
+					$('#paneltabla').show();
+				}
+
+				$('#id_definida').on('change', function(){
+					if(this.checked) {
+						$('#paneldef').slideToggle("slow");
+					}
+					else{
+						$('#paneldef').slideToggle("slow");
+						$('#id_numerica').attr('checked', false);
+						$('#panelnum').hide();
+						$('#id_formula_0').attr('checked', false);
+						$('#paneltabla').hide();
+					}
+    		})
+
+				if ($('#id_numerica').attr('checked')){
+					$('#panelnum').show();
+					if($('input[name=formula]:checked', '#form').val()=="trapecio") {
+						$('#paneltabla').show();
+    			}
+    			if($('input[name=formula]:checked', '#form').val()=="simpson") {
+						$('#paneltabla').show();
+    			}
+				}
+
+				$('#id_numerica').on('change', function(){
+					if(this.checked) {
+						$('#panelnum').slideToggle("slow");
+					}
+					else{
+						$('#panelnum').slideToggle("slow");
+						$('#paneltabla').hide();
+						$('#id_formula_0').attr('checked', false);
+						$('#id_formula_1').attr('checked', false);
+    			}
+    		})
+
+    		$('[name="formula"]').on('change', function() {
+    			if($('input[name=formula]:checked', '#form').val()=="trapecio") {
+    				$('#paneltabla').show();
+					}
+					if($('input[name=formula]:checked', '#form').val()=="simpson") {
+    				$('#paneltabla').show();
+					}
+				})
+					$('#cont').show();
+				});
+		</script>
+		<div style="width:100%; overflow:hidden;">
+	    <div class="table50" id="uno">
+	    	<div class="row">
+		    	{% if form.funcion %}
+		    	<div class="cell_b" style="width:10%">
+						Función
+					</div>&nbsp;&nbsp;
+					<div id="fun" class="cell" style="width:10%">
+						{{form.funcion}}
+					</div>&nbsp;&nbsp;
+					<div class="cell_b" style="width:15%">
+						{{form.variable.label_tag}}
+					</div>&nbsp;
+					<div class="cell">
+						{{form.variable}}
+					</div>
+					<div class="cell_b" style="width:15%">
+						{{form.variable1.label_tag}}
+					</div>&nbsp;
+					<div class="cell">
+						{{form.variable1}}
+					</div>
+					{% endif %}
+				</div>
+			</div> <!--cierro tabla	-->
+			<div class="table70" style="float:left">
+	    	<br>
+	    	<div class="row">
+					<div class="cell" style="width:100%"><p>{{form.definida}} Integral Definida<br></p></div>
+				</div>
+				<div class="panel" id="paneldef" style="width:100%;">
+	    		<div class="cell_b">{{form.inferior.label_tag}}</div><div class="cell">&nbsp;{{form.inferior}}&nbsp;&nbsp;</div>
+	    		<div class="cell_b">{{form.superior.label_tag}}</div><div class="cell">&nbsp;{{form.superior}}</div>
+					<br>
+					<div class="cell_b">{{form.inferior1.label_tag}}</div><div class="cell">&nbsp;{{form.inferior1}}&nbsp;&nbsp;</div>
+	    		<div class="cell_b">{{form.superior1.label_tag}}</div><div class="cell">&nbsp;{{form.superior1}}</div>
+					<br>
+	    		<div class="cell"><p>{{form.numerica}} Integral Numerica</p></div>
+	    	</div>
+	    	<div class="panel" id="panelnum" style="width:50%;">{{form.formula}}</div>
+	    	<div class="panel" id="paneltabla" style="width:50%">
+	    		<div class="table_border" id="tablavalores">
+					<div class='row_border'>
+		    			<div class='cell_border_str_b' style='text-align:center'><p>&nbsp;xi&nbsp;</p></div>
+		    			<div class='cell_border_str_b' style='text-align:center'><p>f(xi)</p></div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x0}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx0}}</div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x1}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx1}}</div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x2}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx2}}</div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x3}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx3}}</div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x4}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx4}}</div>
+		    		</div>
+		    		<div class='row_border'>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.x5}}</div>
+		    			<div class='cell_border_str' style='text-align:center'>{{form.fx5}}</div>
+		    		</div>
+	    		</div>
+    	</div>
+    	<div class="row">
+    		<div class="cell" style="width:100%">
+					<button id="int" name="integrar" type="submit" class="boton">Integrar</button>
+					<button id="graf" name="graficar" type="submit" class="boton">Graficar</button>
+				</div>
+				<div class="cell"></div>
+			</div>
+			{% if messages %}
+			<br>
+			<div class="row">
+		    	<div class="cell">
+			    	{% for message in messages %}
+					 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+					{% endfor %}
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		<div class="table50" id="dos" style="float:right">
+			<div class="panel" id="grafico">
+				<div class="cell"><img id="foo" width="400" height="350"></div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock contenido %}

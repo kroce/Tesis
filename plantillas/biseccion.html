@@ -1,0 +1,224 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block titulo %} Evaluar Función {% endblock titulo %}
+{% block contenido %}
+	<script src="{% static 'js/jquery-1.12.3.js' %}" type="text/javascript"></script>
+
+	<form id="form" method="POST" class="post-form">{% csrf_token %}
+		<script>
+			var fun, variable, inferior, superior, coleccion;
+			$(document).ready(function() {
+
+				$("#acep").click(function() {
+					fun = $("#id_funcion").val();
+					variable = $("#id_variable").val();
+					inferior = $("#id_inferior").val();
+					superior = $("#id_superior").val();
+					error = $("#id_error").val();
+					coleccion = [];
+
+					//esraiz = false;
+					$('#atras').attr('disabled',true);
+					$.ajax({
+						url : "graficar_biseccion",
+						type : "POST",
+						dataType: "json",
+						data : {
+										funcion  : fun,
+										variable : variable,
+										inferior : inferior,
+										superior : superior,
+										error    : error,
+										limpiar  : 1,
+										csrfmiddlewaretoken: '{{ csrf_token }}'
+										},
+						success : function(json) {
+							str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+							esraiz = (json.server_response['band']==1);
+							var datos = {
+										a : inferior,
+										b : superior,
+										fa:  json.server_response['fa'],
+										fb: json.server_response['fb'],
+										r: json.server_response['raiz'],
+										fr: json.server_response['fr'],
+										esraiz : esraiz,
+										img: str
+							}
+							coleccion.push(datos);
+							cont = 0;
+							$('#foo').attr("src", str);
+							$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
+							$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
+							$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
+							$('#grafico').show();
+							$('#valores').show();
+							if (esraiz){
+									$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+									$('#sig').attr('disabled',true);
+							}
+							else{
+								$('#raiz').css({"border": "none"});
+								$('#sig').attr('disabled',false);
+								if ((json.server_response['fa'] * json.server_response['fr']) < 0)
+										superior = json.server_response['raiz'];
+					      else
+										inferior = json.server_response['raiz'];
+							}
+						},
+						error : function(xhr,errmsg,err) {
+							alert(xhr.responseText);
+						}
+					});
+					return false;
+				});
+
+				$("#sig").click(function(event) {
+						cont++;
+						$('#atras').removeAttr("disabled");
+						//si todavía no fue cargado
+						if (coleccion[cont] == undefined){
+							$.ajax({
+								url : "graficar_biseccion",
+								type : "POST",
+								dataType: "json",
+								data : {
+												funcion  : fun,
+												variable : variable,
+												inferior : inferior,
+												superior : superior,
+												error    : error,
+												limpiar  : 0,
+												csrfmiddlewaretoken: '{{ csrf_token }}'
+												},
+								success : function(json) {
+									str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+									esraiz = (json.server_response['band']==1);
+									var datos = {
+												a : inferior,
+												b : superior,
+												fa:  json.server_response['fa'],
+												fb: json.server_response['fb'],
+												r: json.server_response['raiz'],
+												fr: json.server_response['fr'],
+												esraiz: esraiz,
+												img: str
+											}
+									coleccion.push(datos);
+									$('#foo').attr("src", str);
+									$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
+									$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
+									$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
+									$('#grafico').show();
+									$('#valores').show();
+									if (esraiz){
+											$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+											$('#sig').attr('disabled',true);
+									}
+									else{
+										if ((json.server_response['fa'] * json.server_response['fr']) < 0)
+												superior = json.server_response['raiz'];
+							      else
+												inferior = json.server_response['raiz'];
+									}
+								},
+								error : function(xhr,errmsg,err) {
+									alert(xhr.status + ": " + xhr.responseText);
+								}
+							});
+							return false;
+						}
+						else{
+							event.preventDefault();
+							$('#foo').attr("src", coleccion[cont]['img']);
+							$('#cotaa').html(" (a, f(a)) = ("+coleccion[cont]['a']+", "+coleccion[cont]['fa']+")");
+							$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
+							$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
+							$('#raiz').css({"border": "none"});
+							$('#grafico').show();
+							$('#valores').show();
+							if (coleccion[cont]['esraiz']){
+								$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+								$('#sig').attr('disabled',true);
+							}
+							inferior = coleccion[cont]['a'];
+							superior = coleccion[cont]['b'];
+						}
+				});
+
+				$("#atras").click(function(event) {
+						event.preventDefault();
+						$('#sig').attr('disabled',false);
+						cont--;
+						if (cont == 0)
+								$('#atras').attr('disabled',true);
+						$('#foo').attr("src", coleccion[cont]['img']);
+						$('#cotaa').html(" (a, f(a)) = ("+coleccion[cont]['a']+", "+coleccion[cont]['fa']+")");
+						$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
+						$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
+						$('#raiz').css({"border": "none"});
+						$('#grafico').show();
+						$('#valores').show();
+						inferior = coleccion[cont]['a'];
+						superior = coleccion[cont]['b'];
+				});
+
+		    $('#cont').show();
+			});
+		</script>
+
+		<div style="width:100%; overflow:hidden;">
+	    <div class="table50" id="uno">
+	    	<div class="row">
+		    	{% if form.funcion %}
+		    	<div class="cell_b" style="width:20%">
+						Función:
+					</div>
+					<div id="fun" class="cell" style="width:40%">
+						{{form.funcion}}
+					</div>
+					<div class="cell_b" style="width:25%">
+						{{form.variable.label_tag}}
+					</div>
+					<div class="cell">
+						{{form.variable}}
+					</div>
+        </div>
+        <div class="row">
+          <br>
+          <div class="cell_b" style="width:20%">{{form.inferior.label_tag}}</div>
+          <div class="cell"  style="width:40%">{{form.inferior}}</div>
+	    		<div class="cell_b" style="width:25%">{{form.superior.label_tag}}</div>
+          <div class="cell">{{form.superior}}</div>
+					{% endif %}
+				</div>
+				<div class="row">
+          <br>
+					<div class="cell_b" style="width:20%">{{form.error.label_tag}}</div>
+					<div class="cell">{{form.error}}</div>
+					<div class="cell">
+						<button id="acep" name="aceptar" type="submit" class="boton">Aceptar</button>
+					</div>
+				</div>
+			</div>
+			<br>
+  		<div class="table50" id="dos" style="float:left">
+  			<div class="panel" id="grafico">
+  				<div class="cell"><img id="foo" width="400" height="350"></div>
+
+				</div>
+			</div>
+			<div class="table50" style="float:right">
+				<div class="panel" id="valores">
+					<div class="cell_b" id="cotaa" style="width:30%"></div><br>
+					<div class="cell_b" id="cotab" style="width:30%"></div><br>
+					<div class="cell_b" id="raiz"></div><br><br>
+					<div class="cell" align="center">
+						<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
+						<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
+					</div>
+  			</div>
+  		</div>
+	</div>
+</form>
+{% endblock contenido %}
