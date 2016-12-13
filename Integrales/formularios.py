@@ -2,7 +2,8 @@ from django import forms
 from django.forms import ModelForm
 from django.template.defaultfilters import join, default
 from django.utils.safestring import mark_safe
-
+import json
+from FieldHandler import FieldHandler
 
 class HorizRadioRenderer(forms.RadioSelect.renderer):
     """ this overrides widget method to put radio buttons horizontally
@@ -13,7 +14,7 @@ class HorizRadioRenderer(forms.RadioSelect.renderer):
             return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
 class FuncionForm(forms.Form):
-    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))
+    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size':16}))
     variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     inferior = forms.CharField(label='Limite Inferior', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     superior = forms.CharField(label='Limite Superior', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
@@ -81,3 +82,10 @@ class DerivadaForm(forms.Form):
     variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     inf = forms.CharField(label='inf', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     sup = forms.CharField(label='sup', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+
+class dynaform(forms.Form):
+    def get_form(self):
+        jstr = open('Tesis/fields.json')
+        fields=json.load(jstr)
+        fh = FieldHandler(fields)
+        return type('DynaForm', (forms.Form,), fh.formfields )

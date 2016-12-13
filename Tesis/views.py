@@ -9,47 +9,62 @@ from Integrales.formularios import DerivadaForm
 from sympy import *
 from django.contrib import messages
 from Tesis.Graficos import Grafico
-import os, glob
-
+import os, glob, io
 import json
 import socket
+from Integrales.formularios import dynaform
 
 # Create your views here.
 
+def definirCampos():
+    fields = [];
+    cantidad = 10
+    fields.append({"required": 0, "type": "text", "name": "cantidad","label": "cant", "max_length": 100})
+    fields.append({"required": 1, "type": "text", "name": "funcion","label": "Función", "max_length": 100})
+    fields.append({"required": 1, "type": "text", "name": "variable","label": "Variable", "max_length": 10})
+    fields.append({"required": 0, "type": "text", "name": "inferior","label": "Limite Inferior"})
+    fields.append({"required": 0, "type": "text", "name": "superior","label": "Limite Superior"})
+    fields.append({"required": 0, "type": "text", "name": "indice","label": " "})
+    fields.append({"required": 0, "initial":False, "type": "checkbox", "name": "definida","label": "Integracion Definida"})
+    fields.append({"required": 0, "initial":False, "type": "checkbox", "name": "numerica","label": "Integracion Numerica"})
+    choices = [{"name": "Trapecio","value": "trapecio"}, {"name": "Simpson","value": "simpson"}]
+    fields.append({"required": 0, "type": "radio", "name": "formula","label": "", "choices": choices})
+    for x in xrange(0, cantidad):
+        variable =  'x'+str(x)
+        funcion =  'fx'+str(x)
+        fields.append({"type": "table", "name": str(variable), "label": str(variable), "required":0})
+        fields.append({"type": "table", "name": str(funcion), "label": str(funcion), "required":0})
+
+    archivo = open("/home/kro/workspace/Integrales/Tesis/fields.json","w")
+    json.dump(fields,archivo, indent=4)
+    archivo.close()
+
 def auxiliar(datos):
-    x0, fx0 = datos['x0'], datos['fx0']
-    if x0 != "":
-        x1, fx1 = datos['x1'], datos['fx1']
-        if x1 != "":
-            x2, fx2 = datos['x2'], datos['fx2']
-            if x2 != "":
-                x3, fx3 = datos['x3'], datos['fx3']
-                if x3 != "":
-                    x4, fx4 = datos['x4'], datos['fx4']
-                    if x4 != "":
-                        x5, fx5 = datos['x5'], datos['fx5']
-                        if x5 != "":
-                            ene = 5
-                        else:
-                            ene, fx5 = 4, '0'
-                    else:
-                        ene, fx4, fx5 = 3, '0', '0'
-                else:
-                    ene, fx3, fx4, fx5 = 2, '0', '0', '0'
-            else:
-                ene, fx2, fx3, fx4, fx5 = 1, '0', '0', '0', '0'
-        else:
-            ene, fx1, fx2, fx3, fx4, fx5 = 0, '0', '0', '0', '0', '0'
-    else:
-        ene, fx0, fx1, fx2, fx3, fx4, fx5 = -1, '0', '0', '0', '0', '0', '0'
-    return {'ene':ene, 'fx0':fx0, 'fx1':fx1, 'fx2':fx2, 'fx3':fx3, 'fx4':fx4, 'fx5':fx5}
+    i = 0
+    x = 'x'+str(i);
+    fx = 'fx'+str(i)
+    while (x != ""):
+        x = 'x'+str(i)
+        fx = 'fx'+str(i)
+        #x0, fx0 = datos['x0'], datos['fx0']
+        x, fx = datos[x], datos[fx]
+        i=i+1
+    ene = i-2
+    return {'ene':ene}
 
 #algo similar para integrales dobles, un método similar a éste
 def integrales(request):
     #ver como hago para obtener todos los simbolos de la funcion para declararlos
     x, y, z = symbols('x y z')
+    #Agrego
+    definirCampos()
+    form = dynaform()
+    form_class = form.get_form()
+    data = {}
+    #hasta aca, comento la sig
     if request.method == 'POST':
-        form = FuncionForm(request.POST)
+        form = form_class(request.POST)
+        #form = FuncionForm(request.POST)
         if form.is_valid():
             str_expr = form.cleaned_data['funcion']
             inferior = form.cleaned_data['inferior']
@@ -70,6 +85,7 @@ def integrales(request):
                             n = resu['ene']
                             if (n>=1):
                                 indice_n = "fx"+str(n)
+                                print "aca "+indice_n
                                 count = 1
                                 subtotal = 0
                                 #Se va a utilizar el método del trapecio
@@ -77,7 +93,7 @@ def integrales(request):
                                     h = (sympify(superior) - sympify(inferior))/(2*n)
                                     while count < n:
                                         indice = "fx"+str(count)
-                                        subtotal = subtotal + sympify(resu[indice])
+                                        subtotal = subtotal + sympify(form.cleaned_data[indice])
                                         count += 1
                                     subtotal = 2*subtotal
 
@@ -87,12 +103,14 @@ def integrales(request):
                                     while count < n:
                                         indice = "fx"+str(count)
                                         if count % 2 == 0:
-                                            subtotal = subtotal + (2 * sympify(resu[indice]))
+                                            subtotal = subtotal + (2 * sympify(form.cleaned_data[indice]))
                                         else:
-                                            subtotal = subtotal + (4 * sympify(resu[indice]))
+                                            subtotal = subtotal + (4 * sympify(form.cleaned_data[indice]))
                                         count += 1
-
-                                integral = h*(float(resu['fx0'])+float(resu[indice_n])+subtotal)
+                                print form.cleaned_data['fx0']
+                                print
+                                print form.cleaned_data[indice_n]
+                                integral = h*(float(form.cleaned_data['fx0'])+float(form.cleaned_data[indice_n])+subtotal)
                                 texto = " integral ≈ %1.5f " % integral
                                 messages.add_message(request, messages.INFO, texto)
                             else:
@@ -113,8 +131,10 @@ def integrales(request):
                 messages.add_message(request, messages.INFO, 'Expresión inválida')
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = FuncionForm()
-    return render(request, 'integrales.html', {'form': form})
+        form = form_class()
+        #form = FuncionForm()
+
+    return render(request, 'integrales.html', {'form': form, 'data' : data})
 
 def integralesDobles(request):
     #ver como hago para obtener todos los simbolos de la funcion para declararlos
@@ -151,7 +171,7 @@ def integralesDobles(request):
                                     h = (sympify(superior) - sympify(inferior))/(2*n)
                                     while count < n:
                                         indice = "fx"+str(count)
-                                        subtotal = subtotal + sympify(resu[indice])
+                                        subtotal = subtotal + sympify(form.cleaned_data[indice])
                                         count += 1
                                     subtotal = 2*subtotal
 
@@ -161,12 +181,12 @@ def integralesDobles(request):
                                     while count < n:
                                         indice = "fx"+str(count)
                                         if count % 2 == 0:
-                                            subtotal = subtotal + (2 * sympify(resu[indice]))
+                                            subtotal = subtotal + (2 * sympify(form.cleaned_data[indice]))
                                         else:
-                                            subtotal = subtotal + (4 * sympify(resu[indice]))
+                                            subtotal = subtotal + (4 * sympify(form.cleaned_data[indice]))
                                         count += 1
 
-                                integral = h*(float(resu['fx0'])+float(resu[indice_n])+subtotal)
+                                integral = h*(float(form.cleaned_data['fx0'])+float(form.cleaned_data[indice_n])+subtotal)
                                 texto = " integral ≈ %1.5f " % integral
                                 messages.add_message(request, messages.INFO, texto)
                             else:
@@ -293,3 +313,45 @@ def graficarDerivada_ajax(request):
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
     else:
         return render_to_response('integrales.html', context_instance=RequestContext(request))
+
+def prueba(request):
+    definirCampos()
+    form = dynaform()
+    #jsonform = open('Tesis/prueba.json')
+    form_class = form.get_form()
+    data = {}
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+    else:
+        form = form_class()
+
+    return render_to_response( "prueba.html", {
+        'form': form,  'data': data,
+    }, RequestContext(request) )
+
+def pruebaAjax(request):
+    print "aca"
+    if request.method == 'POST':
+        post_text = request.POST.get('the_post')
+        response_data = {}
+
+        #post = Post(text=post_text, author=request.user)
+        #post.save()
+
+        response_data['result'] = 'Create post successful!'
+        #response_data['postpk'] = post.pk
+        #response_data['text'] = post.text
+        #response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
+        #response_data['author'] = post.author.username
+
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
