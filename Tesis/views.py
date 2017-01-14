@@ -12,11 +12,11 @@ from Tesis.Graficos import Grafico
 import os, glob, io
 import json
 import socket
-from Integrales.formularios import dynaform
+from Integrales.formularios import Integralesform
 
 # Create your views here.
 
-def definirCampos():
+def definirCamposIntegrales():
     fields = [];
     cantidad = 10
     fields.append({"required": 0, "type": "text", "name": "cantidad","label": "cant", "max_length": 100})
@@ -35,7 +35,7 @@ def definirCampos():
         fields.append({"type": "table", "name": str(variable), "label": str(variable), "required":0})
         fields.append({"type": "table", "name": str(funcion), "label": str(funcion), "required":0})
 
-    archivo = open("/home/kro/workspace/Integrales/Tesis/fields.json","w")
+    archivo = open("fields_integrales.json","w")
     json.dump(fields,archivo, indent=4)
     archivo.close()
 
@@ -57,8 +57,8 @@ def integrales(request):
     #ver como hago para obtener todos los simbolos de la funcion para declararlos
     x, y, z = symbols('x y z')
     #Agrego
-    definirCampos()
-    form = dynaform()
+    definirCamposIntegrales()
+    form = Integralesform()
     form_class = form.get_form()
     data = {}
     #hasta aca, comento la sig
@@ -313,45 +313,3 @@ def graficarDerivada_ajax(request):
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
     else:
         return render_to_response('integrales.html', context_instance=RequestContext(request))
-
-def prueba(request):
-    definirCampos()
-    form = dynaform()
-    #jsonform = open('Tesis/prueba.json')
-    form_class = form.get_form()
-    data = {}
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-    else:
-        form = form_class()
-
-    return render_to_response( "prueba.html", {
-        'form': form,  'data': data,
-    }, RequestContext(request) )
-
-def pruebaAjax(request):
-    print "aca"
-    if request.method == 'POST':
-        post_text = request.POST.get('the_post')
-        response_data = {}
-
-        #post = Post(text=post_text, author=request.user)
-        #post.save()
-
-        response_data['result'] = 'Create post successful!'
-        #response_data['postpk'] = post.pk
-        #response_data['text'] = post.text
-        #response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
-        #response_data['author'] = post.author.username
-
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
-    else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
-        )

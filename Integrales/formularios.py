@@ -83,9 +83,9 @@ class DerivadaForm(forms.Form):
     inf = forms.CharField(label='inf', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     sup = forms.CharField(label='sup', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
 
-class dynaform(forms.Form):
+class Integralesform(forms.Form):
     def get_form(self):
-        jstr = open('Tesis/fields.json')
+        jstr = open('Tesis/fields_integrales.json')
         fields=json.load(jstr)
         fh = FieldHandler(fields)
-        return type('DynaForm', (forms.Form,), fh.formfields )
+        return type('Integralesform', (forms.Form,), fh.formfields )
