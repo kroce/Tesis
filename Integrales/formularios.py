@@ -89,3 +89,10 @@ class Integralesform(forms.Form):
         fields=json.load(jstr)
         fh = FieldHandler(fields)
         return type('Integralesform', (forms.Form,), fh.formfields )
+
+class DerivadaNumform(forms.Form):
+    def get_form(self):
+        jstr = open('Tesis/fields_derivadaNum.json')
+        fields=json.load(jstr)
+        fh = FieldHandler(fields)
+        return type('DerivadaNumform', (forms.Form,), fh.formfields )

@@ -1,0 +1,19 @@
+Ej. 14
+Dada la siguiente tabla de datos:
+x	    |    f(x)		
+1.00    |    0.632120
+1.2     |    0.898805
+1.4     |    1.153403
+
+  
+a) Calcular f’(1.2), f’(1.3) y f’(1.4) utilizando derivación numérica.
+
+
+f'(1.2) = [f(1.2+h)-f(1.2)]/h
+
+En este caso la única opción es 1.4, con lo cual h = 0.2
+
+luego f'(1.2) = [f(1.4)-f(1.2)]/0.2 
+              = [1.153403-0.898805]/0.2 
+              = 0.2546/0.2 
+              = 1.27299

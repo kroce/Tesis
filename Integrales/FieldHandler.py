@@ -42,6 +42,11 @@ class FieldHandler():
         options['min_value'] = int(field.get("min_value", "-999999999") )
         return django.forms.IntegerField(**options)
 
+    def create_field_for_float(self, field, options):
+        options['max_value'] = float(field.get("max_value", "999999999") )
+        options['min_value'] = float(field.get("min_value", "-999999999") )
+        return django.forms.FloatField(**options)
+
     def create_field_for_radio(self, field, options):
         options['choices'] = [ (c['value'], c['name'] ) for c in field['choices'] ]
         return django.forms.ChoiceField(widget=django.forms.RadioSelect(renderer=HorizRadioRenderer),   **options)

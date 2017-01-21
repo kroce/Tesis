@@ -1,0 +1,163 @@
+[
+    {
+        "choices": [
+            {
+                "name": "Hacia adelante", 
+                "value": "adelante"
+            }, 
+            {
+                "name": "Hacia atras", 
+                "value": "atras"
+            }, 
+            {
+                "name": "Central", 
+                "value": "central"
+            }
+        ], 
+        "required": 0, 
+        "type": "radio", 
+        "name": "tipo", 
+        "label": ""
+    },
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "funcion", 
+        "label": "Funci\u00f3n"
+    }, 
+    {
+        "max_length": 100, 
+        "required": 1, 
+        "type": "float", 
+        "name": "punto", 
+        "label": "Punto"
+    },
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "derivada", 
+        "label": ""
+    },
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x0", 
+        "label": "x0"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx0", 
+        "label": "fx0"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x1", 
+        "label": "x1"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx1", 
+        "label": "fx1"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x2", 
+        "label": "x2"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx2", 
+        "label": "fx2"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x3", 
+        "label": "x3"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx3", 
+        "label": "fx3"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x4", 
+        "label": "x4"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx4", 
+        "label": "fx4"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x5", 
+        "label": "x5"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx5", 
+        "label": "fx5"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x6", 
+        "label": "x6"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx6", 
+        "label": "fx6"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x7", 
+        "label": "x7"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx7", 
+        "label": "fx7"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x8", 
+        "label": "x8"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx8", 
+        "label": "fx8"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "x9", 
+        "label": "x9"
+    }, 
+    {
+        "required": 0, 
+        "type": "table", 
+        "name": "fx9", 
+        "label": "fx9"
+    }
+]

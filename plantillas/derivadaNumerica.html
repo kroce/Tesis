@@ -1,0 +1,166 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block titulo %} Evaluar Función {% endblock titulo %}
+{% block contenido %}
+
+<form id="form" method="POST" class="post-form">{% csrf_token %}
+  <script>
+    $(document).ready(function() {
+      var indice = 0;
+      $('#resultado').html("45");
+      $('#agregoRow').click(function() {
+        $('#row'+indice).show();
+        indice++;
+      });
+      $('#eliminoRow').click(function() {
+        $('#row'+(indice-1)).hide();
+        indice--;
+      });
+
+      /*$('#derivar').click(function() {
+        $('#resultado').html($('#id_punto').val());
+      });*/
+      
+      // $("#derivar").click(function() {
+      //   funcion = $("#id_funcion").val();
+      //   tipo = $("#id_tipo_0").val();
+      //   punto = $("#id_punto").val();
+      //   $.ajax({
+      //       url : "der_numerica_ajax",
+      //       type : "POST",
+      //       dataType: "json",
+      //       data : {
+      //               funcion : funcion,
+      //               tipo : tipo,
+      //               punto : punto,
+      //               csrfmiddlewaretoken: '{{ csrf_token }}'
+      //               },
+      //       success : function(json) {
+      //         alert(json.server_response['derivada']);
+      //         $('#id_derivada').html(" f'(x) = "+json.server_response['derivada']);
+      //       },
+      //       error : function(xhr,errmsg,err) {
+      //         alert(xhr.responseText);
+      //       }
+      //     });
+      //     return false;
+      // });
+    });
+
+  </script>
+  <div class="container">
+    <h1>Derivación Numérica</h1>
+    <br>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12" id="fun" style='font-weight: bold; color:#638cb5;'>
+                {{form.tipo}}
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+              x0
+          </div>
+          <div class="col-md-4">
+                {{form.punto}}
+          </div>
+          <div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+              Función
+          </div>
+          <div class="col-md-4" id="fun">
+                {{form.funcion}}
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-12">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style='padding:0;width:80px;'>
+                      <button type="button" class="btn btn-primary" id="agregoRow" >+</button>
+                      <button type="button" class="btn btn-danger" id="eliminoRow" >-</button>
+                    </th>
+                    <th style='text-align:center;font-weight: bold; color:#638cb5;'>xi</th>
+                    <th style='text-align:center;font-weight: bold; color:#638cb5;'>f(xi)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr id="row0" style='display:none'>
+                      <th scope="row"></th>
+                      <td style='text-align:center'>{{form.x0}}</td>
+                      <td style='text-align:center'>{{form.fx0}}</td>
+                    </tr>
+                    <tr id="row1" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x1}}</td> <td style='text-align:center'>{{form.fx1}}</td></tr>
+                    <tr id="row2" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x2}}</td> <td style='text-align:center'>{{form.fx2}}</td></tr>
+                    <tr id="row3" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x3}}</td> <td style='text-align:center'>{{form.fx3}}</td></tr>
+                    <tr id="row4" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x4}}</td> <td style='text-align:center'>{{form.fx4}}</td></tr>
+                    <tr id="row5" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x5}}</td> <td style='text-align:center'>{{form.fx5}}</td></tr>
+                    <tr id="row6" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x6}}</td> <td style='text-align:center'>{{form.fx6}}</td></tr>
+                    <tr id="row7" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x7}}</td> <td style='text-align:center'>{{form.fx7}}</td></tr>
+                    <tr id="row8" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x8}}</td> <td style='text-align:center'>{{form.fx8}}</td></tr>
+                    <tr id="row9" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x9}}</td> <td style='text-align:center'>{{form.fx9}}</td></tr>
+                </tbody>
+              </table>
+        </div>
+      </div>
+      <!--<div class="row">
+        <div class="col-md-12">
+            <p id="resultado"></p>
+        </div>
+      </div>
+      <br>-->
+      <div class="row">
+          <div class="col-md-4" style='font-weight: bold; color:#638cb5;'>
+              Derivada Númerica ≈ 
+            </div>
+            <div class="col-md-6">
+              {{form.derivada}}
+            </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-md-12">
+          <button id="derivar" name="derivar" type="submit" class="boton">Derivar</button>
+          <button id="cancelar" name="cancelar" type="submit" class="boton">Cancelar</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6" align="center">
+      <div class="row">
+        <div style='font-weight: bold; color:#638cb5;'>
+            Diferencia hacia adelante
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <img id="foo" width="300" height="79" src="/static/imagenes/diferencia_adelante.png">
+      </div>
+      <br>
+      <div class="row">
+        <div style='font-weight: bold; color:#638cb5;'>
+            Diferencia hacia atras
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <img id="foo" width="300" height="79" src="/static/imagenes/diferencia_atras.png">
+      </div>
+      <br>
+      <div class="row">
+        <div style='font-weight: bold; color:#638cb5;'>
+            Diferencia central
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <img id="foo" width="300" height="79" src="/static/imagenes/diferencia_central.png">
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock contenido %}
