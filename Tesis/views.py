@@ -360,7 +360,7 @@ def derivadas(request):
     form = DerivadaForm()
     return render(request, 'derivadas.html', {'form': form})
 
-
+#Agregar mensajes y manejo de errores
 def derivadaNumerica(request):
     definirCamposDerivadaNumerica()
     form = DerivadaNumform()
@@ -376,28 +376,53 @@ def derivadaNumerica(request):
                 indice_n = "fx" + str(n)
                 count = 0
                 subtotal = 0
-                # Se va a utilizar el método del trapecio
+
             flag = 1
+            h = 0
+            fpunto = 0
+            fadelante = 0
+            fatras = 0
             while count <= n and (flag):
                 indice = "x"+ str(count)
                 indicef = "fx"+ str(count)
-                dato = form.cleaned_data[indice]
-                fdato = form.cleaned_data[indicef]
-                punto = form.cleaned_data['punto']
+                dato = form.cleaned_data[indice] #xi
+                fdato = form.cleaned_data[indicef] #f(xi)
+                punto = form.cleaned_data['punto'] #x0
+                tipo = form.cleaned_data['tipo']
                 print "dato  "+dato
-                print "punto  "+str(punto)
-                
-                if  sympify(dato)==sympify(punto):
-                    fpunto = fdato
+                print "punto  "+ str(punto)
                 
                 #Si es derivada hacia adelante, busco el primer punto mayor a x0
-                if  sympify(dato)>sympify(punto):
-                    h = sympify(dato)-sympify(punto)
-                    flag = 0
+                if tipo == "adelante":
+                    if  sympify(dato)==sympify(punto):
+                        fpunto = fdato
+                    if  sympify(dato)>sympify(punto):
+                        h = sympify(dato)-sympify(punto)
+                        derivadaNumerica = (sympify(fdato) - sympify(fpunto)) / sympify(h)
+                        flag = 0
+                
+                if tipo == "atras":
+                    if sympify(dato)<sympify(punto):
+                        h = sympify(punto)-sympify(dato)
+                        fpunto = fdato
+                    if  sympify(dato)==sympify(punto):
+                        derivadaNumerica = (sympify(fdato) - sympify(fpunto)) / sympify(h)
+                
+                if tipo == "central":
+                    if sympify(dato)<sympify(punto):
+                        h = sympify(punto)-sympify(dato)
+                        fatras = fdato
+                    if  sympify(dato)>sympify(punto):
+                        if round((sympify(dato) - sympify(punto)),1) == round(sympify(h),1):
+                            fadelante = fdato
+                    print "fatras  "+ str(fatras)
+                    print "fadelante  "+ str(fadelante)
+                    print "h  "+ str(h)
+                    derivadaNumerica = (sympify(fadelante) - sympify(fatras)) / (2*sympify(h))
                 count += 1
             
-            derivadaNumerica = (sympify(fdato) - sympify(fpunto)) / sympify(h)
             print "h "+str(h)
+            print "count "+str(count)
             print "derivadaNumerica "+str(derivadaNumerica)
             
                 

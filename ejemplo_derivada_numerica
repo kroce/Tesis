@@ -8,12 +8,33 @@ x	    |    f(x)
   
 a) Calcular f’(1.2), f’(1.3) y f’(1.4) utilizando derivación numérica.
 
+Hacia adela
 
 f'(1.2) = [f(1.2+h)-f(1.2)]/h
 
 En este caso la única opción es 1.4, con lo cual h = 0.2
 
-luego f'(1.2) = [f(1.4)-f(1.2)]/0.2 
-              = [1.153403-0.898805]/0.2 
+luego f'(1.2) = [f(1.4) - f(1.2)]/0.2 
+              = [1.153403 - 0.898805]/0.2 
               = 0.2546/0.2 
               = 1.27299
+
+Hacia atras
+
+f'(1.2) = [f(1.2)- f(1.2-h)]/h
+
+En este caso la única opción es 1, con lo cual h = 0.2
+
+luego f'(1.2) = [f(1.2)-f(1)]/0.2 
+              = [0.898805 - 0.632120]/0.2 
+              = 0.2666/0.2 
+              = 1.3334
+
+Para f'(1.3), como no existe f(xo) debemos usar diferencia central
+
+dado x0, buscamos el punto previo y el posterior
+
+f'(1.3) = f(1.3+h) - f(1.2-h) / 2*h
+	    = f(1.4) - f(1.2) /2*0.1
+        = 1.153403 - 0.898805 / 0.2
+

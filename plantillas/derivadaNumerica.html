@@ -7,6 +7,12 @@
   <script>
     $(document).ready(function() {
       var indice = 0;
+      for (i=0;i<10;i++){
+        if($('#id_x'+i).val()!=""){
+          $('#row'+i).show();
+          indice++;
+        }
+      }
       $('#resultado').html("45");
       $('#agregoRow').click(function() {
         $('#row'+indice).show();
