@@ -23,14 +23,14 @@
 						type : "POST",
 						dataType: "json",
 						data : {
-										funcion  : fun,
-										variable : variable,
-										inferior : inferior,
-										superior : superior,
-										error    : error,
-										limpiar  : 1,
-										csrfmiddlewaretoken: '{{ csrf_token }}'
-										},
+								funcion  : fun,
+								variable : variable,
+								inferior : inferior,
+								superior : superior,
+								error    : error,
+								limpiar  : 1,
+								csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
 						success : function(json) {
 							str = "{% static 'imagenes/' %}"+json.server_response['filename'];
 							esraiz = (json.server_response['band']==1);
@@ -60,9 +60,9 @@
 								$('#raiz').css({"border": "none"});
 								$('#sig').attr('disabled',false);
 								if ((json.server_response['fa'] * json.server_response['fr']) < 0)
-										superior = json.server_response['raiz'];
-					      else
-										inferior = json.server_response['raiz'];
+									superior = json.server_response['raiz'];
+					      		else
+									inferior = json.server_response['raiz'];
 							}
 						},
 						error : function(xhr,errmsg,err) {
@@ -82,27 +82,27 @@
 								type : "POST",
 								dataType: "json",
 								data : {
-												funcion  : fun,
-												variable : variable,
-												inferior : inferior,
-												superior : superior,
-												error    : error,
-												limpiar  : 0,
-												csrfmiddlewaretoken: '{{ csrf_token }}'
-												},
+									funcion  : fun,
+									variable : variable,
+									inferior : inferior,
+									superior : superior,
+									error    : error,
+									limpiar  : 0,
+									csrfmiddlewaretoken: '{{ csrf_token }}'
+								},
 								success : function(json) {
 									str = "{% static 'imagenes/' %}"+json.server_response['filename'];
 									esraiz = (json.server_response['band']==1);
 									var datos = {
-												a : inferior,
-												b : superior,
-												fa:  json.server_response['fa'],
-												fb: json.server_response['fb'],
-												r: json.server_response['raiz'],
-												fr: json.server_response['fr'],
-												esraiz: esraiz,
-												img: str
-											}
+										a : inferior,
+										b : superior,
+										fa:  json.server_response['fa'],
+										fb: json.server_response['fb'],
+										r: json.server_response['raiz'],
+										fr: json.server_response['fr'],
+										esraiz: esraiz,
+										img: str
+									}
 									coleccion.push(datos);
 									$('#foo').attr("src", str);
 									$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
@@ -117,7 +117,7 @@
 									else{
 										if ((json.server_response['fa'] * json.server_response['fr']) < 0)
 												superior = json.server_response['raiz'];
-							      else
+							      		else
 												inferior = json.server_response['raiz'];
 									}
 								},
@@ -169,61 +169,61 @@
 			<h1>Método de Bisección</h1>
 			<br>
     	<div class="row">
-				<div class="col-md-6">
-					<div class="row">
-			    	{% if form.funcion %}
-			    	<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+			<div class="col-md-6">
+				<div class="row">
+					{% if form.funcion %}
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
 							Función:
-						</div>
-						<div id="fun" class="col-md-4">
-							{{form.funcion}}
-						</div>
-						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-							{{form.variable.label_tag}}
-						</div>
-						<div class="col-md-4">
-							{{form.variable}}
-						</div>
 					</div>
-					<div class="row">
-		        <br>
-		        <div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
-		        <div class="col-md-4">{{form.inferior}}</div>
-		    		<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
-		        <div class="col-md-4">{{form.superior}}</div>
-						{% endif %}
+					<div id="fun" class="col-md-4">
+						{{form.funcion}}
 					</div>
-					<div class="row">
-		        <br>
-						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.error.label_tag}}</div>
-						<div class="col-md-4">{{form.error}}</div>
-						<div class="col-md-4">
-							<button id="acep" name="aceptar" type="submit" class="boton">Aceptar</button>
-						</div>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+						{{form.variable.label_tag}}
 					</div>
-	      </div>
+					<div class="col-md-4">
+						{{form.variable}}
+					</div>
+				</div>
+				<div class="row">
+					<br>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
+					<div class="col-md-4">{{form.inferior}}</div>
+						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
+					<div class="col-md-4">{{form.superior}}</div>
+					{% endif %}
+				</div>
+				<div class="row">
+					<br>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.error.label_tag}}</div>
+					<div class="col-md-4">{{form.error}}</div>
+					<div class="col-md-4">
+						<button id="acep" name="aceptar" type="submit" class="boton">Aceptar</button>
+					</div>
+				</div>
+			</div>
 
-				<div class="col-md-6">
-					<div class="panel" id="grafico">
-						<div class="cell"><img id="foo" width="400" height="350"></div>
-					</div>
-					<div class="panel" id="valores">
-						<div class="row">
-							<div class="col-md-4">
-								<div class="cell_b" id="cotaa" style="width:30%"></div><br>
-								<div class="cell_b" id="cotab" style="width:30%"></div><br>
-								<div class="cell_b" id="raiz"></div><br><br>
-							</div>
-							<div class="col-md-4">
-								<div class="cell" align="center">
-									<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
-									<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
-								</div>
+			<div class="col-md-6">
+				<div class="panel" id="grafico">
+					<div class="cell"><img id="foo" width="400" height="350"></div>
+				</div>
+				<div class="panel" id="valores">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="cell_b" id="cotaa" style="width:30%"></div><br>
+							<div class="cell_b" id="cotab" style="width:30%"></div><br>
+							<div class="cell_b" id="raiz"></div><br><br>
+						</div>
+						<div class="col-md-4">
+							<div class="cell" align="center">
+								<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
+								<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 </form>
 {% endblock contenido %}

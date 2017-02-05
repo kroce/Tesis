@@ -23,34 +23,6 @@
         indice--;
       });
 
-      /*$('#derivar').click(function() {
-        $('#resultado').html($('#id_punto').val());
-      });*/
-      
-      // $("#derivar").click(function() {
-      //   funcion = $("#id_funcion").val();
-      //   tipo = $("#id_tipo_0").val();
-      //   punto = $("#id_punto").val();
-      //   $.ajax({
-      //       url : "der_numerica_ajax",
-      //       type : "POST",
-      //       dataType: "json",
-      //       data : {
-      //               funcion : funcion,
-      //               tipo : tipo,
-      //               punto : punto,
-      //               csrfmiddlewaretoken: '{{ csrf_token }}'
-      //               },
-      //       success : function(json) {
-      //         alert(json.server_response['derivada']);
-      //         $('#id_derivada').html(" f'(x) = "+json.server_response['derivada']);
-      //       },
-      //       error : function(xhr,errmsg,err) {
-      //         alert(xhr.responseText);
-      //       }
-      //     });
-      //     return false;
-      // });
     });
 
   </script>
@@ -71,12 +43,6 @@
           </div>
           <div class="col-md-4">
                 {{form.punto}}
-          </div>
-          <div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-              Función
-          </div>
-          <div class="col-md-4" id="fun">
-                {{form.funcion}}
           </div>
         </div>
         <br>
@@ -112,21 +78,17 @@
               </table>
         </div>
       </div>
-      <!--<div class="row">
-        <div class="col-md-12">
-            <p id="resultado"></p>
+      
+      {% if messages %}
+      <br>
+      <div class="row">
+          <div class="col-md-12">
+            {% for message in messages %}
+            <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
         </div>
       </div>
-      <br>-->
-      <div class="row">
-          <div class="col-md-4" style='font-weight: bold; color:#638cb5;'>
-              Derivada Númerica ≈ 
-            </div>
-            <div class="col-md-6">
-              {{form.derivada}}
-            </div>
-      </div>
-      <br>
+      {% endif %}
       <div class="row">
         <div class="col-md-12">
           <button id="derivar" name="derivar" type="submit" class="boton">Derivar</button>

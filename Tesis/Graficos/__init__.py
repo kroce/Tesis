@@ -72,7 +72,7 @@ class Grafico:
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
 
-        xi = np.linspace(inf-1, sup+1, 100)
+        xi = np.linspace(inf-.2, sup+.2, 100)
         Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         fa = Fx(inf)
         fb = Fx(sup)
@@ -105,8 +105,8 @@ class Grafico:
                 xytext=(7, 0), textcoords='offset points', fontsize=16)
 
             axes = plt.gca()
-            axes.set_xlim([inf-1, sup+1])                           # x-axis bounds
-            axes.set_ylim([np.min(Fx(xi))-1,np.max(Fx(xi))+1])      # y-axis bounds
+            axes.set_xlim([inf-.2, sup+.2])                           # x-axis bounds
+            axes.set_ylim([np.min(Fx(xi))-.2,np.max(Fx(xi))+.2])      # y-axis bounds
 
             plt.legend(loc='upper right', shadow=True, fontsize='small')
             labelfont = estilo['labelfont']
@@ -129,11 +129,12 @@ class Grafico:
             r = (inf+sup)/2
             fr = Fx(r)
 
-            if (abs(inf-sup) > float(error)) and (abs(fr) > float(error)):
+            if (abs(inf-sup) <= float(error)) or (abs(fr) <= float(error)):
+            #if (abs(inf-sup) <= float(error)):
+                band = 1
+            else:
                 fa = Fx(inf)
                 fb = Fx(sup)
-            else:
-                band = 1
             #Fin algoritmo
             return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
 

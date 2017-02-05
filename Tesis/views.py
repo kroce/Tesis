@@ -118,7 +118,6 @@ def integrales(request):
                             n = resu['ene']
                             if (n >= 1):
                                 indice_n = "fx" + str(n)
-                                print "aca " + indice_n
                                 count = 1
                                 subtotal = 0
                                 # Se va a utilizar el método del trapecio
@@ -147,18 +146,15 @@ def integrales(request):
                                                 (4 *
                                                  sympify(form.cleaned_data[indice]))
                                         count += 1
-                                print form.cleaned_data['fx0']
-                                print
-                                print form.cleaned_data[indice_n]
+
                                 integral = h * \
                                     (float(form.cleaned_data[
                                      'fx0']) + float(form.cleaned_data[indice_n]) + subtotal)
                                 texto = " integral ≈ %1.5f " % integral
-                                messages.add_message(
-                                    request, messages.INFO, texto)
+                                messages.add_message(request, messages.INFO, texto)
                             else:
-                                messages.add_message(
-                                    request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
+                                messages.add_message(request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
+
                         # integral definida simple
                         else:
                             integralDef = integrate(
@@ -174,8 +170,7 @@ def integrales(request):
                     # messages.add_message(request, messages.SUCCESS, 'Función:
                     # '+str_expr)
             except (TypeError, AttributeError, SympifyError):
-                messages.add_message(
-                    request, messages.INFO, 'Expresión inválida')
+                messages.add_message(request, messages.INFO, 'Expresión inválida')
     # if a GET (or any other method) we'll create a blank form
     else:
         form = form_class()
@@ -366,7 +361,7 @@ def derivadaNumerica(request):
     form = DerivadaNumform()
     form_class = form.get_form()
     data = {}
-    
+    derivadaNumerica = 0
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
@@ -390,7 +385,7 @@ def derivadaNumerica(request):
                 punto = form.cleaned_data['punto'] #x0
                 tipo = form.cleaned_data['tipo']
                 print "dato  "+dato
-                print "punto  "+ str(punto)
+                print "fdato  "+fdato
                 
                 #Si es derivada hacia adelante, busco el primer punto mayor a x0
                 if tipo == "adelante":
@@ -415,21 +410,16 @@ def derivadaNumerica(request):
                     if  sympify(dato)>sympify(punto):
                         if round((sympify(dato) - sympify(punto)),1) == round(sympify(h),1):
                             fadelante = fdato
-                    print "fatras  "+ str(fatras)
-                    print "fadelante  "+ str(fadelante)
-                    print "h  "+ str(h)
-                    derivadaNumerica = (sympify(fadelante) - sympify(fatras)) / (2*sympify(h))
+                    if fatras!=0 and fadelante!=0:    
+                        print "fatras "+str(fatras)
+                        print "fadelante "+str(fadelante)
+                        print "h "+str(h)
+                        derivadaNumerica = (sympify(fadelante) - sympify(fatras)) / (2*sympify(h))
+                
                 count += 1
             
-            print "h "+str(h)
-            print "count "+str(count)
-            print "derivadaNumerica "+str(derivadaNumerica)
-            
-                
-                # indice = "fx" + str(count)
-                # subtotal = subtotal + \
-                #     sympify(form.cleaned_data[indice])
-                # count += 1
+            texto = " Derivada Numérica ≈ %1.5f " % derivadaNumerica
+            messages.add_message(request, messages.INFO, texto)
     else:
         form = form_class()
     return render(request, 'derivadaNumerica.html', {'form': form, 'data': data})
