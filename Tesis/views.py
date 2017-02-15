@@ -5,6 +5,7 @@ from django.template import RequestContext
 from Integrales.formularios import FuncionForm
 from Integrales.formularios import FuncionDobleForm
 from Integrales.formularios import BiseccionForm
+from Integrales.formularios import NewtonForm
 from Integrales.formularios import DerivadaForm
 from Integrales.formularios import DerivadaNumform
 from sympy import *
@@ -282,11 +283,7 @@ def graficarFuncion_ajax(request):
         grafico = Grafico()
         estilo = grafico.estilo1()
         grafico.agregarEjes()
-        # gr = grafico.graficar_funcion(expr, funcion, inferior, superior,
-        # estilo)
-        gr = grafico.graficar_funcion(
-            expr, funcion, inferior, superior, estilo)
-        # y = socket.gethostbyname(x)
+        gr = grafico.graficar_funcion(expr, funcion, inferior, superior, estilo)
         response_dict = {}
         response_dict.update({'server_response': gr})
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -322,7 +319,6 @@ def biseccion(request):
     form = BiseccionForm()
     return render(request, 'biseccion.html', {'form': form})
 
-
 def graficarBiseccion_ajax(request):
     if request.POST.has_key('funcion'):
         funcion = request.POST['funcion']
@@ -330,7 +326,6 @@ def graficarBiseccion_ajax(request):
         inferior = request.POST['inferior']
         superior = request.POST['superior']
         limpiar = request.POST['limpiar']
-        # error = 0.05
         error = request.POST['error']
         if (int(limpiar) == 1):
             for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
@@ -350,6 +345,35 @@ def graficarBiseccion_ajax(request):
     else:
         return render_to_response('biseccion.html', context_instance=RequestContext(request))
 
+def newton(request):
+    form = NewtonForm()
+    return render(request, 'newton.html', {'form': form})
+
+def graficarNewton_ajax(request):
+    if request.POST.has_key('funcion'):
+        funcion = request.POST['funcion']
+        variable = request.POST['variable']
+        x0 = request.POST['x0']
+        limpiar = request.POST['limpiar']
+        error = request.POST['error']
+        expr = sympify(funcion)
+        derivada = diff(expr, variable)
+        if (int(limpiar) == 1):
+            for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
+                os.remove(f)
+        expr = sympify(funcion)
+        grafico = Grafico()
+        estilo = grafico.estilo1()
+        grafico.agregarEjes()
+        gr = grafico.graficar_newton(expr, funcion, x0, derivada, estilo, error)
+        if (gr['error'] == 0):
+            response_dict = {}
+            response_dict.update({'server_response': gr})
+            return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+        else:
+            return HttpResponse("Para aplicar el método se debe verificar el teorema de Bolzano (f(a)*f(b)<0)", status=404)
+    else:
+        return render_to_response('newton.html', context_instance=RequestContext(request))
 
 def derivadas(request):
     form = DerivadaForm()

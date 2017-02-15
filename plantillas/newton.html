@@ -1,0 +1,212 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block titulo %} Evaluar Función {% endblock titulo %}
+{% block contenido %}
+
+	<form id="form" method="POST" class="post-form">{% csrf_token %}
+		<script>
+			var fun, variable, x0, coleccion;
+			$(document).ready(function() {
+
+				$("#acep").click(function() {
+					fun = $("#id_funcion").val();
+					variable = $("#id_variable").val();
+					x0 = $("#id_x0").val();
+					error = $("#id_error").val();
+					coleccion = [];
+					//esraiz = false;
+					$('#atras').attr('disabled',true);
+					$.ajax({
+						url : "graficar_newton",
+						type : "POST",
+						dataType: "json",
+						data : {
+								funcion  : fun,
+								variable : variable,
+								x0 : x0,
+								error    : error,
+								limpiar  : 1,
+								csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
+						success : function(json) {
+							str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+							esraiz = (json.server_response['band']==1);
+							var datos = {
+										x0 : x0,
+										x1: json.server_response['x1'],
+										fx0: json.server_response['fx0'],
+										fx1: json.server_response['fx1'],
+										esraiz : esraiz,
+										img: str
+							}
+							coleccion.push(datos);
+							cont = 0;
+							$('#foo').attr("src", str);
+							$('#x0').html(" (x0, f(x0)) = ("+x0+", "+json.server_response['fx0']+")");
+							$('#x1').html(" (x1, f(x1)) = ("+json.server_response['x1']+", "+json.server_response['fx1']+")");
+							$('#grafico').show();
+							$('#valores').show();
+							
+							if (esraiz){
+									$('#x1').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+									$('#sig').attr('disabled',true);
+							}
+							else{
+								$('#x1').css({"border": "none"});
+								$('#sig').attr('disabled',false);
+								x0 = json.server_response['x1'];
+							}
+						},
+						error : function(xhr,errmsg,err) {
+							alert(xhr.responseText);
+						}
+					});
+					return false;
+				});
+
+				$("#sig").click(function(event) {
+						cont++;
+						$('#atras').removeAttr("disabled");
+						//si todavía no fue cargado
+						if (coleccion[cont] == undefined){
+							$.ajax({
+								url : "graficar_newton",
+								type : "POST",
+								dataType: "json",
+								data : {
+									funcion  : fun,
+									variable : variable,
+									x0 : x0,
+									error    : error,
+									limpiar  : 0,
+									csrfmiddlewaretoken: '{{ csrf_token }}'
+								},
+								success : function(json) {
+									str = "{% static 'imagenes/' %}"+json.server_response['filename'];
+									esraiz = (json.server_response['band']==1);
+									var datos = {
+										x0 : x0,
+										x1: json.server_response['x1'],
+										fx0: json.server_response['fx0'],
+										fx1: json.server_response['fx1'],
+										esraiz : esraiz,
+										img: str
+									}
+									coleccion.push(datos);
+									$('#foo').attr("src", str);
+									$('#x0').html(" (x0, f(x0)) = ("+x0+", "+json.server_response['fx0']+")");
+									$('#x1').html(" (x1, f(x1)) = ("+json.server_response['x1']+", "+json.server_response['fx1']+")");
+									$('#grafico').show();
+									$('#valores').show();
+									if (esraiz){
+											$('#x1').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+											$('#sig').attr('disabled',true);
+									}
+									else{
+										$('#x1').css({"border": "none"});
+										$('#sig').attr('disabled',false);
+										x0 = json.server_response['x1'];
+									}
+								},
+								error : function(xhr,errmsg,err) {
+									alert(xhr.status + ": " + xhr.responseText);
+								}
+							});
+							return false;
+						}
+						else{
+							event.preventDefault();
+							$('#foo').attr("src", coleccion[cont]['img']);
+							$('#x0').html(" (x0, f(x0)) = ("+x0+", "+json.server_response['fx0']+")");
+							$('#x1').html(" (x1, f(x1)) = ("+x1+", "+json.server_response['fx1']+")");;
+							$('#x1').css({"border": "none"});
+							$('#grafico').show();
+							$('#valores').show();
+							if (coleccion[cont]['esraiz']){
+								$('#x1').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+								$('#sig').attr('disabled',true);
+							}
+							x0 = coleccion[cont]['x0'];
+							x1 = coleccion[cont]['x1'];
+							// superior = coleccion[cont]['b'];
+						}
+				});
+
+				$("#atras").click(function(event) {
+						event.preventDefault();
+						$('#sig').attr('disabled',false);
+						cont--;
+						if (cont == 0)
+								$('#atras').attr('disabled',true);
+						$('#foo').attr("src", coleccion[cont]['img']);
+						$('#x0').html(" (x0, f(x0)) = ("+coleccion[cont]['x0']+", "+coleccion[cont]['fx0']+")");
+						$('#x1').html(" (x1, f(x1)) = ("+coleccion[cont]['x1']+", "+coleccion[cont]['fx1']+")");
+						$('#x1').css({"border": "none"});
+						$('#grafico').show();
+						$('#valores').show();
+						x0 = coleccion[cont]['x0'];
+						//superior = coleccion[cont]['b'];
+				});
+
+		    $('#cont').show();
+			});
+		</script>
+		<div class="container">
+			<h1>Método de Newton</h1>
+			<br>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="row">
+						{% if form.funcion %}
+						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+								Función:
+						</div>
+						<div id="fun" class="col-md-4">
+							{{form.funcion}}
+						</div>
+						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+							{{form.variable.label_tag}}
+						</div>
+						<div class="col-md-4">
+							{{form.variable}}
+						</div>
+					</div>
+					<div class="row">
+						<br>
+						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.x0.label_tag}}</div>
+						<div class="col-md-4">{{form.x0}}</div>
+						{% endif %}
+					</div>
+					<div class="row">
+						<br>
+						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.error.label_tag}}</div>
+						<div class="col-md-4">{{form.error}}</div>
+						<div class="col-md-4">
+							<button id="acep" name="aceptar" type="submit" class="boton">Aceptar</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel" id="grafico">
+						<div class="cell"><img id="foo" width="450" height="400"></div>
+					</div>
+					<div class="panel" id="valores">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="cell_b" id="x0"></div><br>
+								<div class="cell_b" id="x1"></div><br>
+							</div>
+							<div class="col-md-4">
+								<div class="cell" align="center">
+									<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
+									<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</form>
+{% endblock contenido %}

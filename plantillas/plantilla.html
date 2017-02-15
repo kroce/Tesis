@@ -1,37 +1,36 @@
 {% load staticfiles %}
-<meta charset="utf-8"  />
+<meta charset="utf-8" />
 
-	<head>
-			<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-			<script src="{% static 'js/jquery-1.12.3.js' %}"></script>
-			<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
-			<script src="{% static 'js/bootstrap.min.js' %}"></script>
-			<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-			<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
-			<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">-->
-			<!--<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-			<script src="{% static 'js/jquery-1.12.3.js' %}"></script>
-			<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
-	    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">-->
-	    <title>{% block tit %}Métodos Computacionales{% endblock %}</title>
-	</head>
-	<!--<div class="page-header" style="background-image: url({% static 'imagenes/math.jpg' %});">-->
-		<nav class="navbar navbar-inverse">
-			<div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+<head>
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<script src="{% static 'js/jquery-1.12.3.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+	<title>{% block tit %}Métodos Computacionales{% endblock %}</title>
+</head>
+<nav class="navbar navbar-inverse">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+				aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="menu.html">Inicio</a>
-    </div>
+			<a class="navbar-brand" href="menu.html">Inicio</a>
+		</div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Graficos<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="derivadas.html">Función de una variable</a></li>
+						<li><a href="derivadaNumerica.html">Función de dos variables</a></li>
+					</ul>
+				</li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Derivada <span class="caret"></span></a>
 					<ul class="dropdown-menu">
@@ -50,32 +49,11 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Métodos <span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="biseccion.html">Bisección</a></li>
-						<li><a href="">Newton Raphson</a></li>
+						<li><a href="newton.html">Newton Raphson</a></li>
 					</ul>
 				</li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-		</nav>
-		<!--<ul class="nav" style="width:500px;">
-			<li><a href="menu.html" style="border-right:none;">Inicio</a></li>
-			<li><a href="" style="border-right:none">Cálculos</a>
-				<ul>
-					<li><a href="derivadas.html" style="border-top:none">Derivadas</a></li>
-				</ul>
-			</li>
-			<li><a href="" style="border-right:none">Integrales</a>
-				<ul>
-					<li id="integ"><a href="integrales.html" style="border-top:none">Integrales Simples</a></li>
-					<li><a href="integralesDobles.html" style="border-top:none">Integrales Dobles</a></li>
-				</ul>
-			</li>
-			<li><a href="" style="border-right:none">Métodos</a>
-				<ul>
-					<li><a href="biseccion.html" style="border-top:none">Bisección</a></li>
-					<li><a href="" style="border-top:none">Newton Raphson</a></li>
-				</ul>
-			</li>
-			<li><a href="prueba.html">Ayuda</a></li>
-		</ul>-->
-	<div class="contenido" id="cont">{% block contenido %}{% endblock %}</div>
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="contenido" id="cont">{% block contenido %}{% endblock %}</div>

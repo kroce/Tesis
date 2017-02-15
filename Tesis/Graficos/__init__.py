@@ -9,7 +9,6 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import sympy as sym
 from sympy import *
 from datetime import datetime
-#nuevo
 from mpl_toolkits.mplot3d import Axes3D
 import random
 import mpl_toolkits.mplot3d.axes3d as axes3d
@@ -137,6 +136,68 @@ class Grafico:
                 fb = Fx(sup)
             #Fin algoritmo
             return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
+
+    def graficar_newton(self, expr, str_expr, x0, derivada, estilo, error):
+        x = sym.symbols('x')
+        varx0 = float(sympify(x0))
+
+        xi = np.linspace(varx0-.5, varx0+.5, 100)
+        Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
+        dFx = sym.lambdify(x,derivada,'numpy')
+        fx0 = Fx(varx0)
+        dfx0 = dFx(varx0)
+
+        plt.plot(xi, Fx(xi),
+            '#638CB5',                # colour
+            linestyle='-',              # line style
+            linewidth=2-5,                # line width
+            label= str_expr )           # plot label
+
+        plt.plot([varx0, varx0], [Fx(varx0),np.min(Fx(xi))-.5], color='green', linewidth=1, linestyle="--")
+        plt.plot([varx0, varx0-.5], [Fx(varx0), Fx(varx0)], color='green', linewidth=1, linestyle="--")
+        plt.scatter([varx0, ], [Fx(varx0), ], 50, color='green')
+        plt.annotate(r'$(x0,f(x0))$',xy=(varx0, Fx(varx0)), xycoords='data',
+                xytext=(7, 0), textcoords='offset points', fontsize=16)
+
+        x1 = varx0-(fx0/dfx0)
+        plt.plot([x1, x1], [Fx(x1),np.min(Fx(xi))-.5], color='orange', linewidth=2, linestyle="--")
+        plt.plot([x1, varx0-.5], [Fx(x1), Fx(x1)], color='orange', linewidth=2, linestyle="--")
+        plt.scatter([x1, ], [Fx(x1), ], 50, color='orange')
+        plt.annotate(r'$(x1,f(x1))$',xy=(x1, Fx(x1)), xycoords='data',
+            xytext=(7, 0), textcoords='offset points', fontsize=16)
+
+        axes = plt.gca()
+        axes.set_xlim([varx0-.5, varx0+.5])                           # x-axis bounds
+        axes.set_ylim([np.min(Fx(xi))-.5,np.max(Fx(xi))+1])      # y-axis bounds
+
+        plt.legend(loc='upper right', shadow=True, fontsize='small')
+        labelfont = estilo['labelfont']
+        titlefont = estilo['titlefont']
+        plt.xlabel('x', fontdict=labelfont)
+        plt.ylabel('f(x)', fontdict=labelfont)
+        plt.grid()                            # Le agrega la grilla
+        #plt.show()
+
+        filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
+        filename1 = 'Tesis/static/imagenes/'+filename
+
+        plt.savefig(filename1, bbox_inches='tight')
+        axes.cla()
+        plt.clf()
+        plt.close()
+
+        #algoritmo
+        band = 0;
+        x1 = round(varx0-(fx0/dfx0),4)
+        fx1 = round(Fx(x1),4)
+        x0 = x1
+
+        if (abs(fx1) <= float(error)):
+            band = 1
+        else:
+            x0 = x1
+        #Fin algoritmo
+        return {'filename':filename, 'x0':x0, 'fx0':round(fx0,4), 'x1': x1, 'fx1':fx1, 'band':band, 'error':0}
 
     def agregarEjes(self):
         plt.subplots_adjust(left=0.15)        # prevents overlapping of the y label

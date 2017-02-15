@@ -24,8 +24,6 @@ class FuncionForm(forms.Form):
         ('trapecio', "Trapecio"),
         ('simpson', "Simpson"),
     )
-    # although I've abbreviated the model, 'rad' does not appear in the model;
-    # it merely provides input to the un-provided clean function
     formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=RADIO_CHOICES, required=False)
     x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
     fx0 = forms.CharField(label='fx0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
@@ -54,8 +52,6 @@ class FuncionDobleForm(forms.Form):
         ('trapecio', "Trapecio"),
         ('simpson', "Simpson"),
     )
-    # although I've abbreviated the model, 'rad' does not appear in the model;
-    # it merely provides input to the un-provided clean function
     formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=RADIO_CHOICES, required=False)
     x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
     fx0 = forms.CharField(label='fx0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
@@ -75,6 +71,12 @@ class BiseccionForm(forms.Form):
     variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     inferior = forms.CharField(label='Cota Inferior', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     superior = forms.CharField(label='Cota Superior', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    error = forms.CharField(label='Error', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+
+class NewtonForm(forms.Form):
+    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))
+    variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
+    x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     error = forms.CharField(label='Error', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
 
 class DerivadaForm(forms.Form):
