@@ -152,9 +152,11 @@ def integrales(request):
                                     (float(form.cleaned_data[
                                      'fx0']) + float(form.cleaned_data[indice_n]) + subtotal)
                                 texto = " integral ≈ %1.5f " % integral
-                                messages.add_message(request, messages.INFO, texto)
+                                messages.add_message(
+                                    request, messages.INFO, texto)
                             else:
-                                messages.add_message(request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
+                                messages.add_message(
+                                    request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
 
                         # integral definida simple
                         else:
@@ -171,7 +173,8 @@ def integrales(request):
                     # messages.add_message(request, messages.SUCCESS, 'Función:
                     # '+str_expr)
             except (TypeError, AttributeError, SympifyError):
-                messages.add_message(request, messages.INFO, 'Expresión inválida')
+                messages.add_message(
+                    request, messages.INFO, 'Expresión inválida')
     # if a GET (or any other method) we'll create a blank form
     else:
         form = form_class()
@@ -213,7 +216,8 @@ def integralesDobles(request):
                                 subtotal = 0
                                 # Se va a utilizar el método del trapecio
                                 if formula == 'trapecio':
-                                    h = (sympify(superior) - sympify(inferior)) / (2 * n)
+                                    h = (sympify(superior) -
+                                         sympify(inferior)) / (2 * n)
                                     while count < n:
                                         indice = "fx" + str(count)
                                         subtotal = subtotal + \
@@ -223,7 +227,8 @@ def integralesDobles(request):
 
                                 # Se va a utilizar el método de Simpson
                                 else:
-                                    h = (sympify(superior) - sympify(inferior)) / (3 * n)
+                                    h = (sympify(superior) -
+                                         sympify(inferior)) / (3 * n)
                                     while count < n:
                                         indice = "fx" + str(count)
                                         if count % 2 == 0:
@@ -279,17 +284,18 @@ def graficarFuncion_ajax(request):
         variable = request.POST['variable']
         inferior = request.POST['inferior']
         superior = request.POST['superior']
+        sombra = request.POST['sombra']
         expr = sympify(funcion)
         grafico = Grafico()
         estilo = grafico.estilo1()
         grafico.agregarEjes()
-        gr = grafico.graficar_funcion(expr, funcion, inferior, superior, estilo)
+        gr = grafico.graficar_funcion(
+            expr, funcion, inferior, superior, estilo, sombra)
         response_dict = {}
         response_dict.update({'server_response': gr})
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
     else:
         return render_to_response('integrales.html', context_instance=RequestContext(request))
-
 
 def graficarFuncion3d_ajax(request):
     if request.POST.has_key('funcion'):
@@ -303,11 +309,8 @@ def graficarFuncion3d_ajax(request):
         grafico = Grafico()
         estilo = grafico.estilo1()
         grafico.agregarEjes()
-        # gr = grafico.graficar_funcion(expr, funcion, inferior, superior,
-        # estilo)
         gr = grafico.graficar_funcion1(
             expr, funcion, inferior, superior, inferior1, superior1, estilo)
-        # y = socket.gethostbyname(x)
         response_dict = {}
         response_dict.update({'server_response': gr})
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -318,6 +321,7 @@ def graficarFuncion3d_ajax(request):
 def biseccion(request):
     form = BiseccionForm()
     return render(request, 'biseccion.html', {'form': form})
+
 
 def graficarBiseccion_ajax(request):
     if request.POST.has_key('funcion'):
@@ -345,9 +349,11 @@ def graficarBiseccion_ajax(request):
     else:
         return render_to_response('biseccion.html', context_instance=RequestContext(request))
 
+
 def newton(request):
     form = NewtonForm()
     return render(request, 'newton.html', {'form': form})
+
 
 def graficarNewton_ajax(request):
     if request.POST.has_key('funcion'):
@@ -365,7 +371,8 @@ def graficarNewton_ajax(request):
         grafico = Grafico()
         estilo = grafico.estilo1()
         grafico.agregarEjes()
-        gr = grafico.graficar_newton(expr, funcion, x0, derivada, estilo, error)
+        gr = grafico.graficar_newton(
+            expr, funcion, x0, derivada, estilo, error)
         if (gr['error'] == 0):
             response_dict = {}
             response_dict.update({'server_response': gr})
@@ -375,11 +382,19 @@ def graficarNewton_ajax(request):
     else:
         return render_to_response('newton.html', context_instance=RequestContext(request))
 
+
 def derivadas(request):
     form = DerivadaForm()
     return render(request, 'derivadas.html', {'form': form})
 
-#Agregar mensajes y manejo de errores
+def grafico1var(request):
+    form = DerivadaForm()
+    return render(request, 'grafico1var.html', {'form': form})
+
+def grafico2var(request):
+    form = FuncionDobleForm()
+    return render(request, 'grafico2var.html', {'form': form})
+
 def derivadaNumerica(request):
     definirCamposDerivadaNumerica()
     form = DerivadaNumform()
@@ -402,46 +417,50 @@ def derivadaNumerica(request):
             fadelante = 0
             fatras = 0
             while count <= n and (flag):
-                indice = "x"+ str(count)
-                indicef = "fx"+ str(count)
-                dato = form.cleaned_data[indice] #xi
-                fdato = form.cleaned_data[indicef] #f(xi)
-                punto = form.cleaned_data['punto'] #x0
+                indice = "x" + str(count)
+                indicef = "fx" + str(count)
+                dato = form.cleaned_data[indice]  # xi
+                fdato = form.cleaned_data[indicef]  # f(xi)
+                punto = form.cleaned_data['punto']  # x0
                 tipo = form.cleaned_data['tipo']
-                print "dato  "+dato
-                print "fdato  "+fdato
-                
-                #Si es derivada hacia adelante, busco el primer punto mayor a x0
+                print "dato  " + dato
+                print "fdato  " + fdato
+
+                # Si es derivada hacia adelante, busco el primer punto mayor a
+                # x0
                 if tipo == "adelante":
-                    if  sympify(dato)==sympify(punto):
+                    if sympify(dato) == sympify(punto):
                         fpunto = fdato
-                    if  sympify(dato)>sympify(punto):
-                        h = sympify(dato)-sympify(punto)
-                        derivadaNumerica = (sympify(fdato) - sympify(fpunto)) / sympify(h)
+                    if sympify(dato) > sympify(punto):
+                        h = sympify(dato) - sympify(punto)
+                        derivadaNumerica = (
+                            sympify(fdato) - sympify(fpunto)) / sympify(h)
                         flag = 0
-                
+
                 if tipo == "atras":
-                    if sympify(dato)<sympify(punto):
-                        h = sympify(punto)-sympify(dato)
+                    if sympify(dato) < sympify(punto):
+                        h = sympify(punto) - sympify(dato)
                         fpunto = fdato
-                    if  sympify(dato)==sympify(punto):
-                        derivadaNumerica = (sympify(fdato) - sympify(fpunto)) / sympify(h)
-                
+                    if sympify(dato) == sympify(punto):
+                        derivadaNumerica = (
+                            sympify(fdato) - sympify(fpunto)) / sympify(h)
+
                 if tipo == "central":
-                    if sympify(dato)<sympify(punto):
-                        h = sympify(punto)-sympify(dato)
+                    if sympify(dato) < sympify(punto):
+                        h = sympify(punto) - sympify(dato)
                         fatras = fdato
-                    if  sympify(dato)>sympify(punto):
-                        if round((sympify(dato) - sympify(punto)),1) == round(sympify(h),1):
+                    if sympify(dato) > sympify(punto):
+                        if round((sympify(dato) - sympify(punto)), 1) == round(sympify(h), 1):
                             fadelante = fdato
-                    if fatras!=0 and fadelante!=0:    
-                        print "fatras "+str(fatras)
-                        print "fadelante "+str(fadelante)
-                        print "h "+str(h)
-                        derivadaNumerica = (sympify(fadelante) - sympify(fatras)) / (2*sympify(h))
-                
+                    if fatras != 0 and fadelante != 0:
+                        print "fatras " + str(fatras)
+                        print "fadelante " + str(fadelante)
+                        print "h " + str(h)
+                        derivadaNumerica = (
+                            sympify(fadelante) - sympify(fatras)) / (2 * sympify(h))
+
                 count += 1
-            
+
             texto = " Derivada Numérica ≈ %1.5f " % derivadaNumerica
             messages.add_message(request, messages.INFO, texto)
     else:
@@ -475,17 +494,17 @@ def graficarDerivada_ajax(request):
     else:
         return render_to_response('integrales.html', context_instance=RequestContext(request))
 
+
 def derivadaAjax(request):
     if request.POST.has_key('funcion'):
-        
+
         funcion = request.POST['funcion']
         tipo = request.POST['tipo']
         punto = request.POST['punto']
-        derivada = {'derivada':'dsadsad'}
+        derivada = {'derivada': 'dsadsad'}
         response_dict = {}
-        
+
         response_dict.update({'server_response': derivada})
         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
     else:
         return render_to_response('derivadaNumerica.html', context_instance=RequestContext(request))
-

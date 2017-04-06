@@ -6,6 +6,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^derivadas', 'Tesis.views.derivadas'),
+    url(r'^grafico1var', 'Tesis.views.grafico1var'),
+    url(r'^grafico2var', 'Tesis.views.grafico2var'),
     url(r'^derivadaNumerica', 'Tesis.views.derivadaNumerica'),
     url(r'^der_numerica_ajax', 'Tesis.views.derivadaAjax'),
     url(r'^integralesDobles', 'Tesis.views.integralesDobles'),

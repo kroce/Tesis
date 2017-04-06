@@ -13,55 +13,60 @@ from mpl_toolkits.mplot3d import Axes3D
 import random
 import mpl_toolkits.mplot3d.axes3d as axes3d
 
+
 class Grafico:
+
     def estilo1(self):
         labelfont = {
-            'family' : 'sans-serif',  # (cursive, fantasy, monospace, serif)
-            'color'  : 'black',       # html hex or colour name
-            'weight' : 'normal',      # (normal, bold, bolder, lighter)
-            'size'   : 14,            # default value:12
+            'family': 'sans-serif',  # (cursive, fantasy, monospace, serif)
+            'color': 'black',       # html hex or colour name
+            'weight': 'normal',      # (normal, bold, bolder, lighter)
+            'size': 14,            # default value:12
         }
         titlefont = {
-            'family' : 'serif',
-            'color'  : 'black',
-            'weight' : 'bold',
-            'size'   : 16,
+            'family': 'serif',
+            'color': 'black',
+            'weight': 'bold',
+            'size': 16,
         }
-        return {'labelfont':labelfont, 'titlefont':titlefont}
+        return {'labelfont': labelfont, 'titlefont': titlefont}
 
-    def graficar_funcion(self, expr, str_expr, inferior, superior, estilo):
+    def graficar_funcion(self, expr, str_expr, inferior, superior, estilo, sombra):
         x = sym.symbols('x')
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
 
-        xi = np.linspace(inf-1, sup+1, 100)
-        xj =  np.linspace(inf, sup, 100)
-        Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
+        xi = np.linspace(inf - 1, sup + 1, 100)
+        xj = np.linspace(inf, sup, 100)
+        # Function handle can now take numpy array inputs
+        Fx = sym.lambdify(x, expr, 'numpy')
 
         plt.plot(xi, Fx(xi),
             '#638CB5',                # colour
             linestyle='-',              # line style
-            linewidth=2-5,                # line width
-            label= str_expr )           # plot label
+            linewidth=2 - 5,                # line width
+            label=str_expr)           # plot label
 
         axes = plt.gca()
-        axes.set_xlim([inf-1, sup+1])                           # x-axis bounds
-        axes.set_ylim([np.min(Fx(xi))-1,np.max(Fx(xi))+1])      # y-axis bounds
+        # x-axis bounds
+        axes.set_xlim([inf - 1, sup + 1])
+        axes.set_ylim([np.min(Fx(xi)) - 1, np.max(Fx(xi)) + 1]
+                      )      # y-axis bounds
 
         plt.legend(loc='upper right', shadow=True, fontsize='small')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']
-        #plt.title('Funciones Trigonometricas', fontdict=titlefont)
+        # plt.title('Funciones Trigonometricas', fontdict=titlefont)
         plt.xlabel('x', fontdict=labelfont)
         plt.ylabel('f(x)', fontdict=labelfont)
-
-        plt.fill_between(xj,Fx(xj),0,facecolor='0.9', edgecolor='0.5')
+        if int(sombra) == 1:
+            plt.fill_between(xj, Fx(xj), 0, facecolor='0.9', edgecolor='0.5')
 
         plt.grid()                            # Le agrega la grilla
-        #plt.show()
+        # plt.show()
 
-        filename = 'foo-%s.png'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
-        filename1 = 'Tesis/static/imagenes/'+filename
+        filename = 'foo-%s.png' % datetime.now().strftime('%Y-%m-%d_%H%M%S')
+        filename1 = 'Tesis/static/imagenes/' + filename
         plt.savefig(filename1, bbox_inches='tight')
         plt.close()
         return filename
@@ -113,7 +118,7 @@ class Grafico:
             plt.xlabel('x', fontdict=labelfont)
             plt.ylabel('f(x)', fontdict=labelfont)
             plt.grid()                            # Le agrega la grilla
-            #plt.show()
+            # plt.show()
 
             filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
             filename1 = 'Tesis/static/imagenes/'+filename
@@ -123,18 +128,18 @@ class Grafico:
             plt.clf()
             plt.close()
 
-            #algoritmo
+            # algoritmo
             band = 0;
             r = (inf+sup)/2
             fr = Fx(r)
 
             if (abs(inf-sup) <= float(error)) or (abs(fr) <= float(error)):
-            #if (abs(inf-sup) <= float(error)):
+            # if (abs(inf-sup) <= float(error)):
                 band = 1
             else:
                 fa = Fx(inf)
                 fb = Fx(sup)
-            #Fin algoritmo
+            # Fin algoritmo
             return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
 
     def graficar_newton(self, expr, str_expr, x0, derivada, estilo, error):
@@ -176,7 +181,7 @@ class Grafico:
         plt.xlabel('x', fontdict=labelfont)
         plt.ylabel('f(x)', fontdict=labelfont)
         plt.grid()                            # Le agrega la grilla
-        #plt.show()
+        # plt.show()
 
         filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
         filename1 = 'Tesis/static/imagenes/'+filename
@@ -186,7 +191,7 @@ class Grafico:
         plt.clf()
         plt.close()
 
-        #algoritmo
+        # algoritmo
         band = 0;
         x1 = round(varx0-(fx0/dfx0),4)
         fx1 = round(Fx(x1),4)
@@ -196,7 +201,7 @@ class Grafico:
             band = 1
         else:
             x0 = x1
-        #Fin algoritmo
+        # Fin algoritmo
         return {'filename':filename, 'x0':x0, 'fx0':round(fx0,4), 'x1': x1, 'fx1':fx1, 'band':band, 'error':0}
 
     def agregarEjes(self):
@@ -212,7 +217,7 @@ class Grafico:
         print "expr "+str_expr
         print "derivada "+str(derivada)
         xi = np.linspace(inf, sup, 100)
-        #Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
+        # Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         Fx = np.vectorize(sym.lambdify(x, expr, "numpy"))
         Fx2 = np.vectorize(sym.lambdify(x, derivada, "numpy"))
         str1 = 'f('+str(variable)+') = '+str(str_expr)
@@ -230,7 +235,7 @@ class Grafico:
             label= str2 )
 
         axes = plt.gca()
-        #axes.autoscale()
+        # axes.autoscale()
         axes.set_xlim([inf, sup])                           # x-axis bounds
         minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
         maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
@@ -239,11 +244,11 @@ class Grafico:
         plt.legend(loc='upper right', shadow=True, fontsize='medium')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']
-        #plt.title('Funciones Trigonometricas', fontdict=titlefont)
+        # plt.title('Funciones Trigonometricas', fontdict=titlefont)
         plt.xlabel('x', fontdict=labelfont)
         plt.ylabel('f(x)', fontdict=labelfont)
         plt.grid()                            # Le agrega la grilla
-        #plt.show()
+        # plt.show()
 
         filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
         filename1 = 'Tesis/static/imagenes/'+filename

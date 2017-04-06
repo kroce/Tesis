@@ -108,75 +108,73 @@
 			<h1>Integrales Dobles</h1>
 			<br>
     	<div class="row">
-				<div class="col-md-6">
-					<div class="row">
-				    	{% if form.funcion %}
-				    	<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-								Función
-							</div>
-							<div id="fun" class="col-md-3">
-								{{form.funcion}}
-							</div>
-					</div>
-					<br>
-					<div class="row">
-							<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable.label_tag}}
-							</div>
-							<div class="col-md-3">
-								{{form.variable}}
-							</div>
-							<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable1.label_tag}}
-							</div>
-							<div class="col-md-3">
-								{{form.variable1}}
-							</div>
-							{% endif %}
-					</div>
+			<div class="col-md-6">
+				<div class="row">
+					{% if form.funcion %}
+					<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							Función
+						</div>
+						<div id="fun" class="col-md-3">
+							{{form.funcion}}
+						</div>
+				</div>
+				<br>
+				<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							{{form.variable.label_tag}}
+						</div>
+						<div class="col-md-3">
+							{{form.variable}}
+						</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							{{form.variable1.label_tag}}
+						</div>
+						<div class="col-md-3">
+							{{form.variable1}}
+						</div>
+						{% endif %}
+				</div>
 	    		<br>
 		    	<div class="row">
-						<div class="col-md-12" style="width:100%"><p>{{form.definida}} Integral Definida<br></p></div>
+					<div class="col-md-12" style="width:100%"><p>{{form.definida}} Integral Definida<br></p></div>
+				</div>
+				<div class="panel" id="paneldef" style="width:100%;">
+					<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
+						<div class="col-md-3">{{form.inferior}}</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
+						<div class="col-md-3">{{form.superior}}</div>
 					</div>
-					<div class="panel" id="paneldef" style="width:100%;">
-						<div class="row">
-		    			<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
-							<div class="col-md-3">{{form.inferior}}</div>
-		    			<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
-							<div class="col-md-3">{{form.superior}}</div>
-						</div>
-						<div class="row">
-							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.inferior1.label_tag}}</div>
-							<div class="col-md-3">{{form.inferior1}}</div>
-			    		<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior1.label_tag}}</div>
-							<div class="col-md-3">{{form.superior1}}</div>
-						</div>
+					<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.inferior1.label_tag}}</div>
+						<div class="col-md-3">{{form.inferior1}}</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior1.label_tag}}</div>
+						<div class="col-md-3">{{form.superior1}}</div>
+					</div>
 		    	</div>
 
 			  	<div class="row">
 			  		<div class="col-md-12">
-							<button id="int" name="integrar" type="submit" class="boton">Integrar</button>
-							<button id="graf" name="graficar" type="submit" class="boton">Graficar</button>
-						</div>
+						<button id="int" name="integrar" type="submit" class="boton">Integrar</button>
+						<button id="graf" name="graficar" type="submit" class="boton">Graficar</button>
 					</div>
-
-					{% if messages %}
-					<br>
-					<div class="row">
-				    	<div class="cell">
-					    	{% for message in messages %}
-							 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-							{% endfor %}
-						</div>
-					</div>
-					{% endif %}
-			</div>
-			<div class="col-md-6">
+				</div>
+				{% if messages %}
+				<br>
 				<div class="row">
+					<div class="cell">
+						{% for message in messages %}
+							<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			<div class="col-md-6">
 					<div class="panel" id="grafico">
 						<div class="cell"><img id="foo" width="400" height="350"></div>
 					</div>
-				</div>
 			</div>
 		</div>
 </form>
