@@ -44,39 +44,26 @@
 		<div class="row">
 			<div class="col-md-6">
 				<div class="row">
-					<div class="col-md-12">
-						<div class="row">
-							{% if form.funcion %}
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-								Función
-							</div>
-							<div class="col-md-4" id="fun">
-								{{form.funcion}}
-							</div>
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable.label_tag}}
-							</div>
-							<div class="col-md-4">
-								{{form.variable}}
-							</div>
-						</div>
+					{% if form.funcion %}
+					<div class="col-md-6">
+						<span style='font-weight: bold; color:#638cb5;'>Función:</span>&nbsp;&nbsp;{{form.funcion}}
 					</div>
+					<div class="col-md-6">
+						<span style='font-weight: bold; color:#638cb5;'>Variable:</span>&nbsp;&nbsp;{{form.variable}}
+					</div>
+				</div>
+
+				<br>
+				<div class="row">
+					<div class="col-md-5">
+						<span style='font-weight: bold; color:#638cb5;'>Límite inferior:</span> &nbsp;&nbsp;{{form.inf}}</div>
+					<div class="col-md-5"><span style='font-weight: bold; color:#638cb5;'>Límite superior: </span>&nbsp;&nbsp;{{form.sup}}</div>
 				</div>
 				<br>
 				<div class="row">
 					<div class="col-md-12">
-						<div class="row">
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inf.label_tag}}</div>
-							<div class="col-md-4">{{form.inf}}</div>
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.sup.label_tag}}</div>
-							<div class="col-md-4">{{form.sup}}</div>
-						</div>
-					</div>
-				</div>
-				<br>
-				<div class="row">
-					<div class="col-md-12">
-						<button id="acep" name="aceptar" type="submit" class="boton">Graficar</button>
+						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Graficar</button>
+						<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a>
 					</div>
 				</div>
 				{% endif %}
@@ -84,7 +71,8 @@
 			<div class="col-md-6">
 				<div class="panel" id="grafico">
 					<div class="row">
-						<div class="col-md-12"><img id="foo" width="450" height="400"></div>
+						<div class="col-md-6"><img id="foo" width="450" height="400"></div>
+
 					</div>
 				</div>
 			</div>

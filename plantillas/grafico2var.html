@@ -52,46 +52,49 @@
 				<div class="col-md-6">
 					<div class="row">
 				    	{% if form.funcion %}
-				    	<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-							Función
-						</div>
-						<div id="fun" class="col-md-3">
-							{{form.funcion}}
+				    	<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;">Función:&nbsp;&nbsp;</span>{{form.funcion}}
 						</div>
 					</div>
 					<br>
 					<div class="row">
-							<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable.label_tag}}
-							</div>
-							<div class="col-md-3">
-								{{form.variable}}
-							</div>
-							<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable1.label_tag}}
-							</div>
-							<div class="col-md-3">
-								{{form.variable1}}
-							</div>
-							{% endif %}
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;"> Variable 1: &nbsp;&nbsp;</span>
+							{{form.variable}}
+						</div>
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;"> Variable 2: &nbsp;&nbsp;</span>
+							{{form.variable1}}
+						</div>
+						{% endif %}
 					</div>
 					<br>
 					<div class="row">
-						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
-						<div class="col-md-3">{{form.inferior}}</div>
-						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
-						<div class="col-md-3">{{form.superior}}</div>
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;">Límite Inferior 1: &nbsp;&nbsp;</span>
+							{{form.inferior}}
+						</div>
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;">Límite Superior 1: &nbsp;&nbsp;</span>
+							{{form.superior}}
+						</div>
 					</div>
+					<br>
 					<div class="row">
-						<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.inferior1.label_tag}}</div>
-						<div class="col-md-3">{{form.inferior1}}</div>
-						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior1.label_tag}}</div>
-						<div class="col-md-3">{{form.superior1}}</div>
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;">Límite Inferior 2: &nbsp;&nbsp;</span>
+							{{form.inferior1}}
+						</div>
+						<div class="col-md-6">
+							<span style="font-weight: bold; color:#638cb5;">Límite Superior 2: &nbsp;&nbsp;</span>
+							{{form.superior1}}
+						</div>
 					</div>
+					<br><br>
 					<div class="row">
 						<div class="col-md-12">
-							<button id="int" name="integrar" type="submit" class="boton">Integrar</button>
-							<button id="graf" name="graficar" type="submit" class="boton">Graficar</button>
+							<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
+							<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_2vars.pdf' %}">Ayuda</a>
 						</div>
 					</div>
 

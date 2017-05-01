@@ -126,39 +126,32 @@
 		<div class="row">
 			<div class="col-md-6">
 				<div class="row">
-					<div class="col-md-12">
-						<div class="row">
-							{% if form.funcion %}
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-								Función
-							</div>
-							<div class="col-md-4" id="fun">
-								{{form.funcion}}
-							</div>
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-								{{form.variable.label_tag}}
-							</div>
-							<div class="col-md-4">
-								{{form.variable}}
-							</div>
-						</div>
+					{% if form.funcion %}
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Función: &nbsp;&nbsp;</span>
+						{{form.funcion}}
+					</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">{{form.variable.label_tag}} &nbsp;&nbsp;</span>
+						{{form.variable}}
 					</div>
 				</div>
 				<br>
 				<div class="row">
-					<div class="col-md-12">
-						<div class="row">
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inf.label_tag}}</div>
-							<div class="col-md-4">{{form.inf}}</div>
-							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.sup.label_tag}}</div>
-							<div class="col-md-4">{{form.sup}}</div>
-						</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Inferior:&nbsp;&nbsp;</span>
+						{{form.inf}}
+					</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Superior:&nbsp;&nbsp;</span>
+						{{form.sup}}
 					</div>
 				</div>
-				<br>
+				<br><br>
 				<div class="row">
 					<div class="col-md-12">
-						<button id="acep" name="aceptar" type="submit" class="boton">Derivar</button>
+						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Derivar</button>
+						<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a>
 					</div>
 				</div>
 				{% endif %}
