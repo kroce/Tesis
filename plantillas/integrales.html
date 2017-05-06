@@ -198,10 +198,12 @@
               </div>
               <div class="row">
             		<div class="col-md-12">
-        					<button id="int" name="integrar" type="submit" class="boton">Integrar</button>
-        					<button id="graf" name="graficar" type="submit" class="boton">Graficar</button>
+        					<button id="int" name="integrar" type="submit" class="btn btn-success">Integrar</button>
+        					<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
+									<a class="btn btn-info view-pdf" href="{% static 'documentos/IntegralSimple.pdf' %}">Ayuda</a>
         				</div>
         			</div>
+
               {% if messages %}
         			<br>
         			<div class="row">

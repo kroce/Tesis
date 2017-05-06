@@ -166,10 +166,10 @@
 			});
 		</script>
 		<div class="container">
-			<h1>Método de Bisección</h1>
-			<br>
     	<div class="row">
 			<div class="col-md-6">
+				<h1>Método de Bisección</h1>
+				<br>
 				<div class="row">
 					{% if form.funcion %}
 					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
@@ -197,28 +197,33 @@
 					<br>
 					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.error.label_tag}}</div>
 					<div class="col-md-4">{{form.error}}</div>
-					<div class="col-md-4">
-						<button id="acep" name="aceptar" type="submit" class="boton">Aceptar</button>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6">
+						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
+						<a class="btn btn-info view-pdf" href="{% static 'documentos/Biseccion.pdf' %}">Ayuda</a>
 					</div>
 				</div>
 			</div>
 
 			<div class="col-md-6">
+				<br>
 				<div class="panel" id="grafico">
-					<div class="cell"><img id="foo" width="400" height="350"></div>
+					<div class="cell"><img id="foo" width="420" height="370"></div>
 				</div>
 				<div class="panel" id="valores">
-					<div class="row">
-						<div class="col-md-4">
-							<div class="cell_b" id="cotaa" style="width:30%"></div><br>
-							<div class="cell_b" id="cotab" style="width:30%"></div><br>
-							<div class="cell_b" id="raiz"></div><br><br>
-						</div>
-						<div class="col-md-4">
-							<div class="cell" align="center">
-								<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
-								<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
-							</div>
+					<div class="col-md-6">
+						<div class="cell_b" id="cotaa" style="width:30%"></div><br>
+						<div class="cell_b" id="cotab" style="width:30%"></div><br>
+						<div class="cell_b" id="raiz"></div><br><br>
+					</div>
+					<div class="col-md-3">
+						<div class="cell" align="center">
+							<!--<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />-->
+							<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
+							<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
+							<!--<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />-->
 						</div>
 					</div>
 				</div>

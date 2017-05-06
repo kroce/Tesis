@@ -140,7 +140,7 @@ class Grafico:
                 fa = Fx(inf)
                 fb = Fx(sup)
             # Fin algoritmo
-            return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
+            return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa.round(5), 'fb':fb.round(5), 'raiz':r, 'fr':fr.round(5), 'band':band, 'error':0}
 
     def graficar_newton(self, expr, str_expr, x0, derivada, estilo, error):
         x = sym.symbols('x')
