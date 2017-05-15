@@ -1,5 +1,25 @@
 [
     {
+        "choices": [
+            {
+                "name": "Integral Indefinida", 
+                "value": "indefinida"
+            }, 
+            {
+                "name": "Integral Definida", 
+                "value": "definida"
+            },
+            {
+                "name": "Integral Numérica", 
+                "value": "numerica"
+            }
+        ], 
+        "required": 0, 
+        "type": "radio", 
+        "name": "tipoIntegral", 
+        "label": ""
+    }, 
+    {
         "max_length": 100, 
         "required": 0, 
         "type": "text", 
@@ -8,14 +28,14 @@
     }, 
     {
         "max_length": 100, 
-        "required": 1, 
+        "required": 0, 
         "type": "text", 
         "name": "funcion", 
         "label": "Funci\u00f3n"
     }, 
     {
         "max_length": 10, 
-        "required": 1, 
+        "required": 0, 
         "type": "text", 
         "name": "variable", 
         "label": "Variable"

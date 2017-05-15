@@ -26,9 +26,16 @@ def definirCamposIntegrales():
     cantidad = 10
     fields.append({"required": 0, "type": "text",
                    "name": "cantidad", "label": "cant", "max_length": 100})
-    fields.append({"required": 1, "type": "text",
+
+    choices = [{"name": "Integral Definida    ", "value": "definida"},
+               {"name": "Integral Indefinida", "value": "indefinida"},
+               {"name": "Integral Numérica", "value": "numerica"}]
+    fields.append({"required": 0, "type": "radio",
+                   "name": "tipoIntegral", "label": "", "choices": choices})
+
+    fields.append({"required": 0, "type": "text",
                    "name": "funcion", "label": "Función", "max_length": 100})
-    fields.append({"required": 1, "type": "text",
+    fields.append({"required": 0, "type": "text",
                    "name": "variable", "label": "Variable", "max_length": 10})
     fields.append({"required": 0, "type": "text",
                    "name": "inferior", "label": "Limite Inferior"})
@@ -38,8 +45,8 @@ def definirCamposIntegrales():
                    "name": "indice", "label": " "})
     fields.append({"required": 0, "initial": False, "type": "checkbox",
                    "name": "definida", "label": "Integracion Definida"})
-    fields.append({"required": 0, "initial": False, "type": "checkbox",
-                   "name": "numerica", "label": "Integracion Numerica"})
+    # fields.append({"required": 0, "initial": False, "type": "checkbox",
+    #                "name": "numerica", "label": "Integracion Numerica"})
     choices = [{"name": "Trapecio", "value": "trapecio"},
                {"name": "Simpson", "value": "simpson"}]
     fields.append({"required": 0, "type": "radio",
@@ -80,18 +87,16 @@ def auxiliar(datos):
     while (x != ""):
         x = 'x' + str(i)
         fx = 'fx' + str(i)
-        # x0, fx0 = datos['x0'], datos['fx0']
         x, fx = datos[x], datos[fx]
         i = i + 1
     ene = i - 2
-    return {'ene': ene}
+    xn = 'x' + str(ene)
+    return {'ene': ene, 'x0': datos['x0'], 'xn': datos[xn]}
 
-# algo similar para integrales dobles, un método similar a éste
+# TODO algo similar para integrales dobles, un método similar a éste
 
 
 def integrales(request):
-    # ver como hago para obtener todos los simbolos de la funcion para
-    # declararlos
     x, y, z = symbols('x y z')
     definirCamposIntegrales()
     form = Integralesform()
@@ -100,81 +105,84 @@ def integrales(request):
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            str_expr = form.cleaned_data['funcion']
-            inferior = form.cleaned_data['inferior']
-            superior = form.cleaned_data['superior']
             definida = form.cleaned_data['definida']
-            numerica = form.cleaned_data['numerica']
-            formula = form.cleaned_data['formula']
-            variable = sympify(form.cleaned_data['variable'])
-            try:
-                expr = sympify(str_expr)
-                resu = expr.evalf()
-                if 'integrar' in request.POST:
-                    # si se va a calcular la integral definida
-                    if definida:
-                        # Integral definida Numérica
-                        if numerica:
-                            resu = auxiliar(form.cleaned_data)
-                            n = resu['ene']
-                            if (n >= 1):
-                                indice_n = "fx" + str(n)
-                                count = 1
-                                subtotal = 0
-                                # Se va a utilizar el método del trapecio
-                                if formula == 'trapecio':
-                                    h = (sympify(superior) -
-                                         sympify(inferior)) / (2 * n)
-                                    while count < n:
-                                        indice = "fx" + str(count)
-                                        subtotal = subtotal + \
-                                            sympify(form.cleaned_data[indice])
-                                        count += 1
-                                    subtotal = 2 * subtotal
-
-                                # Se va a utilizar el método de Simpson
-                                else:
-                                    h = (sympify(superior) -
-                                         sympify(inferior)) / (3 * n)
-                                    while count < n:
-                                        indice = "fx" + str(count)
-                                        if count % 2 == 0:
-                                            subtotal = subtotal + \
-                                                (2 *
-                                                 sympify(form.cleaned_data[indice]))
-                                        else:
-                                            subtotal = subtotal + \
-                                                (4 *
-                                                 sympify(form.cleaned_data[indice]))
-                                        count += 1
-
-                                integral = h * \
-                                    (float(form.cleaned_data[
-                                     'fx0']) + float(form.cleaned_data[indice_n]) + subtotal)
-                                texto = " integral ≈ %1.5f " % integral
-                                messages.add_message(
-                                    request, messages.INFO, texto)
-                            else:
-                                messages.add_message(
-                                    request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
-
-                        # integral definida simple
+            tipoIntegral = form.cleaned_data['tipoIntegral']
+            # numerica = form.cleaned_data['numerica']
+            
+            if 'integrar' in request.POST:
+                # Integral Numérica
+                if tipoIntegral == 'numerica':
+                    resu = auxiliar(form.cleaned_data)
+                    n = resu['ene']
+                    x0 = resu['x0']
+                    xn = resu['xn']
+                    if (n >= 1):
+                        indice_n = "fx" + str(n)
+                        count = 1
+                        subtotal = 0
+                        # Se va a utilizar el método del trapecio
+                        formula = form.cleaned_data['formula']
+                        if formula == 'trapecio':
+                            h = (sympify(xn) -
+                                    sympify(x0)) / (2 * n)
+                            while count < n:
+                                indice = "fx" + str(count)
+                                subtotal = subtotal + \
+                                    sympify(form.cleaned_data[indice])
+                                count += 1
+                            subtotal = 2 * subtotal
+                            
+                        # Se va a utilizar el método de Simpson
                         else:
-                            integralDef = integrate(
-                                expr, (variable, inferior, superior))
-                            texto = " Integral Definida = %1.5f " % integralDef
-                            messages.add_message(request, messages.INFO, texto)
-                    # Integral indefinida
+                            h = (sympify(superior) -
+                                    sympify(inferior)) / (3 * n)
+                            while count < n:
+                                indice = "fx" + str(count)
+                                if count % 2 == 0:
+                                    subtotal = subtotal + \
+                                        (2 *
+                                            sympify(form.cleaned_data[indice]))
+                                else:
+                                    subtotal = subtotal + \
+                                        (4 *
+                                            sympify(form.cleaned_data[indice]))
+                                count += 1
+
+                        integral = h * \
+                            (float(form.cleaned_data[
+                                'fx0']) + float(form.cleaned_data[indice_n]) + subtotal)
+                        texto = " integral ≈ %1.5f " % integral
+                        messages.add_message(
+                            request, messages.INFO, texto)
                     else:
-                        integralInd = integrate(expr, variable)
-                        texto = " Integral Indefinida = " + str(integralInd)
-                        messages.add_message(request, messages.INFO, texto)
-                # else:
-                    # messages.add_message(request, messages.SUCCESS, 'Función:
-                    # '+str_expr)
-            except (TypeError, AttributeError, SympifyError):
-                messages.add_message(
-                    request, messages.INFO, 'Expresión inválida')
+                        messages.add_message(request, messages.INFO, 'Se necesitan mas valores para aplicar el método')
+                # si se va a calcular la integral definida
+                else: 
+                    try:
+                        str_expr = form.cleaned_data['funcion']
+                        variable = sympify(form.cleaned_data['variable'])
+                        expr = sympify(str_expr)
+                        resu = expr.evalf()
+                        if tipoIntegral == 'definida':
+                            # Integral Definida
+                            inferior = form.cleaned_data['inferior']
+                            superior = form.cleaned_data['superior']
+                            if (inferior!="") & (superior!=""):
+                                integralDef = integrate(expr, (variable, inferior, superior))
+                                texto = " Integral Definida = %1.5f " % integralDef
+                                messages.add_message(request, messages.INFO, texto)
+                            else:
+                                messages.add_message(request, messages.INFO, 'Se requieren los valores del intervalo')
+                        # Integral indefinida
+                        else:
+                            integralInd = integrate(expr, variable)
+                            texto = " Integral Indefinida = " + str(integralInd)
+                            messages.add_message(request, messages.INFO, texto)
+                    except (TypeError, AttributeError, SympifyError):
+                        messages.add_message(request, messages.INFO, 'Expresión inválida')
+        else:
+            print 'formulario inválido'
+
     # if a GET (or any other method) we'll create a blank form
     else:
         form = form_class()

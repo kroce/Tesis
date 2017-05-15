@@ -49,7 +49,7 @@ class FieldHandler():
 
     def create_field_for_radio(self, field, options):
         options['choices'] = [ (c['value'], c['name'] ) for c in field['choices'] ]
-        return django.forms.ChoiceField(widget=django.forms.RadioSelect(renderer=HorizRadioRenderer),   **options)
+        return django.forms.ChoiceField(widget=django.forms.RadioSelect(renderer=HorizRadioRenderer, attrs={'style':'width:30px'}),   **options)
         #widget=forms.RadioSelect(renderer=HorizRadioRenderer)
 
     def create_field_for_select(self, field, options):
