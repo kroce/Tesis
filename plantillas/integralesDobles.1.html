@@ -1,0 +1,182 @@
+{% extends "plantilla.html" %}
+{% load staticfiles %}
+{% block titulo %} Evaluar Función {% endblock titulo %}
+{% block contenido %}
+
+	<form id="form" method="POST" class="post-form">{% csrf_token %}
+		<script>
+			$(document).ready(function() {
+
+				$("#graf").click(function() {
+					var fun = $("#id_funcion").val();
+					var variable = $("#id_variable").val();
+					var inferior = $("#id_inferior").val();
+					var superior = $("#id_superior").val();
+					var inferior1 = $("#id_inferior1").val();
+					var superior1 = $("#id_superior1").val();
+					if (inferior=='' || superior=='')
+						alert('Para graficar es necesario definir los limites')
+					else{
+						$.ajax({
+							url : "graficar3d",
+							type : "POST",
+							dataType: "json",
+							data : {
+											funcion : fun,
+											variable : variable,
+											inferior : inferior,
+											superior : superior,
+											inferior1 : inferior1,
+											superior1 : superior1,
+											csrfmiddlewaretoken: '{{ csrf_token }}'
+											},
+
+							success : function(json) {
+								str = "{% static 'imagenes/' %}"+json.server_response;
+								$('#foo').attr("src", str);
+								$('#grafico').show();
+								//$('#result').append( 'ServerResponse:' + json.server_response);
+							},
+							error : function(xhr,errmsg,err) {
+								alert(xhr.status + ": " + xhr.responseText);
+							}
+						});
+						return false;
+					}
+				});
+
+				if ($('#id_definida').attr('checked')){
+					$('#paneldef').show();
+				}
+
+				if ($('#id_formula_0').attr('checked')  && $('#id_numerica').attr('checked')){
+					$('#paneltabla').show();
+				}
+
+				if ($('#id_formula_1').attr('checked')  && $('#id_numerica').attr('checked')){
+					$('#paneltabla').show();
+				}
+
+				$('#id_definida').on('change', function(){
+					if(this.checked) {
+						$('#paneldef').slideToggle("slow");
+					}
+					else{
+						$('#paneldef').slideToggle("slow");
+						$('#id_numerica').attr('checked', false);
+						$('#panelnum').hide();
+						$('#id_formula_0').attr('checked', false);
+						$('#paneltabla').hide();
+					}
+    		})
+
+				if ($('#id_numerica').attr('checked')){
+					$('#panelnum').show();
+					if($('input[name=formula]:checked', '#form').val()=="trapecio") {
+						$('#paneltabla').show();
+    			}
+    			if($('input[name=formula]:checked', '#form').val()=="simpson") {
+						$('#paneltabla').show();
+    			}
+				}
+
+				$('#id_numerica').on('change', function(){
+					if(this.checked) {
+						$('#panelnum').slideToggle("slow");
+					}
+					else{
+						$('#panelnum').slideToggle("slow");
+						$('#paneltabla').hide();
+						$('#id_formula_0').attr('checked', false);
+						$('#id_formula_1').attr('checked', false);
+    			}
+    		})
+
+    		$('[name="formula"]').on('change', function() {
+    			if($('input[name=formula]:checked', '#form').val()=="trapecio") {
+    				$('#paneltabla').show();
+					}
+					if($('input[name=formula]:checked', '#form').val()=="simpson") {
+    				$('#paneltabla').show();
+					}
+				})
+					$('#cont').show();
+				});
+		</script>
+
+		<div class="container">
+			<h1>Integrales Dobles</h1>
+			<br>
+    	<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					{% if form.funcion %}
+					<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							Función
+						</div>
+						<div id="fun" class="col-md-3">
+							{{form.funcion}}
+						</div>
+				</div>
+				<br>
+				<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							{{form.variable.label_tag}}
+						</div>
+						<div class="col-md-3">
+							{{form.variable}}
+						</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>
+							{{form.variable1.label_tag}}
+						</div>
+						<div class="col-md-3">
+							{{form.variable1}}
+						</div>
+						{% endif %}
+				</div>
+	    		<br>
+		    	<div class="row">
+					<div class="col-md-12" style="width:100%"><p>{{form.definida}} Integral Definida<br></p></div>
+				</div>
+				<div class="panel" id="paneldef" style="width:100%;">
+					<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
+						<div class="col-md-3">{{form.inferior}}</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
+						<div class="col-md-3">{{form.superior}}</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.inferior1.label_tag}}</div>
+						<div class="col-md-3">{{form.inferior1}}</div>
+						<div class="col-md-3" style='font-weight: bold; color:#638cb5;'>{{form.superior1.label_tag}}</div>
+						<div class="col-md-3">{{form.superior1}}</div>
+					</div>
+		    	</div>
+
+			  	<div class="row">
+			  		<div class="col-md-12">
+						<button id="int" name="integrar" type="submit" class="btn btn-success">Integrar</button>
+						<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
+						<a class="btn btn-info view-pdf" href="{% static 'documentos/IntegralDoble.pdf' %}">Ayuda</a>
+					</div>
+				</div>
+				{% if messages %}
+				<br>
+				<div class="row">
+					<div class="cell">
+						{% for message in messages %}
+							<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			<div class="col-md-6">
+					<div class="panel" id="grafico">
+						<div class="cell"><img id="foo" width="400" height="350"></div>
+					</div>
+			</div>
+		</div>
+</form>
+{% endblock contenido %}

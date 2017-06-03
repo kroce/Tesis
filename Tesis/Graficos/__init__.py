@@ -31,12 +31,17 @@ class Grafico:
         }
         return {'labelfont': labelfont, 'titlefont': titlefont}
 
-    def graficar_funcion(self, expr, str_expr, inferior, superior, estilo, sombra):
-        x = sym.symbols('x')
+    #expr, funcion, variable, inferior, superior, estilo, sombra
+    def graficar_funcion(self, expr, str_expr, variable, inferior, superior, estilo, sombra):
+        # x = sym.symbols('x')
+        x = sym.symbols(variable)
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
 
-        xi = np.linspace(inf - 1, sup + 1, 100)
+        if int(sombra) == 1:
+            xi = np.linspace(inf - 1, sup + 1, 100)
+        else:
+            xi = np.linspace(inf, sup, 100)
         xj = np.linspace(inf, sup, 100)
         # Function handle can now take numpy array inputs
         Fx = sym.lambdify(x, expr, 'numpy')
@@ -45,20 +50,25 @@ class Grafico:
             '#638CB5',                # colour
             linestyle='-',              # line style
             linewidth=2 - 5,                # line width
-            label=str_expr)           # plot label
+            label= 'f('+variable+') = '+str_expr)           # plot label
 
         axes = plt.gca()
         # x-axis bounds
-        axes.set_xlim([inf - 1, sup + 1])
-        axes.set_ylim([np.min(Fx(xi)) - 1, np.max(Fx(xi)) + 1]
-                      )      # y-axis bounds
+        # Si es para el grafico de la funcion debajo de la curva, le agrego 1 a los limites 
+        if int(sombra) == 1:
+            axes.set_xlim([inf - 1, sup + 1])
+            axes.set_ylim([np.min(Fx(xi)) - 1, np.max(Fx(xi)) + 1])      # y-axis bounds
+        # En los otros casos grafico hasta los limites ingresado
+        else:
+            axes.set_xlim([inf, sup])
+            axes.set_ylim([np.min(Fx(xi)), np.max(Fx(xi))])      # y-axis bounds
 
         plt.legend(loc='upper right', shadow=True, fontsize='small')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']
         # plt.title('Funciones Trigonometricas', fontdict=titlefont)
-        plt.xlabel('x', fontdict=labelfont)
-        plt.ylabel('f(x)', fontdict=labelfont)
+        plt.xlabel(variable, fontdict=labelfont)
+        plt.ylabel('f('+variable+')', fontdict=labelfont)
         if int(sombra) == 1:
             plt.fill_between(xj, Fx(xj), 0, facecolor='0.9', edgecolor='0.5')
 
@@ -214,8 +224,6 @@ class Grafico:
         x = sym.symbols('x')
         inf = float(sympify(x0))
         sup = float(sympify(xn))
-        print "expr "+str_expr
-        print "derivada "+str(derivada)
         xi = np.linspace(inf, sup, 100)
         # Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         Fx = np.vectorize(sym.lambdify(x, expr, "numpy"))
@@ -240,7 +248,6 @@ class Grafico:
         minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
         maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
         axes.set_ylim([minimo,maximo])      # y-axis bounds
-
         plt.legend(loc='upper right', shadow=True, fontsize='medium')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']

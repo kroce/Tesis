@@ -39,32 +39,39 @@ class FuncionForm(forms.Form):
     fx5 = forms.CharField(label='fx5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
 
 class FuncionDobleForm(forms.Form):
-    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))
-    variable = forms.CharField(label='Variable 1', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
-    variable1 = forms.CharField(label='Variable 2', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
-    inferior = forms.CharField(label='Limite Inferior 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    superior = forms.CharField(label='Limite Superior 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    inferior1 = forms.CharField(label='Limite Inferior 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    superior1 = forms.CharField(label='Limite Superior 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    definida = forms.BooleanField(label='Integracion Definida', initial=False, required=False)
-    numerica = forms.BooleanField(label='Integracion Numerica', initial=False, required=False)
-    RADIO_CHOICES = (
-        ('trapecio', "Trapecio"),
-        ('simpson', "Simpson"),
+    TIPOINTEGRAL_CHOICES = (
+        ('indefinida', "Integral Indefinida"),
+        ('definida', "Integral Definida"),
     )
-    formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=RADIO_CHOICES, required=False)
-    x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx0 = forms.CharField(label='fx0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    x1 = forms.CharField(label='x1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx1 = forms.CharField(label='fx1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    x2 = forms.CharField(label='x2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx2 = forms.CharField(label='fx2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    x3 = forms.CharField(label='x3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx3 = forms.CharField(label='fx3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    x4 = forms.CharField(label='x4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx4 = forms.CharField(label='fx4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    x5 = forms.CharField(label='x5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    fx5 = forms.CharField(label='fx5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    tipoIntegral = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer, attrs={'style':'width:30px'}),choices=TIPOINTEGRAL_CHOICES, required=False)
+    funcion = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size' : '16'}))
+    variable = forms.CharField(label='Var. 1', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
+    variable1 = forms.CharField(label='Var. 2', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
+    variableInd = forms.CharField(label='Var. 1', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
+    variable1Ind = forms.CharField(label='Var. 2', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
+    inferior = forms.CharField(label='Lim Inf 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    superior = forms.CharField(label='Lim Sup 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    inferior1 = forms.CharField(label='Lim Inf 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    superior1 = forms.CharField(label='Lim Sup 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    # definida = forms.BooleanField(label='Integracion Definida', initial=False, required=False)
+    # numerica = forms.BooleanField(label='Integracion Numerica', initial=False, required=False)
+    # RADIO_CHOICES = (
+    #     ('trapecio', "Trapecio"),
+    #     ('simpson', "Simpson"),
+    # )
+    # formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=RADIO_CHOICES, required=False)
+    # x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx0 = forms.CharField(label='fx0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # x1 = forms.CharField(label='x1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx1 = forms.CharField(label='fx1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # x2 = forms.CharField(label='x2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx2 = forms.CharField(label='fx2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # x3 = forms.CharField(label='x3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx3 = forms.CharField(label='fx3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # x4 = forms.CharField(label='x4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx4 = forms.CharField(label='fx4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # x5 = forms.CharField(label='x5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
+    # fx5 = forms.CharField(label='fx5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
 
 class BiseccionForm(forms.Form):
     funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))

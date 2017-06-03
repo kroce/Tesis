@@ -2,6 +2,7 @@
 <form id="form" method="POST" class="post-form">{% csrf_token %}
 	<script>
 		var fun, variable, inferior, superior, coleccion;
+		var pruebaBand = true;
 		$(document).ready(function () {
 
 			$("#acep").click(function () {
@@ -28,23 +29,33 @@
 							csrfmiddlewaretoken: '{{ csrf_token }}'
 						},
 						success: function (json) {
-							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
-							var datos = {
-								funcion: json.server_response['funcion'],
-								derivada: json.server_response['derivada'],
-								img: str
+							if (json.server_response['filename'] != ''){
+								str = "{% static 'imagenes/' %}" + json.server_response['filename'];
+								var datos = {
+									funcion: json.server_response['funcion'],
+									derivada: json.server_response['derivada'],
+									img: str
+								}
+								coleccion.push(datos);
+								cont = 0;
+								$('#foo').attr("src", str);
+								$('#grafico').show();
+								$('#valores').show();
+								$('#funct').html(" <strong>f(x)</strong> = " + json.server_response['funcion']);
+								$('#derivada').html(" <strong>f'(x)</strong> = " + json.server_response['derivada']);
 							}
-							coleccion.push(datos);
-							cont = 0;
-							$('#foo').attr("src", str);
-							$('#funct').html(" f(x) = " + json.server_response['funcion']);
-							$('#derivada').html(" f'(x) = " + json.server_response['derivada']);
-							$('#grafico').show();
-							$('#valores').show();
-							fun = json.server_response['derivada'];
+							else{
+								fun = json.server_response['derivada'];
+								$('#respuesta').html(" <strong>Derivada</strong> = " + json.server_response['derivada']);
+								$('#respuesta').show();
+								$('#resultado').show();
+							}
 						},
 						error: function (xhr, errmsg, err) {
-							alert(xhr.responseText);
+							$('#rtaError').html(" La expresión es invalida" );
+							$('#rtaError').show();
+							$('#error').show();
+							// alert(xhr.responseText);
 						}
 					});
 					return false;
@@ -80,8 +91,8 @@
 
 							coleccion.push(datos);
 							$('#foo').attr("src", str);
-							$('#funct').html(" f(x) = " + json.server_response['funcion']);
-							$('#derivada').html(" f'(x) = " + json.server_response['derivada']);
+							$('#funct').html(" <strong>f(x)</strong> = " + json.server_response['funcion']);
+							$('#derivada').html(" <strong>f'(x)</strong> = " + json.server_response['derivada']);
 							$('#grafico').show();
 							$('#valores').show();
 							fun = json.server_response['derivada'];
@@ -94,8 +105,8 @@
 				} else {
 					event.preventDefault();
 					$('#foo').attr("src", coleccion[cont]['img']);
-					$('#funct').html(" f(x) = " + coleccion[cont]['funcion']);
-					$('#derivada').html(" f'(x) = " + coleccion[cont]['derivada']);
+					$('#funct').html(" <strong>f(x)</strong> = " + coleccion[cont]['funcion']);
+					$('#derivada').html(" <strong>f'(x)</strong> = " + coleccion[cont]['derivada']);
 					$('#grafico').show();
 					$('#valores').show();
 					fun = coleccion[cont]['derivada'];
@@ -111,8 +122,8 @@
 				if (cont == 0)
 					$('#atras').attr('disabled', true);
 				$('#foo').attr("src", coleccion[cont]['img']);
-				$('#funct').html(" f(x) = " + coleccion[cont]['funcion']);
-				$('#derivada').html(" f'(x) = " + coleccion[cont]['derivada']);
+				$('#funct').html(" <strong>f(x)</strong> = " + coleccion[cont]['funcion']);
+				$('#derivada').html(" <strong>f'(x)</strong> = " + coleccion[cont]['derivada']);
 				$('#grafico').show();
 				$('#valores').show();
 				fun = coleccion[cont]['derivada'];
@@ -121,12 +132,12 @@
 		});
 	</script>
 	<div class="container">
-		<h1>Derivada</h1>
-		<br>
 		<div class="row">
 			<div class="col-md-6">
+				<h1>Derivada</h1>
+				<br>
 				<div class="row">
-					{% if form.funcion %}
+				{% if form.funcion %}
 					<div class="col-md-6">
 						<span style="font-weight: bold; color:#638cb5;">Función: &nbsp;&nbsp;</span>
 						{{form.funcion}}
@@ -155,6 +166,21 @@
 					</div>
 				</div>
 				{% endif %}
+				<br>
+				<div class="panel" id="resultado">
+					<div class="alert alert-success alert-dismissable fade in" contenteditable="false">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						<h4>Resultado:</h4>
+						<p id="respuesta"> </p>
+					</div>
+				</div>
+				<div class="panel" id="error">
+					<div class="alert alert-danger alert-dismissable fade in" contenteditable="false">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						<h4>Resultado:</h4>
+						<p id="rtaError"> </p>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-6">
 				<div class="panel" id="grafico">
@@ -163,15 +189,18 @@
 					</div>
 				</div>
 				<div class="panel" id="valores">
-					<div class="col-md-4">
-						<div class="cell_b" id="funct" style="width:30%"></div><br>
-						<div class="cell_b" id="derivada" style="width:30%"></div><br>
+					<div class="col-md-4" >
+						<div class="alert alert-info alert-dismissable fade in" contenteditable="false">
+							<p id="funct"></p>
+							<p id="derivada"></p>
+						</div>
 					</div>
-					<div class="col-md-4">
-						<div class="cell" align="center">
-							<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
-							<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />
-							<!--<span class="glyphicon glyphicon-backward" aria-hidden="true"></span>-->
+					<div class="col-md-6">
+						<div class="cell" align="right">
+							<button id="atras" class="btn btn-info glyphicon glyphicon-backward" disabled></button>&nbsp;&nbsp;&nbsp;
+							<button id="sig" class="btn btn-info glyphicon glyphicon-forward" alt="Submit"></button>
+							<!--<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
+							<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />-->
 						</div>
 					</div>
 				</div>

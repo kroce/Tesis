@@ -50,6 +50,7 @@
 
 					if($('#id_tipoIntegral_1').attr('checked')) {
 						$('#paneldef').show();
+						$("#graf").removeAttr('disabled');
 					}
 
 					if($('#id_tipoIntegral_2').attr('checked')) {
@@ -93,6 +94,7 @@
 				
 					$('[name="tipoIntegral"]').on('change', function() {
 						$("#int").removeAttr('disabled');
+						$("#graf").removeAttr('disabled');
 						if($('input[name=tipoIntegral]:checked', '#form').val()=="numerica") {
 							$('#panelIndef').hide();
 							$('#paneldef').hide();
@@ -132,20 +134,20 @@
 						</div>
 						<br>
 						<div class="panel" id="panelIndef">
-								{% if form.funcion %}
-									<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-										Función 
-									</div>
-									<div class="col-md-4" id="fun">
-										{{form.funcion}}
-									</div>
-									<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-										{{form.variable.label_tag}}
-									</div>
-									<div class="col-md-4">
-										{{form.variable}}
-									</div>
-								{% endif %}
+							{% if form.funcion %}
+								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+									Función 
+								</div>
+								<div class="col-md-4" id="fun">
+									{{form.funcion}}
+								</div>
+								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+									{{form.variable.label_tag}}
+								</div>
+								<div class="col-md-4">
+									{{form.variable}}
+								</div>
+							{% endif %}
 						</div>
 						<br>
 						<div class="panel" id="paneldef">
@@ -203,22 +205,31 @@
 
 					{% if messages %}
 					<br>
-					<div class="row">
-							<div class="col-md-12">
+					<div class="alert alert-success alert-dismissable" contenteditable="false">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						<h4>Resultado:</h4>
+						{% for message in messages %}
+							<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+						{% endfor %}
+						
+					</div>
+					<!--<div class="row">
+						<div class="col-md-12">
+							
 								{% for message in messages %}
 								<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
 							{% endfor %}
 						</div>
-					</div>
+					</div>-->
 					{% endif %}
 				</div>
 				<div class="col-md-6">
-						<div class="row">
+				<div class="row">
 					<div class="panel" id="grafico">
-						<div class="cell" align="center"><img id="foo" width="400" height="350"></div>
+						<div class="cell" align="center"><img id="foo" width="450" height="400"></div>
 					</div>
 				</div>
-			</div>
+				</div>
 		</div>
 	</div>
 </form>

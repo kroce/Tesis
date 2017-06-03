@@ -12,10 +12,12 @@ body {
 div.panel{
 	display: table-row;
   background-color: #F4F4F4;
+	border: none;
 }
 
 div.panel{
 	display: none;
+	border: none;
 }
 
 .cell_b{
