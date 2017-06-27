@@ -105,3 +105,10 @@ class DerivadaNumform(forms.Form):
         fields=json.load(jstr)
         fh = FieldHandler(fields)
         return type('DerivadaNumform', (forms.Form,), fh.formfields )
+
+class GraficoFuncionesForm(forms.Form):
+     def get_form(self):
+        jstr = open('Tesis/fields_multiplesFunc.json')
+        fields=json.load(jstr)
+        fh = FieldHandler(fields)
+        return type('GraficoFuncionesForm', (forms.Form,), fh.formfields )

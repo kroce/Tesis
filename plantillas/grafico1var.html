@@ -1,31 +1,56 @@
 {% extends "plantilla.html" %} {% load staticfiles %} {% block contenido %}
 <form id="form" method="POST" class="post-form">{% csrf_token %}
 	<script>
-		var fun, variable, inf, sup;
+		var funcion1, funcion2, variable, inf, sup;
 		$(document).ready(function () {
 
+			var indice = 2;
+
+			for (i = 2; i < 6; i++) {
+				if ($('#id_funcion' + i).val() != undefined && $('#id_funcion' + i).val() != "") {
+					$('#fc' + i).show();
+					indice++;
+				}
+			}
+
+			$('#agregarFuncion').click(function () {
+				$('#fc' + indice).show();
+				indice++;
+			});
+
 			$("#acep").click(function () {
-				fun = $("#id_funcion").val();
+				funcion1 = $("#id_funcion1").val();
+				funcion2 = $("#id_funcion2").val();
+				funcion3 = $("#id_funcion3").val();
+				funcion4 = $("#id_funcion4").val();
+				funcion5 = $("#id_funcion5").val();
+				
 				variable = $("#id_variable").val();
 				inf = $("#id_inf").val();
 				sup = $("#id_sup").val();
 				if (inf == '' || sup == '')
-					alert("derivarda común, ver como graficar");
+					alert("Debe ingresar los limites");
 				else {
 					$.ajax({
-						url: "graficar",
+						url: "graficar_funciones",
 						type: "POST",
 						dataType: "json",
 						data: {
-							funcion: fun,
+							funcion1: funcion1,
+							funcion2: funcion2,
+							funcion3: funcion3,
+							funcion4: funcion4,
+							funcion5: funcion5,
+							
 							variable: variable,
 							inferior: inf,
 							superior: sup,
 							sombra: 0,
+							limpiar: 0, 
 							csrfmiddlewaretoken: '{{ csrf_token }}'
 						},
 						success: function (json) {
-							str = "{% static 'imagenes/' %}" + json.server_response;
+							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 							$('#foo').attr("src", str);
 							$('#grafico').show();
 						},
@@ -42,22 +67,52 @@
 		<div class="row">
 			<div class="col-md-6">
 				<h1>Gráficos 2D</h1>
-				<br>
+				<table class="table table-bordered">
+					<thead>
+					</thead>
+					<tbody>
+						<tr id="fc1">
+							<td class="col-md-3" style='font-weight: bold; color:#638cb5;border:1px solid transparent;'>{{form.funcion1.label_tag}}</td>
+							<td style='border:1px solid transparent;'>{{form.funcion1}}</td>
+						</tr>
+						<tr id="fc2" style='display:none'>
+							<td class="col-md-3" style='font-weight: bold; color:#638cb5;border:1px solid transparent;'>{{form.funcion2.label_tag}}</td>
+							<td style='border:1px solid transparent;'>{{form.funcion2}}</td>
+						</tr>
+						<tr id="fc3" style='display:none'>
+							<td class="col-md-3" style='font-weight: bold; color:#638cb5;border:1px solid transparent;'>{{form.funcion3.label_tag}}</td>
+							<td style='border:1px solid transparent;'>{{form.funcion3}}</td>
+						</tr>
+						<tr id="fc4" style='display:none'>
+							<td class="col-md-3" style='font-weight: bold; color:#638cb5;border:1px solid transparent;'>{{form.funcion4.label_tag}}</td>
+							<td style='border:1px solid transparent;'>{{form.funcion4}}</td>
+						</tr>
+						<tr id="fc5" style='display:none'>
+							<td class="col-md-3" style='font-weight: bold; color:#638cb5;border:1px solid transparent;'>{{form.funcion5.label_tag}}</td>
+							<td style='border:1px solid transparent;'>{{form.funcion5}}</td>
+						</tr>
+					</tbody>
+				</table>
 				<div class="row">
-					{% if form.funcion %}
 					<div class="col-md-6">
-						<span style='font-weight: bold; color:#638cb5;'>Función:</span>&nbsp;&nbsp;{{form.funcion}}
-					</div>
-					<div class="col-md-6">
-						<span style='font-weight: bold; color:#638cb5;'>Variable:</span>&nbsp;&nbsp;{{form.variable}}
+						<button type="button" class="btn btn-primary" id="agregarFuncion">Agregar Funcion</button>
 					</div>
 				</div>
 
 				<br>
 				<div class="row">
-					<div class="col-md-5">
-						<span style='font-weight: bold; color:#638cb5;'>Límite inferior:</span> &nbsp;&nbsp;{{form.inf}}</div>
-					<div class="col-md-5"><span style='font-weight: bold; color:#638cb5;'>Límite superior: </span>&nbsp;&nbsp;{{form.sup}}</div>
+					<div class="col-md-4">
+						<span style='font-weight: bold; color:#638cb5;'>Variable:</span>&nbsp;&nbsp;{{form.variable}}
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-4">
+						<span style='font-weight: bold; color:#638cb5;'>Límite inferior:</span> &nbsp;&nbsp;{{form.inf}}
+					</div>
+					<div class="col-md-4">
+						<span style='font-weight: bold; color:#638cb5;'>Límite superior: </span>&nbsp;&nbsp;{{form.sup}}
+					</div>
 				</div>
 				<br>
 				<div class="row">
@@ -66,7 +121,6 @@
 						<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a>
 					</div>
 				</div>
-				{% endif %}
 			</div>
 			<div class="col-md-6">
 				<div class="panel" id="grafico">

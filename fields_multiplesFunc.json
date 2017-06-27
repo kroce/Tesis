@@ -1,0 +1,49 @@
+[
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "funcion1", 
+        "label": "funcion1"
+    }, 
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "funcion2", 
+        "label": "funcion2"
+    }, 
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "funcion3", 
+        "label": "funcion3"
+    }, 
+    {
+        "max_length": 100, 
+        "required": 0, 
+        "type": "text", 
+        "name": "funcion4", 
+        "label": "funcion4"
+    }, 
+    {
+        "max_length": 10, 
+        "required": 0, 
+        "type": "text", 
+        "name": "variable", 
+        "label": "Variable"
+    }, 
+    {
+        "required": 0, 
+        "type": "text", 
+        "name": "inferior", 
+        "label": "Limite Inferior"
+    }, 
+    {
+        "required": 0, 
+        "type": "text", 
+        "name": "superior", 
+        "label": "Limite Superior"
+    }
+]

@@ -26,6 +26,10 @@ div.panel{
 	color:#638cb5;
 }
 
+td.transparente{
+	border: 1px solid transparent;
+}
+
 /*.table_border{
 	display: table;
 	border-collapse: collapse;

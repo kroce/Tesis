@@ -294,3 +294,55 @@ class Grafico:
         plt.savefig(filename1, bbox_inches='tight')
         plt.close()
         return filename
+
+    def funciones(self, inferior, superior, estilo, variable, funciones):
+        x = sym.symbols('x')
+        inferior = float(sympify(inferior))
+        superior = float(sympify(superior))
+        xi = np.linspace(inferior, superior, 100)
+        colores = ['#638CB5', 'red', 'green', '#FF8000', '#BF00FF']
+        for i in xrange(0, 5):
+            funcion = funciones[i]
+            if (i>0):
+                min_anterior = np.min(Fx(xi))-1
+                max_anterior = np.max(Fx(xi))+1
+            else:
+                min_anterior = 0
+                max_anterior = 0
+                
+            print min_anterior
+            print max_anterior
+            
+            if str(funcion) != '':
+                Fx = np.vectorize(sym.lambdify(x, funcion, "numpy"))
+                minimo = min(np.min(Fx(xi))-1, min_anterior)
+                maximo = max(np.max(Fx(xi))+1, max_anterior)
+                
+                label = 'f'+str(i+1)+'('+str(variable)+') = '+str(funcion)
+                plt.plot(xi, Fx(xi),
+                # '#638CB5',
+                colores[i],
+                linestyle='-',
+                linewidth=2-4,
+                label= label )
+
+        axes = plt.gca()
+        axes.set_xlim([inferior, superior])                           # x-axis bounds
+        # minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
+        # maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
+        # axes.set_ylim([minimo,maximo])      # y-axis bounds
+        
+        axes.set_ylim([-10,10])      # y-axis bounds
+        plt.legend(loc='upper right', shadow=True, fontsize='small')
+        labelfont = estilo['labelfont']
+        titlefont = estilo['titlefont']
+        plt.xlabel('x', fontdict=labelfont)
+        # plt.ylabel('f(x)', fontdict=labelfont)
+        plt.grid()                            # Le agrega la grilla
+
+        filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
+        filename1 = 'Tesis/static/imagenes/'+filename
+        plt.savefig(filename1, bbox_inches='tight')
+        plt.close()
+        return {'filename':filename}
+        

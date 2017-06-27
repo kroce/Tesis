@@ -8,6 +8,8 @@ from Integrales.formularios import BiseccionForm
 from Integrales.formularios import NewtonForm
 from Integrales.formularios import DerivadaForm
 from Integrales.formularios import DerivadaNumform
+from Integrales.formularios import GraficoFuncionesForm
+
 from sympy import *
 from django.contrib import messages
 from Tesis.Graficos import Grafico
@@ -67,6 +69,7 @@ def definirCamposIntegrales():
 def definirCamposDerivadaNumerica():
     fields = []
     cantidad = 10
+    
     for x in xrange(0, cantidad):
         variable = 'x' + str(x)
         funcion = 'fx' + str(x)
@@ -78,6 +81,28 @@ def definirCamposDerivadaNumerica():
     archivo = open("fields_derivadaNum.json", "w")
     json.dump(fields, archivo, indent=4)
     archivo.close()
+
+def definirCamposGraficarFciones():
+    fields = []
+    cantidad = 5
+    for x in xrange(1, cantidad):
+        funcion = 'funcion' + str(x)
+        fields.append({"required": 0, "type": "text",
+                "name":str(funcion), "label":str(funcion), "max_length": 100})
+       
+    fields.append({"required": 0, "type": "text",
+                "name": "variable", "label": "Variable", "max_length": 10})
+    
+    fields.append({"required": 0, "type": "text",
+        "name": "inferior", "label": "Limite Inferior"})
+    
+    fields.append({"required": 0, "type": "text",
+                   "name": "superior", "label": "Limite Superior"})
+    
+    archivo = open("fields_multiplesFunc.json", "w")
+    json.dump(fields, archivo, indent=4)
+    archivo.close()
+
 
 
 def auxiliar(datos):
@@ -351,9 +376,32 @@ def derivadas(request):
     form = DerivadaForm()
     return render(request, 'derivadas.html', {'form': form})
 
+# def grafico1var(request):
+#     form = DerivadaForm()
+#     return render(request, 'grafico1var.html', {'form': form})
+
 def grafico1var(request):
-    form = DerivadaForm()
-    return render(request, 'grafico1var.html', {'form': form})
+    definirCamposGraficarFciones()
+    form = GraficoFuncionesForm()
+    form_class = form.get_form()
+    data = {}
+
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            i = 0
+            funcion = 'funcion' + str(i)
+            while (funcion != ""):
+                funcion = 'funcion' + str(i)
+                x = form.cleaned_data[funcion]
+                i = i + 1
+            n = i - 2
+            funcionn = 'funcion' + str(ene)
+            # return {'ene': ene, 'x0': datos['x0'], 'xn': datos[xn]}
+            funcion0 = form.cleaned_data['funcion0']
+    else:
+        form = form_class()
+    return render(request, 'grafico1var.html', {'form': form, 'data': data})
 
 def grafico2var(request):
     form = FuncionDobleForm()
@@ -469,6 +517,34 @@ def graficarDerivada_ajax(request):
     else:
         return render_to_response('derivadas.html', context_instance=RequestContext(request))
 
+def graficarFunciones_ajax(request):
+    if request.POST.has_key('funcion1'):
+        print 'post'
+        funcion1 = request.POST['funcion1']
+        funcion2 = request.POST['funcion2']
+        funcion3 = request.POST['funcion3']
+        funcion4 = request.POST['funcion4']
+        funcion5 = request.POST['funcion5']
+        
+        variable = request.POST['variable']
+        inferior = request.POST['inferior']
+        superior = request.POST['superior']
+        limpiar = request.POST['limpiar']
+        if (int(limpiar) == 1):
+            for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
+                os.remove(f)
+        # expr = sympify(funcion1)
+        grafico = Grafico()
+        estilo = grafico.estilo1()
+        grafico.agregarEjes()
+
+        funciones = [funcion1, funcion2, funcion3, funcion4, funcion5]
+        gr = grafico.funciones(inferior, superior, estilo, variable, funciones)
+        response_dict = {}
+        response_dict.update({'server_response': gr})
+        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+    else:
+        return render_to_response('grafico1var.html', context_instance=RequestContext(request))
 
 def derivadaAjax(request):
     if request.POST.has_key('funcion'):
