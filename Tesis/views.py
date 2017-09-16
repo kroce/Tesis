@@ -103,8 +103,6 @@ def definirCamposGraficarFciones():
     json.dump(fields, archivo, indent=4)
     archivo.close()
 
-
-
 def auxiliar(datos):
     i = 0
     x = 'x' + str(i)
@@ -118,8 +116,80 @@ def auxiliar(datos):
     xn = 'x' + str(ene)
     return {'ene': ene, 'x0': datos['x0'], 'xn': datos[xn]}
 
-# TODO algo similar para integrales dobles, un método similar a éste
+def grafico1var(request):
+    definirCamposGraficarFciones()
+    form = GraficoFuncionesForm()
+    form_class = form.get_form()
+    data = {}
 
+    # Recupera funciones a graficar del post
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            i = 0
+            funcion = 'funcion' + str(i)
+            while (funcion != ""):
+                funcion = 'funcion' + str(i)
+                x = form.cleaned_data[funcion]
+                i = i + 1
+            n = i - 2
+            funcionn = 'funcion' + str(ene)
+            funcion0 = form.cleaned_data['funcion0']
+    else:
+        form = form_class()
+    return render(request, 'grafico1var.html', {'form': form, 'data': data})
+
+def grafico2var(request):
+    form = FuncionDobleForm()
+    return render(request, 'grafico2var.html', {'form': form})
+
+def graficarFunciones(request):
+    if request.POST.has_key('funcion1'):
+        funcion1 = request.POST['funcion1']
+        funcion2 = request.POST['funcion2']
+        funcion3 = request.POST['funcion3']
+        funcion4 = request.POST['funcion4']
+        funcion5 = request.POST['funcion5']
+        
+        variable = request.POST['variable']
+        inferior = request.POST['inferior']
+        superior = request.POST['superior']
+        limpiar = request.POST['limpiar']
+        if (int(limpiar) == 1):
+            for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
+                os.remove(f)
+        # expr = sympify(funcion1)
+        grafico = Grafico()
+        estilo = grafico.estilo1()
+        grafico.agregarEjes()
+
+        funciones = [funcion1, funcion2, funcion3, funcion4, funcion5]
+        gr = grafico.funciones(inferior, superior, estilo, variable, funciones)
+        response_dict = {}
+        response_dict.update({'server_response': gr})
+        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+    else:
+        return render_to_response('grafico1var.html', context_instance=RequestContext(request))
+
+def graficarFuncion3D(request):
+    if request.POST.has_key('funcion'):
+        funcion = request.POST['funcion']
+        variable = request.POST['variable']
+        inferior = request.POST['inferior']
+        superior = request.POST['superior']
+        inferior1 = request.POST['inferior1']
+        superior1 = request.POST['superior1']
+        expr = sympify(funcion)
+        grafico = Grafico()
+        estilo = grafico.estilo1()
+        grafico.agregarEjes()
+        gr = grafico.graficar_funcion1(
+            expr, funcion, inferior, superior, inferior1, superior1, estilo)
+        response_dict = {}
+        response_dict.update({'server_response': gr})
+        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+    else:
+        return render_to_response('integralesDobles.html', context_instance=RequestContext(request))
 
 def integrales(request):
     x, y, z = symbols('x y z')
@@ -226,7 +296,6 @@ def integralesDobles(request):
             str_expr = form.cleaned_data['funcion']
             try:
                 expr = sympify(str_expr)
-                print expr
                 resu = expr.evalf()
                 if 'integrar' in request.POST:
                     # si se va a calcular la integral definida
@@ -267,82 +336,71 @@ def integralesDobles(request):
 def menu(request):
     return render(request, "menu.html", {})
 
+# def graficarFuncion(request):
+#     if request.POST.has_key('funcion'):
+#         funcion = request.POST['funcion']
+#         variable = request.POST['variable']
+#         inferior = request.POST['inferior']
+#         superior = request.POST['superior']
+#         sombra = request.POST['sombra']
+#         expr = sympify(funcion)
+#         grafico = Grafico()
+#         estilo = grafico.estilo1()
+#         grafico.agregarEjes()
+#         gr = grafico.graficarFuncion(expr, funcion, variable, inferior, superior, estilo, sombra)
+#         response_dict = {}
+#         response_dict.update({'server_response': gr})
+#         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+#     else:
+#         return render_to_response('integrales.html', context_instance=RequestContext(request))
 
-def graficarFuncion_ajax(request):
-    if request.POST.has_key('funcion'):
-        funcion = request.POST['funcion']
-        variable = request.POST['variable']
-        inferior = request.POST['inferior']
-        superior = request.POST['superior']
-        sombra = request.POST['sombra']
-        expr = sympify(funcion)
-        grafico = Grafico()
-        estilo = grafico.estilo1()
-        grafico.agregarEjes()
-        gr = grafico.graficar_funcion(expr, funcion, variable, inferior, superior, estilo, sombra)
-        response_dict = {}
-        response_dict.update({'server_response': gr})
-        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-    else:
-        return render_to_response('integrales.html', context_instance=RequestContext(request))
-
-def graficarFuncion3d_ajax(request):
-    if request.POST.has_key('funcion'):
-        funcion = request.POST['funcion']
-        variable = request.POST['variable']
-        inferior = request.POST['inferior']
-        superior = request.POST['superior']
-        inferior1 = request.POST['inferior1']
-        superior1 = request.POST['superior1']
-        expr = sympify(funcion)
-        grafico = Grafico()
-        estilo = grafico.estilo1()
-        grafico.agregarEjes()
-        gr = grafico.graficar_funcion1(
-            expr, funcion, inferior, superior, inferior1, superior1, estilo)
-        response_dict = {}
-        response_dict.update({'server_response': gr})
-        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-    else:
-        return render_to_response('integralesDobles.html', context_instance=RequestContext(request))
-
-
-def biseccion(request):
-    form = BiseccionForm()
-    return render(request, 'biseccion.html', {'form': form})
-
+# def biseccion(request):
+#     form = BiseccionForm()
+#     return render(request, 'biseccion.html', {'form': form})
 
 def graficarBiseccion_ajax(request):
     if request.POST.has_key('funcion'):
-        funcion = request.POST['funcion']
-        variable = request.POST['variable']
-        inferior = request.POST['inferior']
-        superior = request.POST['superior']
-        limpiar = request.POST['limpiar']
-        error = request.POST['error']
-        if (int(limpiar) == 1):
-            for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
-                os.remove(f)
-        expr = sympify(funcion)
-        grafico = Grafico()
-        estilo = grafico.estilo1()
-        grafico.agregarEjes()
-        gr = grafico.graficar_biseccion(
-            expr, funcion, inferior, superior, estilo, error)
-        if (gr['error'] == 0):
-            response_dict = {}
-            response_dict.update({'server_response': gr})
-            return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-        else:
-            return HttpResponse("Para aplicar el método se debe verificar el teorema de Bolzano (f(a)*f(b)<0)", status=404)
+        try:
+            funcion = request.POST['funcion']
+            if (funcion == ''):
+                return HttpResponse('Debe ingresar la función') 
+            expr = sympify(funcion)
+            variable = request.POST['variable']
+            if (variable == ''):
+                return HttpResponse('Debe ingresar la variable') 
+            inferior = request.POST['inferior']
+            if (inferior == ''):
+                return HttpResponse('Debe ingresar la cota inferior') 
+            superior = request.POST['superior']
+            if (superior == ''):
+                return HttpResponse('Debe ingresar la cota superior') 
+            error = request.POST['error']
+            if (error == ''):
+                return HttpResponse('Debe ingresar el error') 
+            limpiar = request.POST['limpiar']
+            if (int(limpiar) == 1):
+                for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
+                    os.remove(f)
+            grafico = Grafico()
+            estilo = grafico.estilo1()
+            grafico.agregarEjes()
+            gr = grafico.graficar_biseccion(
+                expr, funcion, inferior, superior, estilo, error)
+            if (gr['error'] == 0):
+                response_dict = {}
+                response_dict.update({'server_response': gr})
+                return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+            else:
+                return HttpResponse("Para aplicar el método se debe verificar el teorema de Bolzano (f(a)*f(b)<0)", status=404)
+        except (TypeError, AttributeError, SympifyError):
+            return HttpResponse('Expresión inválida') 
     else:
-        return render_to_response('biseccion.html', context_instance=RequestContext(request))
-
-
+        form = BiseccionForm()
+        return render(request, 'biseccion.html', {'form': form})
+        
 def newton(request):
     form = NewtonForm()
     return render(request, 'newton.html', {'form': form})
-
 
 def graficarNewton_ajax(request):
     if request.POST.has_key('funcion'):
@@ -371,41 +429,9 @@ def graficarNewton_ajax(request):
     else:
         return render_to_response('newton.html', context_instance=RequestContext(request))
 
-
 def derivadas(request):
     form = DerivadaForm()
     return render(request, 'derivadas.html', {'form': form})
-
-# def grafico1var(request):
-#     form = DerivadaForm()
-#     return render(request, 'grafico1var.html', {'form': form})
-
-def grafico1var(request):
-    definirCamposGraficarFciones()
-    form = GraficoFuncionesForm()
-    form_class = form.get_form()
-    data = {}
-
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            i = 0
-            funcion = 'funcion' + str(i)
-            while (funcion != ""):
-                funcion = 'funcion' + str(i)
-                x = form.cleaned_data[funcion]
-                i = i + 1
-            n = i - 2
-            funcionn = 'funcion' + str(ene)
-            # return {'ene': ene, 'x0': datos['x0'], 'xn': datos[xn]}
-            funcion0 = form.cleaned_data['funcion0']
-    else:
-        form = form_class()
-    return render(request, 'grafico1var.html', {'form': form, 'data': data})
-
-def grafico2var(request):
-    form = FuncionDobleForm()
-    return render(request, 'grafico2var.html', {'form': form})
 
 def derivadaNumerica(request):
     definirCamposDerivadaNumerica()
@@ -435,8 +461,6 @@ def derivadaNumerica(request):
                 fdato = form.cleaned_data[indicef]  # f(xi)
                 punto = form.cleaned_data['punto']  # x0
                 tipo = form.cleaned_data['tipo']
-                print "dato  " + dato
-                print "fdato  " + fdato
 
                 # Si es derivada hacia adelante, busco el primer punto mayor a
                 # x0
@@ -479,7 +503,6 @@ def derivadaNumerica(request):
         form = form_class()
     return render(request, 'derivadaNumerica.html', {'form': form, 'data': data})
 
-
 def graficarDerivada_ajax(request):
     if request.POST.has_key('funcion'):
         funcion = request.POST['funcion']
@@ -504,7 +527,6 @@ def graficarDerivada_ajax(request):
                 break;
         # si hay una constante no puedo graficar
         if band:
-            print 'haloo'
             gr = {'filename':'', 'funcion':str(expr), 'derivada': str(derivada)}
             response_dict = {}
             response_dict.update({'server_response': gr})
@@ -516,35 +538,6 @@ def graficarDerivada_ajax(request):
             return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
     else:
         return render_to_response('derivadas.html', context_instance=RequestContext(request))
-
-def graficarFunciones_ajax(request):
-    if request.POST.has_key('funcion1'):
-        print 'post'
-        funcion1 = request.POST['funcion1']
-        funcion2 = request.POST['funcion2']
-        funcion3 = request.POST['funcion3']
-        funcion4 = request.POST['funcion4']
-        funcion5 = request.POST['funcion5']
-        
-        variable = request.POST['variable']
-        inferior = request.POST['inferior']
-        superior = request.POST['superior']
-        limpiar = request.POST['limpiar']
-        if (int(limpiar) == 1):
-            for f in glob.glob("Tesis/static/imagenes/foo*.jpeg"):
-                os.remove(f)
-        # expr = sympify(funcion1)
-        grafico = Grafico()
-        estilo = grafico.estilo1()
-        grafico.agregarEjes()
-
-        funciones = [funcion1, funcion2, funcion3, funcion4, funcion5]
-        gr = grafico.funciones(inferior, superior, estilo, variable, funciones)
-        response_dict = {}
-        response_dict.update({'server_response': gr})
-        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-    else:
-        return render_to_response('grafico1var.html', context_instance=RequestContext(request))
 
 def derivadaAjax(request):
     if request.POST.has_key('funcion'):

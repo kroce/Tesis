@@ -31,9 +31,7 @@ class Grafico:
         }
         return {'labelfont': labelfont, 'titlefont': titlefont}
 
-    #expr, funcion, variable, inferior, superior, estilo, sombra
-    def graficar_funcion(self, expr, str_expr, variable, inferior, superior, estilo, sombra):
-        # x = sym.symbols('x')
+    def graficarFuncion(self, expr, str_expr, variable, inferior, superior, estilo, sombra):
         x = sym.symbols(variable)
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
@@ -85,11 +83,17 @@ class Grafico:
         x = sym.symbols('x')
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
+        axes = plt.gca()
+        
+        ls = np.linspace(inf, sup, 100)
+        #calculo cuanto dejo en los extremos a partir despues de inf y sup
+        calc = (ls[10] - ls[0])/2
+        xi = np.linspace(inf-calc, sup+calc, 100)
 
-        xi = np.linspace(inf-.2, sup+.2, 100)
         Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         fa = Fx(inf)
         fb = Fx(sup)
+        
         if (fa*fb) >= 0:
             return {'error':1, 'band':0}
         else:
@@ -97,30 +101,38 @@ class Grafico:
                 '#638CB5',                # colour
                 linestyle='-',              # line style
                 linewidth=2-5,                # line width
-                label= str_expr )           # plot label
-
-            plt.plot([inf, inf], [Fx(inf),np.min(Fx(xi))-1], color='green', linewidth=1, linestyle="--")
-            plt.plot([inf, inf-1], [Fx(inf), Fx(inf)], color='green', linewidth=1, linestyle="--")
+                label= 'f(x) = '+str_expr )           # plot label
+            
+            axes.set_xlim([inf-calc, sup+calc])                           # x-axis bounds
+            axes.set_ylim(auto=True) 
+            
+            # Graficar punto inferior
             plt.scatter([inf, ], [Fx(inf), ], 50, color='green')
             plt.annotate(r'$(a,f(a))$',xy=(inf, Fx(inf)), xycoords='data',
                  xytext=(7, 0), textcoords='offset points', fontsize=16)
-
-            plt.plot([sup, sup], [Fx(sup),np.min(Fx(xi))-1], color='pink', linewidth=2, linestyle="--")
-            plt.plot([sup, inf-1], [Fx(sup), Fx(sup)], color='pink', linewidth=2, linestyle="--")
-            plt.scatter([sup, ], [Fx(sup), ], 50, color='pink')
+            
+            # Graficar punto superior
+            plt.scatter([sup, ], [Fx(sup), ], 50, color='red')
             plt.annotate(r'$(b,f(b))$',xy=(sup, Fx(sup)), xycoords='data',
                  xytext=(7, 0), textcoords='offset points', fontsize=16)
 
+            # Calcula raiz y dibuja el punto
             r = (inf+sup)/2
-            plt.plot([r, r], [Fx(r),np.min(Fx(xi))-1], color='orange', linewidth=2, linestyle="--")
-            plt.plot([r, inf-1], [Fx(r), Fx(r)], color='orange', linewidth=2, linestyle="--")
             plt.scatter([r, ], [Fx(r), ], 50, color='orange')
             plt.annotate(r'$(r,f(r))$',xy=(r, Fx(r)), xycoords='data',
                 xytext=(7, 0), textcoords='offset points', fontsize=16)
 
-            axes = plt.gca()
-            axes.set_xlim([inf-.2, sup+.2])                           # x-axis bounds
-            axes.set_ylim([np.min(Fx(xi))-.2,np.max(Fx(xi))+.2])      # y-axis bounds
+            # Lineas de (a, fa)
+            plt.plot([inf,inf-calc], [Fx(inf),Fx(inf)], color='green', linewidth=1)
+            plt.plot([inf,inf], [Fx(inf),0], color='green', linewidth=1)
+
+            # Lineas de (b, fb)
+            plt.plot([sup, sup], [Fx(sup),0], color='red', linewidth=1)
+            plt.plot([sup, inf-calc], [Fx(sup), Fx(sup)], color='red', linewidth=1)
+            
+            # Lineas de (r, fr)
+            plt.plot([r, r], [Fx(r),0], color='orange', linewidth=1)
+            plt.plot([r, inf-calc], [Fx(r), Fx(r)], color='orange', linewidth=1)
 
             plt.legend(loc='upper right', shadow=True, fontsize='small')
             labelfont = estilo['labelfont']
@@ -128,29 +140,40 @@ class Grafico:
             plt.xlabel('x', fontdict=labelfont)
             plt.ylabel('f(x)', fontdict=labelfont)
             plt.grid()                            # Le agrega la grilla
-            # plt.show()
 
             filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
             filename1 = 'Tesis/static/imagenes/'+filename
 
             plt.savefig(filename1, bbox_inches='tight')
-            axes.cla()
             plt.clf()
             plt.close()
 
-            # algoritmo
+            # algoritmo de biseccion
+            
             band = 0;
             r = (inf+sup)/2
             fr = Fx(r)
 
             if (abs(inf-sup) <= float(error)) or (abs(fr) <= float(error)):
-            # if (abs(inf-sup) <= float(error)):
                 band = 1
             else:
                 fa = Fx(inf)
                 fb = Fx(sup)
+            
             # Fin algoritmo
-            return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa.round(5), 'fb':fb.round(5), 'raiz':r, 'fr':fr.round(5), 'band':band, 'error':0}
+     
+            #round a 5 solo si tienen mas de 5 decimales
+            if (str(fa)[::-1].find('.') > 5):
+                fa = fa.round(5)
+
+            if (str(fb)[::-1].find('.') > 5):
+                fb= fb.round(5)
+
+            if (str(fr)[::-1].find('.') > 5):
+                fr= fr.round(5)
+
+            return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
+            
 
     def graficar_newton(self, expr, str_expr, x0, derivada, estilo, error):
         x = sym.symbols('x')
@@ -310,9 +333,6 @@ class Grafico:
                 min_anterior = 0
                 max_anterior = 0
                 
-            print min_anterior
-            print max_anterior
-            
             if str(funcion) != '':
                 Fx = np.vectorize(sym.lambdify(x, funcion, "numpy"))
                 minimo = min(np.min(Fx(xi))-1, min_anterior)
@@ -327,17 +347,20 @@ class Grafico:
                 label= label )
 
         axes = plt.gca()
-        axes.set_xlim([inferior, superior])                           # x-axis bounds
+        # axes.set_xlim([inferior, superior])                           # x-axis bounds
+        axes.set_xlim(auto=True)                          # x-axis bounds
+        
         # minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
         # maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
         # axes.set_ylim([minimo,maximo])      # y-axis bounds
         
-        axes.set_ylim([-10,10])      # y-axis bounds
+        # axes.set_ylim([-10,10])      # y-axis bounds
+        axes.set_ylim(auto=True)      # y-axis bounds
+        
         plt.legend(loc='upper right', shadow=True, fontsize='small')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']
         plt.xlabel('x', fontdict=labelfont)
-        # plt.ylabel('f(x)', fontdict=labelfont)
         plt.grid()                            # Le agrega la grilla
 
         filename = 'foo-%s.jpeg'%datetime.now().strftime('%Y-%m-%d_%H%M%S')
