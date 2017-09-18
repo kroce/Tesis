@@ -5,7 +5,8 @@
 
 	<form id="form" method="POST" class="post-form">{% csrf_token %}
 		<script>
-			var fun, variable, inferior, superior, coleccion;
+			var fun, variable, inferior, superior, coleccion, cont;
+			cont = 0;
 			$(document).ready(function() {
 
 				$("#acep").click(function() {
@@ -50,6 +51,7 @@
 							$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
 							$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
 							$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
+							$('#iteracion').html(cont+1);
 							$('#grafico').show();
 							$('#valores').show();
 							if (esraiz){
@@ -108,6 +110,7 @@
 									$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
 									$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
 									$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
+									$('#iteracion').html(cont+1);
 									$('#grafico').show();
 									$('#valores').show();
 									if (esraiz){
@@ -133,6 +136,7 @@
 							$('#cotaa').html(" (a, f(a)) = ("+coleccion[cont]['a']+", "+coleccion[cont]['fa']+")");
 							$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
 							$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
+							$('#iteracion').html(cont+1);
 							$('#raiz').css({"border": "none"});
 							$('#grafico').show();
 							$('#valores').show();
@@ -156,6 +160,7 @@
 						$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
 						$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
 						$('#raiz').css({"border": "none"});
+						$('#iteracion').html(cont+1);
 						$('#grafico').show();
 						$('#valores').show();
 						inferior = coleccion[cont]['a'];
@@ -199,36 +204,49 @@
 					<div class="col-md-4">{{form.error}}</div>
 				</div>
 				<br>
-				<div class="row">
-					<div class="col-md-6">
-						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
-						<a class="btn btn-info view-pdf" href="{% static 'documentos/Biseccion.pdf' %}">Ayuda</a>
+				
+				<div class="row" id="valores" style="display:none">
+					<div class="col-md-8">
+							<div class="alert alert-success alert-dismissable" role="alert" contenteditable="false">
+								<h4 class="alert-heading">Resultados Iteración <span id="iteracion"></span></h4>
+								<div id="cotaa" style="font-weight: bold"></div><br>
+								<div id="cotab" style="font-weight: bold"></div><br>
+								<div id="raiz" style="font-weight: bold"></div>
+							</div>
+						<!-- <div class="alert alert-success alert-dismissable" title="hola" contenteditable="false">
+								<div class="cell_b" id="cotaa"></div><br>
+								<div class="cell_b" id="cotab"></div><br>
+								<div class="cell_b" id="raiz"></div><br><br>
+							</div> -->
 					</div>
+					<!-- <div class="col-md-3">
+						<div class="cell" align="center">
+							<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
+							<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
+						</div>
+					</div> -->
 				</div>
+				<div class="row">
+						<div class="col-md-12">
+							<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
+							<a class="btn btn-info view-pdf" href="{% static 'documentos/Biseccion.pdf' %}">Ayuda</a>
+						</div>
+					</div>
 			</div>
 
 			<div class="col-md-6">
 				<br>
 				<div class="panel" id="grafico">
-					<div class="cell"><img id="foo" width="420" height="370"></div>
+						<figure>
+							<img id="foo" width="420" height="370">
+							<figcaption><br>
+								<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
+								<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
+							</figcaption>
+						</figure>
+					<!-- <div class="cell"><img id="foo" width="420" height="370"></div> -->
 				</div>
-				<div class="panel" id="valores">
-					<div class="col-md-6">
-						<!-- <div class="alert alert-success alert-dismissable" contenteditable="false"> -->
-								<div class="cell_b" id="cotaa" style="width:30%"></div><br>
-								<div class="cell_b" id="cotab" style="width:30%"></div><br>
-								<div class="cell_b" id="raiz"></div><br><br>
-							<!-- </div> -->
-					</div>
-					<div class="col-md-3">
-						<div class="cell" align="center">
-							<!--<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />-->
-							<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
-							<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
-							<!--<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />-->
-						</div>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 	</div>

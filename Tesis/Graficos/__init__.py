@@ -93,7 +93,6 @@ class Grafico:
         Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         fa = Fx(inf)
         fb = Fx(sup)
-        
         if (fa*fb) >= 0:
             return {'error':1, 'band':0}
         else:
