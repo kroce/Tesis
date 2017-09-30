@@ -20,7 +20,6 @@ urlpatterns = patterns('',
     url(r'^graficar_newton$', 'Tesis.views.graficarNewton_ajax'),
     url(r'^menu', 'Tesis.views.menu'),
     url(r'^$', 'Tesis.views.menu'),
-    # url(r'^biseccion', 'Tesis.views.biseccion'),
     url(r'^biseccion', 'Tesis.views.graficarBiseccion_ajax'),
-    url(r'^newton', 'Tesis.views.newton'),
+    url(r'^newton', 'Tesis.views.graficarNewton_ajax'),
 )

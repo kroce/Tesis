@@ -71,7 +71,6 @@ class Grafico:
             plt.fill_between(xj, Fx(xj), 0, facecolor='0.9', edgecolor='0.5')
 
         plt.grid()                            # Le agrega la grilla
-        # plt.show()
 
         filename = 'foo-%s.png' % datetime.now().strftime('%Y-%m-%d_%H%M%S')
         filename1 = 'Tesis/static/imagenes/' + filename
@@ -177,12 +176,16 @@ class Grafico:
     def graficar_newton(self, expr, str_expr, x0, derivada, estilo, error):
         x = sym.symbols('x')
         varx0 = float(sympify(x0))
-
-        xi = np.linspace(varx0-.5, varx0+.5, 100)
-        Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
         dFx = sym.lambdify(x,derivada,'numpy')
-        fx0 = Fx(varx0)
         dfx0 = dFx(varx0)
+        axes = plt.gca()
+        Fx = sym.lambdify(x,expr,'numpy')   # Function handle can now take numpy array inputs
+        fx0 = Fx(varx0)
+        x1 = varx0-(fx0/dfx0)
+        
+        ls = np.linspace(varx0, x1, 100)
+        calc = (ls[10] - ls[0])/2
+        xi = np.linspace(varx0-calc, x1+calc, 100)
 
         plt.plot(xi, Fx(xi),
             '#638CB5',                # colour
@@ -190,22 +193,37 @@ class Grafico:
             linewidth=2-5,                # line width
             label= str_expr )           # plot label
 
-        plt.plot([varx0, varx0], [Fx(varx0),np.min(Fx(xi))-.5], color='green', linewidth=1, linestyle="--")
-        plt.plot([varx0, varx0-.5], [Fx(varx0), Fx(varx0)], color='green', linewidth=1, linestyle="--")
+         # x-axis bounds
+        if (varx0 < x1):
+            axes.set_xlim([varx0-calc, x1+calc])
+            liminf = varx0-calc
+            limsup = x1+calc
+        else:
+            axes.set_xlim([x1+calc, varx0-calc])
+            liminf = x1+calc
+            limsup = varx0-calc
+        # y-axis bounds
+        axes.set_ylim(auto=True) 
+        
+        # Graficar punto x0
         plt.scatter([varx0, ], [Fx(varx0), ], 50, color='green')
         plt.annotate(r'$(x0,f(x0))$',xy=(varx0, Fx(varx0)), xycoords='data',
                 xytext=(7, 0), textcoords='offset points', fontsize=16)
 
-        x1 = varx0-(fx0/dfx0)
-        plt.plot([x1, x1], [Fx(x1),np.min(Fx(xi))-.5], color='orange', linewidth=2, linestyle="--")
-        plt.plot([x1, varx0-.5], [Fx(x1), Fx(x1)], color='orange', linewidth=2, linestyle="--")
+        # Graficar punto x1
         plt.scatter([x1, ], [Fx(x1), ], 50, color='orange')
         plt.annotate(r'$(x1,f(x1))$',xy=(x1, Fx(x1)), xycoords='data',
             xytext=(7, 0), textcoords='offset points', fontsize=16)
+                
+        # Lineas de (x0, f(x0))
+        plt.plot([varx0, liminf], [Fx(varx0),Fx(varx0)], color='green', linewidth=1)
+        plt.plot([varx0, varx0], [Fx(varx0), 0], color='green', linewidth=1)
 
-        axes = plt.gca()
-        axes.set_xlim([varx0-.5, varx0+.5])                           # x-axis bounds
-        axes.set_ylim([np.min(Fx(xi))-.5,np.max(Fx(xi))+1])      # y-axis bounds
+        # Lineas de (x1, f(x1))
+
+        plt.plot([x1, x1], [Fx(x1),0], color='orange', linewidth=1)
+        plt.plot([x1, liminf], [Fx(x1), Fx(x1)], color='orange', linewidth=1)
+
 
         plt.legend(loc='upper right', shadow=True, fontsize='small')
         labelfont = estilo['labelfont']

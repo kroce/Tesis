@@ -47,8 +47,6 @@ def definirCamposIntegrales():
                    "name": "indice", "label": " "})
     fields.append({"required": 0, "initial": False, "type": "checkbox",
                    "name": "definida", "label": "Integracion Definida"})
-    # fields.append({"required": 0, "initial": False, "type": "checkbox",
-    #                "name": "numerica", "label": "Integracion Numerica"})
     choices = [{"name": "Trapecio", "value": "trapecio"},
                {"name": "Simpson", "value": "simpson"}]
     fields.append({"required": 0, "type": "radio",
@@ -354,10 +352,6 @@ def menu(request):
 #     else:
 #         return render_to_response('integrales.html', context_instance=RequestContext(request))
 
-# def biseccion(request):
-#     form = BiseccionForm()
-#     return render(request, 'biseccion.html', {'form': form})
-
 def graficarBiseccion_ajax(request):
     if request.POST.has_key('funcion'):
         try:
@@ -398,10 +392,6 @@ def graficarBiseccion_ajax(request):
         form = BiseccionForm()
         return render(request, 'biseccion.html', {'form': form})
         
-def newton(request):
-    form = NewtonForm()
-    return render(request, 'newton.html', {'form': form})
-
 def graficarNewton_ajax(request):
     if request.POST.has_key('funcion'):
         funcion = request.POST['funcion']
@@ -427,7 +417,8 @@ def graficarNewton_ajax(request):
         else:
             return HttpResponse("Para aplicar el método se debe verificar el teorema de Bolzano (f(a)*f(b)<0)", status=404)
     else:
-        return render_to_response('newton.html', context_instance=RequestContext(request))
+        form = NewtonForm()
+        return render(request, 'newton.html', {'form': form})
 
 def derivadas(request):
     form = DerivadaForm()
