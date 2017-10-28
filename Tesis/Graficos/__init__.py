@@ -36,8 +36,12 @@ class Grafico:
         inf = float(sympify(inferior))
         sup = float(sympify(superior))
 
+        ls = np.linspace(inf, sup, 100)
+        #calculo cuanto dejo en los extremos a partir despues de inf y sup
+        calc = (ls[10] - ls[0])/2
+
         if int(sombra) == 1:
-            xi = np.linspace(inf - 1, sup + 1, 100)
+            xi = np.linspace(inf - calc, sup + calc, 100)
         else:
             xi = np.linspace(inf, sup, 100)
         xj = np.linspace(inf, sup, 100)
@@ -52,14 +56,13 @@ class Grafico:
 
         axes = plt.gca()
         # x-axis bounds
-        # Si es para el grafico de la funcion debajo de la curva, le agrego 1 a los limites 
+        # Si es para el grafico de la funcion debajo de la curva, le agrego calc a los limites 
         if int(sombra) == 1:
-            axes.set_xlim([inf - 1, sup + 1])
-            axes.set_ylim([np.min(Fx(xi)) - 1, np.max(Fx(xi)) + 1])      # y-axis bounds
+            axes.set_xlim([inf - calc, sup + calc])
         # En los otros casos grafico hasta los limites ingresado
         else:
             axes.set_xlim([inf, sup])
-            axes.set_ylim([np.min(Fx(xi)), np.max(Fx(xi))])      # y-axis bounds
+        axes.set_ylim(auto=True)
 
         plt.legend(loc='upper right', shadow=True, fontsize='small')
         labelfont = estilo['labelfont']
@@ -203,7 +206,7 @@ class Grafico:
             liminf = x1+calc
             limsup = varx0-calc
         # y-axis bounds
-        axes.set_ylim(auto=True) 
+        axes.set_ylim(auto=True)
         
         # Graficar punto x0
         plt.scatter([varx0, ], [Fx(varx0), ], 50, color='green')
@@ -285,9 +288,11 @@ class Grafico:
         axes = plt.gca()
         # axes.autoscale()
         axes.set_xlim([inf, sup])                           # x-axis bounds
-        minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
-        maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
-        axes.set_ylim([minimo,maximo])      # y-axis bounds
+        # minimo = min(np.min(Fx(xi))-1,np.min(Fx2(xi))-1)
+        # maximo = max(np.max(Fx(xi))+1,np.max(Fx2(xi))+1)
+        # axes.set_ylim([minimo,maximo])      # y-axis bounds
+        axes.set_ylim(auto=True)
+        
         plt.legend(loc='upper right', shadow=True, fontsize='medium')
         labelfont = estilo['labelfont']
         titlefont = estilo['titlefont']
@@ -303,8 +308,8 @@ class Grafico:
         plt.close()
         return {'filename':filename, 'funcion':str_expr, 'derivada': str(derivada)}
 
-    def fun(x, y):
-        return x**2+y
+    # def fun(x, y):
+    #     return x**2+y
 
     def graficar_funcion1(self, expr, str_expr, inferior, superior, inferior1, superior1, estilo):
         inf = float(sympify(inferior))

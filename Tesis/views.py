@@ -227,8 +227,8 @@ def integrales(request):
                             
                         # Se va a utilizar el método de Simpson
                         else:
-                            h = (sympify(superior) -
-                                    sympify(inferior)) / (3 * n)
+                            h = (sympify(xn) -
+                                    sympify(x0)) / (3 * n)
                             while count < n:
                                 indice = "fx" + str(count)
                                 if count % 2 == 0:
@@ -334,23 +334,23 @@ def integralesDobles(request):
 def menu(request):
     return render(request, "menu.html", {})
 
-# def graficarFuncion(request):
-#     if request.POST.has_key('funcion'):
-#         funcion = request.POST['funcion']
-#         variable = request.POST['variable']
-#         inferior = request.POST['inferior']
-#         superior = request.POST['superior']
-#         sombra = request.POST['sombra']
-#         expr = sympify(funcion)
-#         grafico = Grafico()
-#         estilo = grafico.estilo1()
-#         grafico.agregarEjes()
-#         gr = grafico.graficarFuncion(expr, funcion, variable, inferior, superior, estilo, sombra)
-#         response_dict = {}
-#         response_dict.update({'server_response': gr})
-#         return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-#     else:
-#         return render_to_response('integrales.html', context_instance=RequestContext(request))
+def graficarFuncion(request):
+    if request.POST.has_key('funcion'):
+        funcion = request.POST['funcion']
+        variable = request.POST['variable']
+        inferior = request.POST['inferior']
+        superior = request.POST['superior']
+        sombra = request.POST['sombra']
+        expr = sympify(funcion)
+        grafico = Grafico()
+        estilo = grafico.estilo1()
+        grafico.agregarEjes()
+        gr = grafico.graficarFuncion(expr, funcion, variable, inferior, superior, estilo, sombra)
+        response_dict = {}
+        response_dict.update({'server_response': gr})
+        return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+    else:
+        return render_to_response('integrales.html', context_instance=RequestContext(request))
 
 def graficarBiseccion_ajax(request):
     if request.POST.has_key('funcion'):

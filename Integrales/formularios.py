@@ -87,7 +87,7 @@ class NewtonForm(forms.Form):
     error = forms.CharField(label='Error', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
 
 class DerivadaForm(forms.Form):
-    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))
+    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '10'}))
     variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     inf = forms.CharField(label='inf', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     sup = forms.CharField(label='sup', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
