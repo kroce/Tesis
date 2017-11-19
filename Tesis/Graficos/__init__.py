@@ -328,8 +328,8 @@ class Grafico:
         zs = np.array([fun(x,y) for x,y in zip(np.ravel(X), np.ravel(Y))])
         Z = zs.reshape(X.shape)
 
-        ax.plot_surface(X, Y, Z,
-        cmap=cm.summer)
+        ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+        cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
         ax.set_xlabel('X')
         ax.set_ylabel('Y')

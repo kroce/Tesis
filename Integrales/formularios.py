@@ -44,7 +44,7 @@ class FuncionDobleForm(forms.Form):
         ('definida', "Integral Definida"),
     )
     tipoIntegral = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer, attrs={'style':'width:30px'}),choices=TIPOINTEGRAL_CHOICES, required=False)
-    funcion = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size' : '16'}))
+    funcion = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size' : '25'}))
     variable = forms.CharField(label='Var. 1', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     variable1 = forms.CharField(label='Var. 2', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     variableInd = forms.CharField(label='Var. 1', required=False, max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
@@ -87,7 +87,7 @@ class NewtonForm(forms.Form):
     error = forms.CharField(label='Error', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
 
 class DerivadaForm(forms.Form):
-    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '10'}))
+    funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '25'}))
     variable = forms.CharField(label='Variable', max_length=10, widget=forms.TextInput(attrs={'size' : '5'}))
     inf = forms.CharField(label='inf', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     sup = forms.CharField(label='sup', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
