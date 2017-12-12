@@ -56,21 +56,49 @@
 				$('#paneldef').show();
 			}
 
+			if($('#id_tipoIntegral_2').attr('checked')) {
+				$('#panelIndef').show();
+				$('#panelVars').show();
+				$('#panelNum').show();
+			}
+
 			$('[name="tipoIntegral"]').on('change', function() {
 				$("#int").removeAttr('disabled');
 				$("#graf").removeAttr('disabled');
 				if($('input[name=tipoIntegral]:checked', '#form').val()=="indefinida") {
+					$('#panelNum').hide();
+					$('#panelFormula').hide();
+					$('#paneldef').hide();
 					$('#panelIndef').show();
 					$('#panelVars').show();
-					$('#paneldef').hide();
 					$("#graf").attr('disabled', true);
 				} else{
 					if($('input[name=tipoIntegral]:checked', '#form').val()=="definida") {
-						$('#panelIndef').show();
+						$('#panelNum').hide();
+						$('#panelFormula').hide();
 						$('#panelVars').hide();
+						$('#panelIndef').show();
 						$('#paneldef').show();
 						$("#graf").attr('disabled', true);
+					} else {
+						if($('input[name=tipoIntegral]:checked', '#form').val()=="numerica") {
+							$('#paneldef').hide();
+							$('#panelFormula').hide();
+							$('#panelIndef').show();
+							$('#panelVars').show();
+							$('#panelNum').show();
+							$("#graf").attr('disabled', true);
+						}	
 					}
+				}
+			})
+
+			$('[name="formula"]').on('change', function() {
+				if($('input[name=formula]:checked', '#form').val()=="trapecio") {
+					$('#panelFormula').show();
+				}
+				if($('input[name=formula]:checked', '#form').val()=="simpson") {
+					$('#panelFormula').show();
 				}
 			})
 				
@@ -90,7 +118,6 @@
 					<br>
 					{% if form.funcion %}
 					<div class="panel" id="panelIndef">
-						<!--<div class="row">-->
 						<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
 							Función:
 						</div>
@@ -115,10 +142,10 @@
 						</div>
 					</div>
 					{% endif %}
-					<!--</div>-->
 					<br>
+
 					<div class="panel" id="paneldef">
-						<div class="row">
+						<div class="container-fluid">
 							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
 								{{form.variable.label_tag}}
 							</div>
@@ -130,7 +157,7 @@
 							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
 							<div class="col-md-2">{{form.superior}}</div>
 						</div>
-						<div class="row">
+						<div class="container-fluid">
 							<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
 								{{form.variable1.label_tag}}
 							</div>
@@ -143,6 +170,33 @@
 							<div class="col-md-2">{{form.superior1}}</div>
 						</div>
 					</div>
+					<div class="panel" id="panelNum" style='font-weight: bold; color:#638cb5;'>
+						<div class="col-md-12">{{form.formula}}</div>
+					</div>
+					<br>
+					<div class="panel" id="panelFormula">
+						<div class="container-fluid">
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.a.label_tag}}</div>
+							<div class="col-md-3">{{form.a}}</div>
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.b.label_tag}}</div>
+							<div class="col-md-3">{{form.b}}</div>
+						</div>
+						<br>
+						<div class="container-fluid">
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.c.label_tag}}</div>
+							<div class="col-md-3">{{form.c}}</div>
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.d.label_tag}}</div>
+							<div class="col-md-3">{{form.d}}</div>
+						</div>
+						<br>
+						<div class="container-fluid">
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.m.label_tag}}</div>
+							<div class="col-md-3">{{form.m}}</div>
+							<div class="col-md-3" style='font-weight: bold; color:#638cb5;' >{{form.n.label_tag}}</div>
+							<div class="col-md-3">{{form.n}}</div>
+						</div>
+					</div>
+					<br>
 			  	<div class="row">
 			  		<div class="col-md-12">
 						<button id="int" name="integrar" type="submit" class="btn btn-success">Integrar</button>
@@ -177,5 +231,6 @@
 					</div>
 			</div>
 		</div>
+	</div>
 </form>
 {% endblock contenido %}
