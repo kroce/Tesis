@@ -297,6 +297,7 @@ def integralesDobles(request):
                 expr = sympify(str_expr)
                 resu = expr.evalf()
                 if 'integrar' in request.POST:
+
                     # Integral Definida
                     if tipoIntegral == 'definida':
                         variable = sympify(form.cleaned_data['variable'])
@@ -307,15 +308,16 @@ def integralesDobles(request):
                         superior1 = form.cleaned_data['superior1']
                         integralDef = integrate(
                             expr, (variable1, inferior1, superior1), (variable, inferior, superior))
-                        # integrate(f, (y, 1, 3), (x, 0, 2))
                         texto = " Integral Definida = %1.5f " % integralDef
                         messages.add_message(request, messages.INFO, texto)
+
                     # Integral indefinida
                     if tipoIntegral == 'indefinida':
                         variable = sympify(form.cleaned_data['variableInd'])
-                        print integrate(expr, variable)
                         texto = " Integral Indefinida = " + str(integrate(expr, variable))
                         messages.add_message(request, messages.INFO, texto)
+                    
+                    # Integral numerica
                     if tipoIntegral == 'numerica':
                         variable = sympify(form.cleaned_data['variableInd'])
                         variable1 = sympify(form.cleaned_data['variable1Ind'])
@@ -331,12 +333,9 @@ def integralesDobles(request):
                             resultado = metodo.trapecio2D(expr, variable, variable1, a, b, c, d, m, n)
                         if formula == 'simpson':
                             resultado = metodo.simpson2D(expr, variable, variable1, a, b, c, d, m, n)
-                        print resultado['aproximacion']
-                        # texto = " Integral Indefinida = " + str(integrate(expr, variable))
-                        # messages.add_message(request, messages.INFO, texto)
-                # else:
-                    # messages.add_message(request, messages.SUCCESS, 'Función:
-                    # '+str_expr)
+                        
+                        texto = " integral ≈ %1.5f " % resultado['aproximacion']
+                        messages.add_message(request, messages.INFO, texto)
             except (TypeError, AttributeError, SympifyError):
                 messages.add_message(
                     request, messages.INFO, 'Expresión inválida')
