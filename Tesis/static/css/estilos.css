@@ -12,7 +12,7 @@ body {
 div.panel{
 	display: table-row;
   background-color: #F4F4F4;
-	border: none;
+	/* border: none; */
 }
 
 div.panel{

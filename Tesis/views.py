@@ -13,6 +13,7 @@ from Integrales.formularios import GraficoFuncionesForm
 from sympy import *
 from django.contrib import messages
 from Tesis.Graficos import Grafico
+from Tesis.Metodos import Metodos
 import os
 import glob
 import io
@@ -296,9 +297,8 @@ def integralesDobles(request):
                 expr = sympify(str_expr)
                 resu = expr.evalf()
                 if 'integrar' in request.POST:
-                    # si se va a calcular la integral definida
+                    # Integral Definida
                     if tipoIntegral == 'definida':
-                    # if definida:
                         variable = sympify(form.cleaned_data['variable'])
                         variable1 = sympify(form.cleaned_data['variable1'])
                         inferior = form.cleaned_data['inferior']
@@ -311,14 +311,29 @@ def integralesDobles(request):
                         texto = " Integral Definida = %1.5f " % integralDef
                         messages.add_message(request, messages.INFO, texto)
                     # Integral indefinida
-                    else:
+                    if tipoIntegral == 'indefinida':
                         variable = sympify(form.cleaned_data['variableInd'])
-                        # variable1 = sympify(form.cleaned_data['variable1Ind'])
                         print integrate(expr, variable)
-                        # integralInd = integrate(expr, variable)
-                        # print 'ID'+ integralInd
                         texto = " Integral Indefinida = " + str(integrate(expr, variable))
                         messages.add_message(request, messages.INFO, texto)
+                    if tipoIntegral == 'numerica':
+                        variable = sympify(form.cleaned_data['variableInd'])
+                        variable1 = sympify(form.cleaned_data['variable1Ind'])
+                        a = float(form.cleaned_data['a'])
+                        b = float(form.cleaned_data['b'])
+                        c = float(form.cleaned_data['c'])
+                        d = float(form.cleaned_data['d'])
+                        m = int(form.cleaned_data['m'])
+                        n = int(form.cleaned_data['n'])
+                        metodo = Metodos()
+                        formula = form.cleaned_data['formula']
+                        if formula == 'trapecio':
+                            resultado = metodo.trapecio2D(expr, variable, variable1, a, b, c, d, m, n)
+                        if formula == 'simpson':
+                            resultado = metodo.simpson2D(expr, variable, variable1, a, b, c, d, m, n)
+                        print resultado['aproximacion']
+                        # texto = " Integral Indefinida = " + str(integrate(expr, variable))
+                        # messages.add_message(request, messages.INFO, texto)
                 # else:
                     # messages.add_message(request, messages.SUCCESS, 'Función:
                     # '+str_expr)
