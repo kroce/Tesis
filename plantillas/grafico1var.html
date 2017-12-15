@@ -18,6 +18,10 @@
 				indice++;
 			});
 
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#grafico1var',"ayuda","width=800, height=600");
+			});
+
 			$("#acep").click(function () {
 				funcion1 = $("#id_funcion1").val();
 				funcion2 = $("#id_funcion2").val();
@@ -118,7 +122,8 @@
 				<div class="row">
 					<div class="col-md-12">
 						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Graficar</button>
-						<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
+						<!-- <a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a> -->
 					</div>
 				</div>
 			</div>

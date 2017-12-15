@@ -1,0 +1,382 @@
+{% extends "plantilla.html" %} 
+{% load staticfiles %} 
+{% block titulo %} Evaluar Función {% endblock titulo %} 
+{% block contenido%}
+<form>
+    <div class="container">
+        <h1>Ayuda</h1>
+
+        <section class="cd-faq">
+            <ul class="cd-faq-categories">
+                <li>
+                    <a href="#grafico1var">Graficos de una variable</a>
+                </li>
+                <li>
+                    <a href="#grafico2var">Graficos de dos variables</a>
+                </li>
+                <li>
+                    <a href="#mobile">Derivadas</a>
+                </li>
+                <li>
+                    <a href="#mobile">Integrales</a>
+                </li>
+                <li>
+                    <a href="#mobile">Raíces</a>
+                </li>
+            </ul>
+
+            <div class="cd-faq-items">
+                <ul id="grafico1var" style="list-style-type:none">
+                    <li class="cd-faq-title">
+                        <h1>Graficos</h1>
+                    </li>
+                    <li>
+                        <a class="cd-faq-trigger" href="#0">Funciones de una variable</a>
+                        <div class="cd-faq-content">
+                            <br>
+                            <p>Se podrán graficar varias funciones agregándolas con el botón Agregar Función</p>
+                            <p>En los campos de funciones, se pueden combinar las funciones de la siguiente lista utilizando
+                                una variable</p>
+                            <table class="table table-bordered" style="width:50%">
+                                <thead>
+                                    <th>Funciones</th>
+                                    <th>Descripción</th>
+
+                                </thead>
+                                <tbody>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">abs(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor absoluto de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">cos(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el coseno de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">exp(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve e elevado a la potencia x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo natural del n&uacute;mero x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log(x,b)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo del n&uacute;mero x en base b</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log10(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo decimal en base 10 del n&uacute;mero x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">pi</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor del n&uacute;mero &pi;</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">sin(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el seno de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">sqrt(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve la ra&iacute;z cuadrada de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">tan(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve la tangente de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">x**n &oacute; x^n</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor de x elevado a la n</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">+, -, *, /</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Operadores Aritm&eacute;ticos</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <p>En el campo variable se ingresa la variable de la función, que puede ser x,y o z</p>
+                            <p>En el campo Limite Inferior se ingresa el valor mínimo que tomará la variable</p>
+                            <p>En el campo Limite Superior se ingresa el valor máximo que tomará la variable</p>
+                        </div>
+                    </li>
+
+                    <li>
+                        <a class="cd-faq-trigger" id="grafico2var" href="#grafico2var">Funciones de dos variables</a>
+                        <div class="cd-faq-content">
+                            <br>
+                            <p>En el campo Función, se pueden combinar las funciones de la siguiente lista utilizando 2 variables</p>
+                            <table class="table table-bordered" style="width:50%">
+                                <thead>
+                                    <th>Funciones</th>
+                                    <th>Descripción</th>
+
+                                </thead>
+                                <tbody>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">abs(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor absoluto de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">cos(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el coseno de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">exp(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve e elevado a la potencia x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo natural del n&uacute;mero x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log(x,b)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo del n&uacute;mero x en base b</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">log10(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el logaritmo decimal en base 10 del n&uacute;mero x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">pi</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor del n&uacute;mero &pi;</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">sin(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el seno de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">sqrt(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve la ra&iacute;z cuadrada de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">tan(x)</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve la tangente de x</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">x**n &oacute; x^n</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Devuelve el valor de x elevado a la n</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="c4">
+                                        <td class="c3" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">+, -, *, /</span>
+                                            </p>
+                                        </td>
+                                        <td class="c6" colspan="1" rowspan="1">
+                                            <p class="c1">
+                                                <span class="c0">Operadores Aritm&eacute;ticos</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <p>En los campos variable 1 y variable 2 se deben ingresar las variables que utiliza la función,
+                                que pueden ser x,y o z. Supongamos x e y</p>
+                            <p>En el campo Limite Inferior 1 se ingresa el valor mínimo que tomará la variable x</p>
+                            <p>En el campo Limite Superior 1 se ingresa el valor máximo que tomará la variable x</p>
+                            <p>En el campo Limite Inferior 2 se ingresa el valor mínimo que tomará la variable y</p>
+                            <p>En el campo Limite Superior 2 se ingresa el valor máximo que tomará la variable y</p>
+                        </div>
+                    </li>
+
+                    <li>
+                        <!-- ... -->
+                    </li>
+                </ul>
+
+                <ul id="mobile" class="cd-faq-group">
+                    <!-- ... -->
+                </ul>
+
+                <!-- ... -->
+            </div>
+        </section>
+    </div>
+</form>
+{% endblock contenido %}

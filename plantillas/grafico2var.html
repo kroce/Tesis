@@ -1,122 +1,129 @@
-{% extends "plantilla.html" %}
-{% load staticfiles %}
-{% block titulo %} Evaluar Función {% endblock titulo %}
-{% block contenido %}
+{% extends "plantilla.html" %} 
+{% load staticfiles %} 
+{% block titulo %} Evaluar Función {% endblock titulo %} 
+{% block contenido%}
 
-	<form id="form" method="POST" class="post-form">{% csrf_token %}
-		<script>
-			$(document).ready(function() {
-				$("#graf").click(function() {
-					var fun = $("#id_funcion").val();
-					var variable = $("#id_variable").val();
-					var inferior = $("#id_inferior").val();
-					var superior = $("#id_superior").val();
-					var inferior1 = $("#id_inferior1").val();
-					var superior1 = $("#id_superior1").val();
-					if (inferior=='' || superior=='')
-						alert('Para graficar es necesario definir los limites')
-					else{
-						$.ajax({
-							url : "graficar3d",
-							type : "POST",
-							dataType: "json",
-							data : {
-								funcion : fun,
-								variable : variable,
-								inferior : inferior,
-								superior : superior,
-								inferior1 : inferior1,
-								superior1 : superior1,
-								csrfmiddlewaretoken: '{{ csrf_token }}'
-							},
-
-							success : function(json) {
-								str = "{% static 'imagenes/' %}"+json.server_response;
-								$('#foo').attr("src", str);
-								$('#grafico').show();
-							},
-							error : function(xhr,errmsg,err) {
-								alert(xhr.status + ": " + xhr.responseText);
-							}
-						});
-						return false;
-					}
-				});
+<form id="form" method="POST" class="post-form">{% csrf_token %}
+	<script>
+		$(document).ready(function () {
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#grafico2var', "ayuda", "width=800, height=600");
 			});
-		</script>
 
-		<div class="container">
-    		<div class="row">
-				<div class="col-md-6">
-					<h1>Gráficos 3D</h1>
-					<br>
-					<div class="row">
-				    	{% if form.funcion %}
-				    	<div class="col-md-8">
-							<span style="font-weight: bold; color:#638cb5;">Función:&nbsp;&nbsp;</span>{{form.funcion}}
-						</div>
-					</div>
-					<br>
-					<div class="row">
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;"> Variable 1: &nbsp;&nbsp;</span>
-							{{form.variable}}
-						</div>
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;"> Variable 2: &nbsp;&nbsp;</span>
-							{{form.variable1}}
-						</div>
-						{% endif %}
-					</div>
-					<br>
-					<div class="row">
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;">Límite Inferior 1: &nbsp;&nbsp;</span>
-							{{form.inferior}}
-						</div>
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;">Límite Superior 1: &nbsp;&nbsp;</span>
-							{{form.superior}}
-						</div>
-					</div>
-					<br>
-					<div class="row">
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;">Límite Inferior 2: &nbsp;&nbsp;</span>
-							{{form.inferior1}}
-						</div>
-						<div class="col-md-6">
-							<span style="font-weight: bold; color:#638cb5;">Límite Superior 2: &nbsp;&nbsp;</span>
-							{{form.superior1}}
-						</div>
-					</div>
-					<br><br>
-					<div class="row">
-						<div class="col-md-12">
-							<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
-							<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_2vars.pdf' %}">Ayuda</a>
-						</div>
-					</div>
+			$("#graf").click(function () {
+				var fun = $("#id_funcion").val();
+				var variable = $("#id_variable").val();
+				var inferior = $("#id_inferior").val();
+				var superior = $("#id_superior").val();
+				var inferior1 = $("#id_inferior1").val();
+				var superior1 = $("#id_superior1").val();
+				if (inferior == '' || superior == '')
+					alert('Para graficar es necesario definir los limites')
+				else {
+					$.ajax({
+						url: "graficar3d",
+						type: "POST",
+						dataType: "json",
+						data: {
+							funcion: fun,
+							variable: variable,
+							inferior: inferior,
+							superior: superior,
+							inferior1: inferior1,
+							superior1: superior1,
+							csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
 
-					{% if messages %}
-					<br>
-					<div class="row">
-				    	<div class="cell">
-					    	{% for message in messages %}
-							 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-							{% endfor %}
-						</div>
+						success: function (json) {
+							str = "{% static 'imagenes/' %}" + json.server_response;
+							$('#foo').attr("src", str);
+							$('#grafico').show();
+						},
+						error: function (xhr, errmsg, err) {
+							alert(xhr.status + ": " + xhr.responseText);
+						}
+					});
+					return false;
+				}
+			});
+		});
+	</script>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<h1>Gráficos 3D</h1>
+				<br>
+				<div class="row">
+					{% if form.funcion %}
+					<div class="col-md-8">
+						<span style="font-weight: bold; color:#638cb5;">Función:&nbsp;&nbsp;</span>{{form.funcion}}
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;"> Variable 1: &nbsp;&nbsp;</span>
+						{{form.variable}}
+					</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;"> Variable 2: &nbsp;&nbsp;</span>
+						{{form.variable1}}
 					</div>
 					{% endif %}
-		    	</div>
-				<div class="col-md-6">
-					<div class="row">
-						<div class="panel" id="grafico">
-							<div class="cell"><img id="foo" width="550" height="500"></div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Inferior 1: &nbsp;&nbsp;</span>
+						{{form.inferior}}
+					</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Superior 1: &nbsp;&nbsp;</span>
+						{{form.superior}}
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Inferior 2: &nbsp;&nbsp;</span>
+						{{form.inferior1}}
+					</div>
+					<div class="col-md-6">
+						<span style="font-weight: bold; color:#638cb5;">Límite Superior 2: &nbsp;&nbsp;</span>
+						{{form.superior1}}
+					</div>
+				</div>
+				<br>
+				<br>
+				<div class="row">
+					<div class="col-md-12">
+						<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
+					</div>
+				</div>
+
+				{% if messages %}
+				<br>
+				<div class="row">
+					<div class="cell">
+						{% for message in messages %}
+						<p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="panel" id="grafico">
+						<div class="cell">
+							<img id="foo" width="550" height="500">
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</form>
-	{% endblock contenido %}
+	</div>
+</form>
+{% endblock contenido %}

@@ -348,6 +348,9 @@ def integralesDobles(request):
 def menu(request):
     return render(request, "menu.html", {})
 
+def ayuda(request):
+    return render(request, "ayuda.html", {})
+
 def graficarFuncion(request):
     if request.POST.has_key('funcion'):
         funcion = request.POST['funcion']
