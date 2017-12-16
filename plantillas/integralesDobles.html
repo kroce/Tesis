@@ -8,6 +8,10 @@
 	
 		$(document).ready(function() {
 
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#integralDoble', "ayuda", "width=800, height=600");
+			});
+
 			$("#graf").click(function() {
 				alert('aca');
 				var fun = $("#id_funcion").val();
@@ -203,7 +207,7 @@
 			  		<div class="col-md-12">
 						<button id="int" name="integrar" type="submit" class="btn btn-success">Integrar</button>
 						<button id="graf" name="graficar" type="submit" class="btn btn-success">Graficar</button>
-						<a class="btn btn-info view-pdf" href="{% static 'documentos/IntegralDoble.pdf' %}">Ayuda</a>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
 				</div>
 				{% if messages %}
@@ -211,19 +215,11 @@
 				<div class="alert alert-success alert-dismissable" contenteditable="true">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 					<h4>Resultado:</h4>
-					<!--<strong>Warning!</strong>-->
 					{% for message in messages %}
 						<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
 					{% endfor %}
 					
 				</div>
-				<!--<div class="row">
-					<div class="cell">
-						{% for message in messages %}
-							<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-						{% endfor %}
-					</div>
-				</div>-->
 				{% endif %}
 			</div>
 

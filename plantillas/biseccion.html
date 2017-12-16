@@ -1,184 +1,202 @@
-{% extends "plantilla.html" %}
-{% load staticfiles %}
-{% block titulo %} Evaluar Función {% endblock titulo %}
-{% block contenido %}
+{% extends "plantilla.html" %} 
+{% load staticfiles %} 
+{% block titulo %} Evaluar Función {% endblock titulo %} 
+{% block contenido%}
 
-	<form id="form" method="POST" class="post-form">{% csrf_token %}
-		<script>
-			var fun, variable, inferior, superior, coleccion, cont;
-			cont = 0;
-			$(document).ready(function() {
+<form id="form" method="POST" class="post-form">{% csrf_token %}
+	<script>
+		var fun, variable, inferior, superior, coleccion, cont;
+		cont = 0;
+		$(document).ready(function () {
 
-				$("#acep").click(function() {
-					fun = $("#id_funcion").val();
-					variable = $("#id_variable").val();
-					inferior = $("#id_inferior").val();
-					superior = $("#id_superior").val();
-					error = $("#id_error").val();
-					coleccion = [];
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#biseccion', "ayuda", "width=800, height=600");
+			});
 
-					//esraiz = false;
-					$('#atras').attr('disabled',true);
+			$("#acep").click(function () {
+				fun = $("#id_funcion").val();
+				variable = $("#id_variable").val();
+				inferior = $("#id_inferior").val();
+				superior = $("#id_superior").val();
+				error = $("#id_error").val();
+				coleccion = [];
+
+				$('#atras').attr('disabled', true);
+				$.ajax({
+					url: "graficar_biseccion",
+					type: "POST",
+					dataType: "json",
+					data: {
+						funcion: fun,
+						variable: variable,
+						inferior: inferior,
+						superior: superior,
+						error: error,
+						limpiar: 1,
+						csrfmiddlewaretoken: '{{ csrf_token }}'
+					},
+					success: function (json) {
+						str = "{% static 'imagenes/' %}" + json.server_response['filename'];
+						esraiz = (json.server_response['band'] == 1);
+						var datos = {
+							a: inferior,
+							b: superior,
+							fa: json.server_response['fa'],
+							fb: json.server_response['fb'],
+							r: json.server_response['raiz'],
+							fr: json.server_response['fr'],
+							esraiz: esraiz,
+							img: str
+						}
+						coleccion.push(datos);
+						cont = 0;
+						$('#foo').attr("src", str);
+						$('#cotaa').html(" (a, f(a)) = (" + inferior + ", " + json.server_response['fa'] + ")");
+						$('#cotab').html(" (b, f(b)) = (" + superior + ", " + json.server_response['fb'] + ")");
+						$('#raiz').html(" (r, f(r)) = (" + json.server_response['raiz'] + ", " + json.server_response['fr'] + ")");
+						$('#iteracion').html(cont + 1);
+						$('#grafico').show();
+						$('#valores').show();
+						if (esraiz) {
+							$('#raiz').css({
+								"border-color": "red",
+								"border-width": "1px",
+								"border-style": "solid"
+							});
+							$('#sig').attr('disabled', true);
+						} else {
+							$('#raiz').css({
+								"border": "none"
+							});
+							$('#sig').attr('disabled', false);
+							if ((json.server_response['fa'] * json.server_response['fr']) < 0)
+								superior = json.server_response['raiz'];
+							else
+								inferior = json.server_response['raiz'];
+						}
+					},
+					error: function (xhr, errmsg, err) {
+						alert(xhr.responseText);
+					}
+				});
+				return false;
+			});
+
+			$("#sig").click(function (event) {
+				cont++;
+				$('#atras').removeAttr("disabled");
+				//si todavía no fue cargado
+				if (coleccion[cont] == undefined) {
 					$.ajax({
-						url : "graficar_biseccion",
-						type : "POST",
+						url: "graficar_biseccion",
+						type: "POST",
 						dataType: "json",
-						data : {
-								funcion  : fun,
-								variable : variable,
-								inferior : inferior,
-								superior : superior,
-								error    : error,
-								limpiar  : 1,
-								csrfmiddlewaretoken: '{{ csrf_token }}'
+						data: {
+							funcion: fun,
+							variable: variable,
+							inferior: inferior,
+							superior: superior,
+							error: error,
+							limpiar: 0,
+							csrfmiddlewaretoken: '{{ csrf_token }}'
 						},
-						success : function(json) {
-							str = "{% static 'imagenes/' %}"+json.server_response['filename'];
-							esraiz = (json.server_response['band']==1);
+						success: function (json) {
+							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
+							esraiz = (json.server_response['band'] == 1);
 							var datos = {
-										a : inferior,
-										b : superior,
-										fa:  json.server_response['fa'],
-										fb: json.server_response['fb'],
-										r: json.server_response['raiz'],
-										fr: json.server_response['fr'],
-										esraiz : esraiz,
-										img: str
+								a: inferior,
+								b: superior,
+								fa: json.server_response['fa'],
+								fb: json.server_response['fb'],
+								r: json.server_response['raiz'],
+								fr: json.server_response['fr'],
+								esraiz: esraiz,
+								img: str
 							}
 							coleccion.push(datos);
-							cont = 0;
 							$('#foo').attr("src", str);
-							$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
-							$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
-							$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
-							$('#iteracion').html(cont+1);
+							$('#cotaa').html(" (a, f(a)) = (" + inferior + ", " + json.server_response['fa'] + ")");
+							$('#cotab').html(" (b, f(b)) = (" + superior + ", " + json.server_response['fb'] + ")");
+							$('#raiz').html(" (r, f(r)) = (" + json.server_response['raiz'] + ", " + json.server_response['fr'] + ")");
+							$('#iteracion').html(cont + 1);
 							$('#grafico').show();
 							$('#valores').show();
-							if (esraiz){
-									$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-									$('#sig').attr('disabled',true);
-							}
-							else{
-								$('#raiz').css({"border": "none"});
-								$('#sig').attr('disabled',false);
+							if (esraiz) {
+								$('#raiz').css({
+									"border-color": "red",
+									"border-width": "1px",
+									"border-style": "solid"
+								});
+								$('#sig').attr('disabled', true);
+							} else {
 								if ((json.server_response['fa'] * json.server_response['fr']) < 0)
 									superior = json.server_response['raiz'];
-					      		else
+								else
 									inferior = json.server_response['raiz'];
 							}
 						},
-						error : function(xhr,errmsg,err) {
-							alert(xhr.responseText);
+						error: function (xhr, errmsg, err) {
+							alert(xhr.status + ": " + xhr.responseText);
 						}
 					});
 					return false;
-				});
-
-				$("#sig").click(function(event) {
-						cont++;
-						$('#atras').removeAttr("disabled");
-						//si todavía no fue cargado
-						if (coleccion[cont] == undefined){
-							$.ajax({
-								url : "graficar_biseccion",
-								type : "POST",
-								dataType: "json",
-								data : {
-									funcion  : fun,
-									variable : variable,
-									inferior : inferior,
-									superior : superior,
-									error    : error,
-									limpiar  : 0,
-									csrfmiddlewaretoken: '{{ csrf_token }}'
-								},
-								success : function(json) {
-									str = "{% static 'imagenes/' %}"+json.server_response['filename'];
-									esraiz = (json.server_response['band']==1);
-									var datos = {
-										a : inferior,
-										b : superior,
-										fa:  json.server_response['fa'],
-										fb: json.server_response['fb'],
-										r: json.server_response['raiz'],
-										fr: json.server_response['fr'],
-										esraiz: esraiz,
-										img: str
-									}
-									coleccion.push(datos);
-									$('#foo').attr("src", str);
-									$('#cotaa').html(" (a, f(a)) = ("+inferior+", "+json.server_response['fa']+")");
-									$('#cotab').html(" (b, f(b)) = ("+superior+", "+json.server_response['fb']+")");
-									$('#raiz').html(" (r, f(r)) = ("+json.server_response['raiz']+", "+json.server_response['fr']+")");
-									$('#iteracion').html(cont+1);
-									$('#grafico').show();
-									$('#valores').show();
-									if (esraiz){
-											$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-											$('#sig').attr('disabled',true);
-									}
-									else{
-										if ((json.server_response['fa'] * json.server_response['fr']) < 0)
-												superior = json.server_response['raiz'];
-							      		else
-												inferior = json.server_response['raiz'];
-									}
-								},
-								error : function(xhr,errmsg,err) {
-									alert(xhr.status + ": " + xhr.responseText);
-								}
-							});
-							return false;
-						}
-						else{
-							event.preventDefault();
-							$('#foo').attr("src", coleccion[cont]['img']);
-							$('#cotaa').html(" (a, f(a)) = ("+coleccion[cont]['a']+", "+coleccion[cont]['fa']+")");
-							$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
-							$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
-							$('#iteracion').html(cont+1);
-							$('#raiz').css({"border": "none"});
-							$('#grafico').show();
-							$('#valores').show();
-							if (coleccion[cont]['esraiz']){
-								$('#raiz').css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-								$('#sig').attr('disabled',true);
-							}
-							inferior = coleccion[cont]['a'];
-							superior = coleccion[cont]['b'];
-						}
-				});
-
-				$("#atras").click(function(event) {
-						event.preventDefault();
-						$('#sig').attr('disabled',false);
-						cont--;
-						if (cont == 0)
-								$('#atras').attr('disabled',true);
-						$('#foo').attr("src", coleccion[cont]['img']);
-						$('#cotaa').html(" (a, f(a)) = ("+coleccion[cont]['a']+", "+coleccion[cont]['fa']+")");
-						$('#cotab').html(" (b, f(b)) = ("+coleccion[cont]['b']+", "+coleccion[cont]['fb']+")");
-						$('#raiz').html(" (r, f(r)) = ("+coleccion[cont]['r']+", "+coleccion[cont]['fr']+")");
-						$('#raiz').css({"border": "none"});
-						$('#iteracion').html(cont+1);
-						$('#grafico').show();
-						$('#valores').show();
-						inferior = coleccion[cont]['a'];
-						superior = coleccion[cont]['b'];
-				});
-
-		    $('#cont').show();
+				} else {
+					event.preventDefault();
+					$('#foo').attr("src", coleccion[cont]['img']);
+					$('#cotaa').html(" (a, f(a)) = (" + coleccion[cont]['a'] + ", " + coleccion[cont]['fa'] + ")");
+					$('#cotab').html(" (b, f(b)) = (" + coleccion[cont]['b'] + ", " + coleccion[cont]['fb'] + ")");
+					$('#raiz').html(" (r, f(r)) = (" + coleccion[cont]['r'] + ", " + coleccion[cont]['fr'] + ")");
+					$('#iteracion').html(cont + 1);
+					$('#raiz').css({
+						"border": "none"
+					});
+					$('#grafico').show();
+					$('#valores').show();
+					if (coleccion[cont]['esraiz']) {
+						$('#raiz').css({
+							"border-color": "red",
+							"border-width": "1px",
+							"border-style": "solid"
+						});
+						$('#sig').attr('disabled', true);
+					}
+					inferior = coleccion[cont]['a'];
+					superior = coleccion[cont]['b'];
+				}
 			});
-		</script>
-		<div class="container">
-    	<div class="row">
+
+			$("#atras").click(function (event) {
+				event.preventDefault();
+				$('#sig').attr('disabled', false);
+				cont--;
+				if (cont == 0)
+					$('#atras').attr('disabled', true);
+				$('#foo').attr("src", coleccion[cont]['img']);
+				$('#cotaa').html(" (a, f(a)) = (" + coleccion[cont]['a'] + ", " + coleccion[cont]['fa'] + ")");
+				$('#cotab').html(" (b, f(b)) = (" + coleccion[cont]['b'] + ", " + coleccion[cont]['fb'] + ")");
+				$('#raiz').html(" (r, f(r)) = (" + coleccion[cont]['r'] + ", " + coleccion[cont]['fr'] + ")");
+				$('#raiz').css({
+					"border": "none"
+				});
+				$('#iteracion').html(cont + 1);
+				$('#grafico').show();
+				$('#valores').show();
+				inferior = coleccion[cont]['a'];
+				superior = coleccion[cont]['b'];
+			});
+
+			$('#cont').show();
+		});
+	</script>
+	<div class="container">
+		<div class="row">
 			<div class="col-md-6">
 				<h1>Método de Bisección</h1>
 				<br>
 				<div class="row">
 					{% if form.funcion %}
 					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-							Función:
+						Función:
 					</div>
 					<div id="fun" class="col-md-4">
 						{{form.funcion}}
@@ -204,13 +222,17 @@
 					<div class="col-md-4">{{form.error}}</div>
 				</div>
 				<br>
-				
+
 				<div class="row" id="valores" style="display:none">
 					<div class="col-md-8">
 						<div class="alert alert-success alert-dismissable" role="alert" contenteditable="false">
-							<h4 class="alert-heading">Resultados Iteración <span id="iteracion"></span></h4>
-							<div id="cotaa" style="font-weight: bold"></div><br>
-							<div id="cotab" style="font-weight: bold"></div><br>
+							<h4 class="alert-heading">Resultados Iteración
+								<span id="iteracion"></span>
+							</h4>
+							<div id="cotaa" style="font-weight: bold"></div>
+							<br>
+							<div id="cotab" style="font-weight: bold"></div>
+							<br>
 							<div id="raiz" style="font-weight: bold"></div>
 						</div>
 					</div>
@@ -218,7 +240,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
-						<a class="btn btn-info view-pdf" href="{% static 'documentos/Biseccion.pdf' %}">Ayuda</a>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
 				</div>
 			</div>
@@ -228,7 +250,8 @@
 				<div class="panel" id="grafico">
 					<figure>
 						<img id="foo" width="420" height="370">
-						<figcaption><br>
+						<figcaption>
+							<br>
 							<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
 							<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
 						</figcaption>

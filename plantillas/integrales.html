@@ -1,218 +1,262 @@
-{% extends "plantilla.html" %}
-{% load staticfiles %}
-{% block titulo %} Evaluar Función {% endblock titulo %}
-{% block contenido %}
+{% extends "plantilla.html" %} 
+{% load staticfiles %} 
+{% block titulo %} Evaluar Función {% endblock titulo %} 
+{% block contenido%}
 
-		<form id="form" method="POST" class="post-form">{% csrf_token %}
-			<script>
-				$(document).ready(function() {
-					var indice = 0;
-					$("#graf").click(function() {
-						var fun = $("#id_funcion").val();
-						var variable = $("#id_variable").val();
-						var inferior = $("#id_inferior").val();
-						var superior = $("#id_superior").val();
-						if (inferior=='' || superior=='')
-							 alert('Para graficar es necesario definir los limites')
-						else{
-							$.ajax({
-								url : "graficar",
-								type : "POST",
-								dataType: "json",
-								data : {
-										funcion : fun,
-										variable : variable,
-										inferior : inferior,
-										superior : superior,
-										sombra : 1, 
-										csrfmiddlewaretoken: '{{ csrf_token }}'
-								},
+<form id="form" method="POST" class="post-form">{% csrf_token %}
+	<script>
+		$(document).ready(function () {
 
-								success : function(json) {
-									str = "{% static 'imagenes/' %}"+json.server_response;
-									$('#foo').attr("src", str);
-									$('#grafico').show();
-									//$('#result').append( 'ServerResponse:' + json.server_response);
-								},
-								error : function(xhr,errmsg,err) {
-									alert(xhr.status + ": " + xhr.responseText);
-								}
-							});
-							return false;
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#integralSimple', "ayuda", "width=800, height=600");
+			});
+
+			var indice = 0;
+			$("#graf").click(function () {
+				var fun = $("#id_funcion").val();
+				var variable = $("#id_variable").val();
+				var inferior = $("#id_inferior").val();
+				var superior = $("#id_superior").val();
+				if (inferior == '' || superior == '')
+					alert('Para graficar es necesario definir los limites')
+				else {
+					$.ajax({
+						url: "graficar",
+						type: "POST",
+						dataType: "json",
+						data: {
+							funcion: fun,
+							variable: variable,
+							inferior: inferior,
+							superior: superior,
+							sombra: 1,
+							csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
+
+						success: function (json) {
+							str = "{% static 'imagenes/' %}" + json.server_response;
+							$('#foo').attr("src", str);
+							$('#grafico').show();
+							//$('#result').append( 'ServerResponse:' + json.server_response);
+						},
+						error: function (xhr, errmsg, err) {
+							alert(xhr.status + ": " + xhr.responseText);
 						}
 					});
+					return false;
+				}
+			});
 
-					if($('#id_tipoIntegral_0').attr('checked') || $('#id_tipoIntegral_1').attr('checked')) {
-						$('#panelIndef').show();
-						$("#int").removeAttr('disabled');
+			if ($('#id_tipoIntegral_0').attr('checked') || $('#id_tipoIntegral_1').attr('checked')) {
+				$('#panelIndef').show();
+				$("#int").removeAttr('disabled');
+			}
+
+			if ($('#id_tipoIntegral_1').attr('checked')) {
+				$('#paneldef').show();
+				$("#graf").removeAttr('disabled');
+			}
+
+			if ($('#id_tipoIntegral_2').attr('checked')) {
+				$('#panelIndef').hide();
+			}
+
+			$('#agregoRow').click(function () {
+				$('#row' + indice).show();
+				indice++;
+			});
+
+			$('#eliminoRow').click(function () {
+				$('#row' + (indice - 1)).hide();
+				indice--;
+			});
+
+			if ($('#id_tipoIntegral_2').attr('checked')) {
+				$('#panelnum').show();
+				if ($('input[name=formula]:checked', '#form').val() == "trapecio") {
+					$('#paneltabla').show();
+					for (i = 0; i < 10; i++) {
+						if ($('#id_x' + i).val() != "") {
+							$('#row' + i).show();
+							indice++;
+						}
 					}
+				}
+				if ($('input[name=formula]:checked', '#form').val() == "simpson") {
+					$('#paneltabla').show();
+				}
+			}
 
-					if($('#id_tipoIntegral_1').attr('checked')) {
+			$('[name="formula"]').on('change', function () {
+				if ($('input[name=formula]:checked', '#form').val() == "trapecio") {
+					$('#paneltabla').show();
+				}
+				if ($('input[name=formula]:checked', '#form').val() == "simpson") {
+					$('#paneltabla').show();
+				}
+			})
+
+			$('[name="tipoIntegral"]').on('change', function () {
+				$("#int").removeAttr('disabled');
+				$("#graf").removeAttr('disabled');
+				if ($('input[name=tipoIntegral]:checked', '#form').val() == "numerica") {
+					$('#panelIndef').hide();
+					$('#paneldef').hide();
+					$('#panelnum').show();
+					$("#graf").attr('disabled', true);
+				} else {
+					$('#panelnum').hide();
+					$('#paneltabla').hide();
+					$('#id_formula_0').attr('checked', false);
+					$('#id_formula_1').attr('checked', false);
+					if ($('input[name=tipoIntegral]:checked', '#form').val() == "indefinida") {
+						$('#panelIndef').show();
+						$('#paneldef').hide();
+						$('#panelnum').hide();
+						$("#graf").attr('disabled', true);
+					}
+					if ($('input[name=tipoIntegral]:checked', '#form').val() == "definida") {
+						$('#panelIndef').show();
 						$('#paneldef').show();
 						$("#graf").removeAttr('disabled');
+						// $('#paneldef').slideToggle("slow");
 					}
+				}
+			})
 
-					if($('#id_tipoIntegral_2').attr('checked')) {
-						$('#panelIndef').hide();
-					}
-
-					$('#agregoRow').click(function() {
-						$('#row'+indice).show();
-						indice++;
-					});
-
-					$('#eliminoRow').click(function() {
-						$('#row'+(indice-1)).hide();
-						indice--;
-					});
-
-					if ($('#id_tipoIntegral_2').attr('checked')){
-						$('#panelnum').show();
-						if($('input[name=formula]:checked', '#form').val()=="trapecio") {
-							$('#paneltabla').show();
-							for (i=0;i<10;i++){
-								if($('#id_x'+i).val()!=""){
-									$('#row'+i).show();
-									indice++;
-								}
-							}
-						}
-						if($('input[name=formula]:checked', '#form').val()=="simpson") {
-							$('#paneltabla').show();
-						}
-					}
-
-					$('[name="formula"]').on('change', function() {
-						if($('input[name=formula]:checked', '#form').val()=="trapecio") {
-							$('#paneltabla').show();
-						}
-						if($('input[name=formula]:checked', '#form').val()=="simpson") {
-							$('#paneltabla').show();
-						}
-					})
-				
-					$('[name="tipoIntegral"]').on('change', function() {
-						$("#int").removeAttr('disabled');
-						$("#graf").removeAttr('disabled');
-						if($('input[name=tipoIntegral]:checked', '#form').val()=="numerica") {
-							$('#panelIndef').hide();
-							$('#paneldef').hide();
-							$('#panelnum').show();
-							$("#graf").attr('disabled', true);
-						} else{
-							$('#panelnum').hide();
-							$('#paneltabla').hide();
-							$('#id_formula_0').attr('checked', false);
-							$('#id_formula_1').attr('checked', false);
-							if($('input[name=tipoIntegral]:checked', '#form').val()=="indefinida") {
-								$('#panelIndef').show();
-								$('#paneldef').hide();
-								$('#panelnum').hide();
-								$("#graf").attr('disabled', true);
-							}
-							if($('input[name=tipoIntegral]:checked', '#form').val()=="definida") {
-								$('#panelIndef').show();
-								$('#paneldef').show();
-								$("#graf").removeAttr('disabled');
-								// $('#paneldef').slideToggle("slow");
-							}
-						}
-					})
-
-					$('#cont').show();
-				});
-					
-			</script>
-			<div class="container">
-				<h1>Integral Simple</h1>
-				<br>
+			$('#cont').show();
+		});
+	</script>
+	<div class="container">
+		<h1>Integral Simple</h1>
+		<br>
+		<div class="row">
+			<div class="col-md-6">
 				<div class="row">
-					<div class="col-md-6">
-						<div class="row">
-							<div class="col-md-12" style='font-weight: bold; color:#638cb5;'>{{form.tipoIntegral}}</div>
-						</div>
-						<br>
-						<div class="panel" id="panelIndef">
-							{% if form.funcion %}
-								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-									Función 
-								</div>
-								<div class="col-md-4" id="fun">
-									{{form.funcion}}
-								</div>
-								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
-									{{form.variable.label_tag}}
-								</div>
-								<div class="col-md-4">
-									{{form.variable}}
-								</div>
-							{% endif %}
-						</div>
-						<br>
-						<div class="panel" id="paneldef">
-								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
-								<div class="col-md-4">{{form.inferior}}</div>
-								<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
-								<div class="col-md-4">{{form.superior}}</div>
-						</div>
-						<div class="panel" id="panelnum" style='font-weight: bold; color:#638cb5;'>
-							<div class="col-md-12">{{form.formula}}</div>
-						</div>
-						<br>
-						<!--<div class="row">-->
-						<div class="panel" id="paneltabla">
-							<div class="col-md-12">
-									<table class="table table-bordered" id="tablavalores">
-										<thead>
-											<tr>
-												<th style='padding:0;width:80px;'>
-													<button type="button" class="btn btn-primary" id="agregoRow" >+</button>
-													<button type="button" class="btn btn-danger" id="eliminoRow" >-</button>
-												</th>
-												<th style='text-align:center;font-weight: bold; color:#638cb5;'>x<sub>i</sub></th>
-												<th style='text-align:center;font-weight: bold; color:#638cb5;'>f(x<sub>i</sub>)</th>
-											</tr>
-										</thead>
-										<tbody>
-												<tr id="row0" style='display:none'>
-													<th scope="row"></th>
-													<td style='text-align:center'>{{form.x0}}</td>
-													<td style='text-align:center'>{{form.fx0}}</td>
-												</tr>
-												<tr id="row1" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x1}}</td> <td style='text-align:center'>{{form.fx1}}</td></tr>
-												<tr id="row2" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x2}}</td> <td style='text-align:center'>{{form.fx2}}</td></tr>
-												<tr id="row3" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x3}}</td> <td style='text-align:center'>{{form.fx3}}</td></tr>
-												<tr id="row4" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x4}}</td> <td style='text-align:center'>{{form.fx4}}</td></tr>
-												<tr id="row5" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x5}}</td> <td style='text-align:center'>{{form.fx5}}</td></tr>
-												<tr id="row6" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x6}}</td> <td style='text-align:center'>{{form.fx6}}</td></tr>
-												<tr id="row7" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x7}}</td> <td style='text-align:center'>{{form.fx7}}</td></tr>
-												<tr id="row8" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x8}}</td> <td style='text-align:center'>{{form.fx8}}</td></tr>
-												<tr id="row9" style='display:none'> <th scope="row"></th> <td style='text-align:center'>{{form.x9}}</td> <td style='text-align:center'>{{form.fx9}}</td></tr>
-										</tbody>
-									</table>
-							</div>
+					<div class="col-md-12" style='font-weight: bold; color:#638cb5;'>{{form.tipoIntegral}}</div>
+				</div>
+				<br>
+				<div class="panel" id="panelIndef">
+					{% if form.funcion %}
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+						Función
 					</div>
-					
-					<div class="row">
-						<br><br>
-						<div class="col-md-12">
-							<button id="int" name="integrar" type="submit" class="btn btn-success" disabled>Integrar</button>
-							<button id="graf" name="graficar" type="submit" class="btn btn-success" disabled>Graficar</button>
-							<a class="btn btn-info view-pdf" href="{% static 'documentos/IntegralSimple.pdf' %}">Ayuda</a>
-						</div>
+					<div class="col-md-4" id="fun">
+						{{form.funcion}}
 					</div>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>
+						{{form.variable.label_tag}}
+					</div>
+					<div class="col-md-4">
+						{{form.variable}}
+					</div>
+					{% endif %}
+				</div>
+				<br>
+				<div class="panel" id="paneldef">
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.inferior.label_tag}}</div>
+					<div class="col-md-4">{{form.inferior}}</div>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.superior.label_tag}}</div>
+					<div class="col-md-4">{{form.superior}}</div>
+				</div>
+				<div class="panel" id="panelnum" style='font-weight: bold; color:#638cb5;'>
+					<div class="col-md-12">{{form.formula}}</div>
+				</div>
+				<br>
+				<!--<div class="row">-->
+				<div class="panel" id="paneltabla">
+					<div class="col-md-12">
+						<table class="table table-bordered" id="tablavalores">
+							<thead>
+								<tr>
+									<th style='padding:0;width:80px;'>
+										<button type="button" class="btn btn-primary" id="agregoRow">+</button>
+										<button type="button" class="btn btn-danger" id="eliminoRow">-</button>
+									</th>
+									<th style='text-align:center;font-weight: bold; color:#638cb5;'>x
+										<sub>i</sub>
+									</th>
+									<th style='text-align:center;font-weight: bold; color:#638cb5;'>f(x
+										<sub>i</sub>)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr id="row0" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x0}}</td>
+									<td style='text-align:center'>{{form.fx0}}</td>
+								</tr>
+								<tr id="row1" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x1}}</td>
+									<td style='text-align:center'>{{form.fx1}}</td>
+								</tr>
+								<tr id="row2" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x2}}</td>
+									<td style='text-align:center'>{{form.fx2}}</td>
+								</tr>
+								<tr id="row3" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x3}}</td>
+									<td style='text-align:center'>{{form.fx3}}</td>
+								</tr>
+								<tr id="row4" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x4}}</td>
+									<td style='text-align:center'>{{form.fx4}}</td>
+								</tr>
+								<tr id="row5" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x5}}</td>
+									<td style='text-align:center'>{{form.fx5}}</td>
+								</tr>
+								<tr id="row6" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x6}}</td>
+									<td style='text-align:center'>{{form.fx6}}</td>
+								</tr>
+								<tr id="row7" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x7}}</td>
+									<td style='text-align:center'>{{form.fx7}}</td>
+								</tr>
+								<tr id="row8" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x8}}</td>
+									<td style='text-align:center'>{{form.fx8}}</td>
+								</tr>
+								<tr id="row9" style='display:none'>
+									<th scope="row"></th>
+									<td style='text-align:center'>{{form.x9}}</td>
+									<td style='text-align:center'>{{form.fx9}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-					{% if messages %}
+				<div class="row">
 					<br>
-					<div class="alert alert-success alert-dismissable" contenteditable="false">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-						<h4>Resultado:</h4>
-						{% for message in messages %}
-							<p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-						{% endfor %}
-						
+					<br>
+					<div class="col-md-12">
+						<button id="int" name="integrar" type="submit" class="btn btn-success" disabled>Integrar</button>
+						<button id="graf" name="graficar" type="submit" class="btn btn-success" disabled>Graficar</button>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
-					<!--<div class="row">
+				</div>
+
+				{% if messages %}
+				<br>
+				<div class="alert alert-success alert-dismissable" contenteditable="false">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4>Resultado:</h4>
+					{% for message in messages %}
+					<p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+					{% endfor %}
+
+				</div>
+				<!--<div class="row">
 						<div class="col-md-12">
 							
 								{% for message in messages %}
@@ -220,15 +264,17 @@
 							{% endfor %}
 						</div>
 					</div>-->
-					{% endif %}
-				</div>
-				<div class="col-md-6">
+				{% endif %}
+			</div>
+			<div class="col-md-6">
 				<div class="row">
 					<div class="panel" id="grafico">
-						<div class="cell" align="center"><img id="foo" width="450" height="400"></div>
+						<div class="cell" align="center">
+							<img id="foo" width="450" height="400">
+						</div>
 					</div>
 				</div>
-				</div>
+			</div>
 		</div>
 	</div>
 </form>

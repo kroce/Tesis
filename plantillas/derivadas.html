@@ -1,9 +1,15 @@
-{% extends "plantilla.html" %} {% load staticfiles %} {% block contenido %}
+{% extends "plantilla.html" %} 
+{% load staticfiles %} 
+{% block contenido %}
 <form id="form" method="POST" class="post-form">{% csrf_token %}
 	<script>
 		var fun, variable, inferior, superior, coleccion;
 		var pruebaBand = true;
 		$(document).ready(function () {
+			
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#derivadaSimbolica', "ayuda", "width=800, height=600");
+			});
 
 			$("#acep").click(function () {
 				fun = $("#id_funcion").val();
@@ -162,7 +168,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Derivar</button>
-						<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_1var.pdf' %}">Ayuda</a>
+						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
 				</div>
 				{% endif %}
@@ -199,8 +205,6 @@
 						<div class="cell" align="right">
 							<button id="atras" class="btn btn-info glyphicon glyphicon-backward" disabled></button>&nbsp;&nbsp;&nbsp;
 							<button id="sig" class="btn btn-info glyphicon glyphicon-forward" alt="Submit"></button>
-							<!--<input id="atras" type="image" src="{% static 'imagenes/atras.gif' %}" disabled />&nbsp;&nbsp;&nbsp;
-							<input id="sig" type="image" src="{% static 'imagenes/adelante.gif' %}" alt="Submit" />-->
 						</div>
 					</div>
 				</div>

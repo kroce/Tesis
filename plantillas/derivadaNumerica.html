@@ -6,6 +6,11 @@
 <form id="form" method="POST" class="post-form">{% csrf_token %}
   <script>
     $(document).ready(function() {
+
+			$('#ayuda').click(function () {
+				window.open('./ayuda.html#derivadaNumerica', "ayuda", "width=800, height=600");
+			});
+
       var indice = 0;
       for (i=0;i<10;i++){
         if($('#id_x'+i).val()!=""){
@@ -92,7 +97,7 @@
       <div class="row">
         <div class="col-md-12">
           <button id="derivar" name="derivar" type="submit" class="btn btn-success">Derivar</button>
-					<a class="btn btn-info view-pdf" href="{% static 'documentos/Ayuda_derivadaNum.pdf' %}">Ayuda</a>
+          <button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
         </div>
       </div>
     </div>
