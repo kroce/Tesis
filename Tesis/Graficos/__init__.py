@@ -119,21 +119,27 @@ class Grafico:
 
             # Calcula raiz y dibuja el punto
             r = (inf+sup)/2
+            print 'r'
+            print r
             plt.scatter([r, ], [Fx(r), ], 50, color='orange')
             plt.annotate(r'$(r,f(r))$',xy=(r, Fx(r)), xycoords='data',
                 xytext=(7, 0), textcoords='offset points', fontsize=16)
+            print '1'
 
             # Lineas de (a, fa)
             plt.plot([inf,inf-calc], [Fx(inf),Fx(inf)], color='green', linewidth=1)
             plt.plot([inf,inf], [Fx(inf),0], color='green', linewidth=1)
+            print '2'
 
             # Lineas de (b, fb)
             plt.plot([sup, sup], [Fx(sup),0], color='red', linewidth=1)
             plt.plot([sup, inf-calc], [Fx(sup), Fx(sup)], color='red', linewidth=1)
+            print '3'
             
             # Lineas de (r, fr)
             plt.plot([r, r], [Fx(r),0], color='orange', linewidth=1)
             plt.plot([r, inf-calc], [Fx(r), Fx(r)], color='orange', linewidth=1)
+            print '4'
 
             plt.legend(loc='upper right', shadow=True, fontsize='small')
             labelfont = estilo['labelfont']
@@ -150,6 +156,7 @@ class Grafico:
             plt.close()
 
             # algoritmo de biseccion
+            print '5'
             
             band = 0;
             r = (inf+sup)/2
@@ -162,16 +169,18 @@ class Grafico:
                 fb = Fx(sup)
             
             # Fin algoritmo
+            print '6'
      
             #round a 5 solo si tienen mas de 5 decimales
-            if (str(fa)[::-1].find('.') > 5):
-                fa = fa.round(5)
+            # if (str(fa)[::-1].find('.') > 5):
+            #     fa = fa.round(5)
 
-            if (str(fb)[::-1].find('.') > 5):
-                fb= fb.round(5)
+            # if (str(fb)[::-1].find('.') > 5):
+            #     fb= fb.round(5)
 
-            if (str(fr)[::-1].find('.') > 5):
-                fr= fr.round(5)
+            # if (str(fr)[::-1].find('.') > 5):
+            #     fr= fr.round(5)
+            print '7'
 
             return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
             

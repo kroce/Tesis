@@ -75,6 +75,9 @@ class Metodos:
             return resultado
 
         sumaPuntos = fun(a,c)+fun(b,c)+fun(a,d)+fun(b,d)
+        print 'sumatoria'
+        print sumatoriaDoble(m,n,true,true)
+
         sd2 = float(1)/float(9)*h*k*(sumaPuntos+4*sumatoria(n+1,a,y,2,false)
         +2*sumatoria(n,a,y,2,true)+4*sumatoria(n+1,b,y,2,false)+2*sumatoria(n,b,y,2,true)
         +4*sumatoria(m+1,x,c,1,false)+4*sumatoria(m+1,x,d,1,false)+2*sumatoria(m,x,c,1,true)
