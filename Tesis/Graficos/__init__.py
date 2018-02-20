@@ -119,27 +119,21 @@ class Grafico:
 
             # Calcula raiz y dibuja el punto
             r = (inf+sup)/2
-            print 'r'
-            print r
             plt.scatter([r, ], [Fx(r), ], 50, color='orange')
             plt.annotate(r'$(r,f(r))$',xy=(r, Fx(r)), xycoords='data',
                 xytext=(7, 0), textcoords='offset points', fontsize=16)
-            print '1'
 
             # Lineas de (a, fa)
             plt.plot([inf,inf-calc], [Fx(inf),Fx(inf)], color='green', linewidth=1)
             plt.plot([inf,inf], [Fx(inf),0], color='green', linewidth=1)
-            print '2'
 
             # Lineas de (b, fb)
             plt.plot([sup, sup], [Fx(sup),0], color='red', linewidth=1)
             plt.plot([sup, inf-calc], [Fx(sup), Fx(sup)], color='red', linewidth=1)
-            print '3'
             
             # Lineas de (r, fr)
             plt.plot([r, r], [Fx(r),0], color='orange', linewidth=1)
             plt.plot([r, inf-calc], [Fx(r), Fx(r)], color='orange', linewidth=1)
-            print '4'
 
             plt.legend(loc='upper right', shadow=True, fontsize='small')
             labelfont = estilo['labelfont']
@@ -156,7 +150,6 @@ class Grafico:
             plt.close()
 
             # algoritmo de biseccion
-            print '5'
             
             band = 0;
             r = (inf+sup)/2
@@ -169,7 +162,6 @@ class Grafico:
                 fb = Fx(sup)
             
             # Fin algoritmo
-            print '6'
      
             #round a 5 solo si tienen mas de 5 decimales
             # if (str(fa)[::-1].find('.') > 5):
@@ -255,8 +247,8 @@ class Grafico:
 
         # algoritmo
         band = 0;
-        x1 = round(varx0-(fx0/dfx0),4)
-        fx1 = round(Fx(x1),4)
+        x1 = round(varx0-(fx0/dfx0),5)
+        fx1 = round(Fx(x1),5)
         x0 = x1
 
         if (abs(fx1) <= float(error)):
@@ -264,7 +256,7 @@ class Grafico:
         else:
             x0 = x1
         # Fin algoritmo
-        return {'filename':filename, 'x0':x0, 'fx0':round(fx0,4), 'x1': x1, 'fx1':fx1, 'band':band, 'error':0}
+        return {'filename':filename, 'x0':x0, 'fx0':round(fx0,5), 'x1': x1, 'fx1':fx1, 'band':band, 'error':0}
 
     def agregarEjes(self):
         plt.subplots_adjust(left=0.15)        # prevents overlapping of the y label
