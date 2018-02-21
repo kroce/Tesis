@@ -11,6 +11,10 @@
 			});
 
 			$("#graf").click(function () {
+				$('#grafico').hide();
+				str = "{% static 'imagenes/loading2.gif' %}";
+				$('#prg').attr("src", str);
+				$('#progreso').show();
 				var fun = $("#id_funcion").val();
 				var variable = $("#id_variable").val();
 				var inferior = $("#id_inferior").val();
@@ -35,6 +39,7 @@
 						},
 
 						success: function (json) {
+							$('#progreso').hide();
 							str = "{% static 'imagenes/' %}" + json.server_response;
 							$('#foo').attr("src", str);
 							$('#grafico').show();
@@ -116,6 +121,13 @@
 			</div>
 			<div class="col-md-6">
 				<div class="row">
+					<div class="panel" id="progreso">
+						<br><br><br><br>
+						<br><br>
+						<div style="text-align:center">
+							<img id="prg" width="150" height="150">
+						</div>
+					</div>
 					<div class="panel" id="grafico">
 						<div class="cell">
 							<img id="foo" width="550" height="500">
