@@ -13,7 +13,7 @@
         "type": "text", 
         "name": "funcion2", 
         "label": "Funci\u00f3n 2"
-    }, 
+    },  
     {
         "max_length": 100, 
         "required": 0, 
