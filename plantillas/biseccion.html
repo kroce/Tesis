@@ -51,8 +51,8 @@
 						coleccion.push(datos);
 						cont = 0;
 						$('#foo').attr("src", str);
-						$('#cotaa').html(" (a, f(a)) = (" + inferior.toFixed(5) + ", " + json.server_response['fa'].toFixed(5) + ")");
-						$('#cotab').html(" (b, f(b)) = (" + superior.toFixed(5) + ", " + json.server_response['fb'].toFixed(5) + ")");
+						$('#cotaa').html(" (a, f(a)) = (" + inferior + ", " + json.server_response['fa'].toFixed(5) + ")");
+						$('#cotab').html(" (b, f(b)) = (" + superior + ", " + json.server_response['fb'].toFixed(5) + ")");
 						$('#raiz').html(" (r, f(r)) = (" + json.server_response['raiz'].toFixed(5) + ", " + json.server_response['fr'] + ")");
 						$('#iteracion').html(cont + 1);
 						$('#grafico').show();
@@ -115,8 +115,8 @@
 							}
 							coleccion.push(datos);
 							$('#foo').attr("src", str);
-							$('#cotaa').html(" (a, f(a)) = (" + inferior.toFixed(5) + ", " + json.server_response['fa'].toFixed(5) + ")");
-							$('#cotab').html(" (b, f(b)) = (" + superior.toFixed(5) + ", " + json.server_response['fb'].toFixed(5) + ")");
+							$('#cotaa').html(" (a, f(a)) = (" + parseFloat(inferior).toFixed(5) + ", " + json.server_response['fa'].toFixed(5) + ")");
+							$('#cotab').html(" (b, f(b)) = (" + parseFloat(superior).toFixed(5) + ", " + json.server_response['fb'].toFixed(5) + ")");
 							$('#raiz').html(" (r, f(r)) = (" + json.server_response['raiz'].toFixed(5) + ", " + json.server_response['fr'].toFixed(5) + ")");
 							$('#iteracion').html(cont + 1);
 							$('#grafico').show();
