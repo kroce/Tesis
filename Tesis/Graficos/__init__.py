@@ -156,24 +156,13 @@ class Grafico:
             fr = Fx(r)
 
             if (abs(inf-sup) <= float(error)) or (abs(fr) <= float(error)):
+            # if (abs(fr) <= float(error)):
                 band = 1
             else:
                 fa = Fx(inf)
                 fb = Fx(sup)
             
             # Fin algoritmo
-     
-            #round a 5 solo si tienen mas de 5 decimales
-            # if (str(fa)[::-1].find('.') > 5):
-            #     fa = fa.round(5)
-
-            # if (str(fb)[::-1].find('.') > 5):
-            #     fb= fb.round(5)
-
-            # if (str(fr)[::-1].find('.') > 5):
-            #     fr= fr.round(5)
-            print '7'
-
             return {'filename':filename, 'inf':inf, 'sup':sup, 'fa':fa, 'fb':fb, 'raiz':r, 'fr':fr, 'band':band, 'error':0}
             
 
