@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^grafico2var', 'Tesis.views.grafico2var'), #html
     url(r'^graficar$', 'Tesis.views.graficarFuncion'),
     url(r'^graficar_funciones$', 'Tesis.views.graficarFunciones'), #Ajax
-    url(r'^graficar3d$', 'Tesis.views.graficarFuncion3D'),
+    url(r'^graficar3d$', 'Tesis.views.graficarFuncion3D'), 
     url(r'^derivadas', 'Tesis.views.derivadas'),
     url(r'^derivadaNumerica', 'Tesis.views.derivadaNumerica'),
     url(r'^der_numerica_ajax', 'Tesis.views.derivadaAjax'),
