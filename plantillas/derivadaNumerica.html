@@ -6,7 +6,6 @@
 <form id="form" method="POST" class="post-form">{% csrf_token %}
   <script>
     $(document).ready(function() {
-
 			$('#ayuda').click(function () {
 				window.open('./ayuda.html#derivadaNumerica', "ayuda", "width=800, height=600");
 			});
@@ -26,6 +25,10 @@
       $('#eliminoRow').click(function() {
         $('#row'+(indice-1)).hide();
         indice--;
+      });
+
+      $('[name="tipo"]').on('change', function() {
+        $("#mensajes").html("");
       });
 
     });
@@ -84,7 +87,7 @@
         </div>
       </div>
       
-      {% if messages %}
+      <!-- {% if messages %}
       <br>
       <div class="row">
           <div class="col-md-12">
@@ -93,13 +96,25 @@
           {% endfor %}
         </div>
       </div>
-      {% endif %}
+      {% endif %} -->
       <div class="row">
         <div class="col-md-12">
           <button id="derivar" name="derivar" type="submit" class="btn btn-success">Derivar</button>
           <button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
         </div>
       </div>
+      {% if messages %}
+        <br>
+        <div id="mensajes">
+          <div class="alert alert-success alert-dismissable" contenteditable="true">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4>Resultado:</h4>
+            {% for message in messages %}
+              <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+          </div>
+        </div>
+       {% endif %}
     </div>
     
     <div class="col-md-6" align="center">

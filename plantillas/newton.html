@@ -19,7 +19,6 @@
 				x0 = $("#id_x0").val();
 				error = $("#id_error").val();
 				coleccion = [];
-				//esraiz = false;
 				$('#atras').attr('disabled', true);
 				$.ajax({
 					url: "graficar_newton",
@@ -76,9 +75,10 @@
 
 			$("#sig").click(function (event) {
 				cont++;
-				$('#atras').removeAttr("disabled");
 				//si todavía no fue cargado
 				if (coleccion[cont] == undefined) {
+					$('#sig').attr('disabled', true);
+					$('#atras').attr('disabled', true);
 					$.ajax({
 						url: "graficar_newton",
 						type: "POST",
@@ -94,6 +94,8 @@
 						success: function (json) {
 							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 							esraiz = (json.server_response['band'] == 1);
+							$('#sig').attr('disabled', false);
+							$('#atras').attr('disabled', false);
 							var datos = {
 								x0: x0,
 								x1: json.server_response['x1'],
@@ -208,7 +210,7 @@
 				<br>
 				<div class="row">
 					<div class="col-md-6">
-						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
+						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Calcular</button>
 						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
 				</div>

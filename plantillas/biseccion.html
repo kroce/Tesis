@@ -84,9 +84,10 @@
 
 			$("#sig").click(function (event) {
 				cont++;
-				$('#atras').removeAttr("disabled");
 				//si todavía no fue cargado
 				if (coleccion[cont] == undefined) {
+					$('#sig').attr('disabled', true);
+					$('#atras').attr('disabled', true);
 					$.ajax({
 						url: "graficar_biseccion",
 						type: "POST",
@@ -103,6 +104,8 @@
 						success: function (json) {
 							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 							esraiz = (json.server_response['band'] == 1);
+							$('#sig').attr('disabled', false);
+							$('#atras').attr('disabled', false);
 							var datos = {
 								a: inferior,
 								b: superior,
@@ -143,8 +146,8 @@
 				} else {
 					event.preventDefault();
 					$('#foo').attr("src", coleccion[cont]['img']);
-					$('#cotaa').html(" (a, f(a)) = (" + coleccion[cont]['a'].toFixed(5) + ", " + coleccion[cont]['fa'].toFixed(5) + ")");
-					$('#cotab').html(" (b, f(b)) = (" + coleccion[cont]['b'].toFixed(5) + ", " + coleccion[cont]['fb'].toFixed(5) + ")");
+					$('#cotaa').html(" (a, f(a)) = (" + parseFloat(coleccion[cont]['a']).toFixed(5) + ", " + coleccion[cont]['fa'].toFixed(5) + ")");
+					$('#cotab').html(" (b, f(b)) = (" + parseFloat(coleccion[cont]['b']).toFixed(5) + ", " + coleccion[cont]['fb'].toFixed(5) + ")");
 					$('#raiz').html(" (r, f(r)) = (" + coleccion[cont]['r'].toFixed(5) + ", " + coleccion[cont]['fr'].toFixed(5) + ")");
 					$('#iteracion').html(cont + 1);
 					$('#raiz').css({
@@ -172,8 +175,8 @@
 				if (cont == 0)
 					$('#atras').attr('disabled', true);
 				$('#foo').attr("src", coleccion[cont]['img']);
-				$('#cotaa').html(" (a, f(a)) = (" + coleccion[cont]['a'].toFixed(5) + ", " + coleccion[cont]['fa'].toFixed(5) + ")");
-				$('#cotab').html(" (b, f(b)) = (" + coleccion[cont]['b'].toFixed(5) + ", " + coleccion[cont]['fb'].toFixed(5) + ")");
+				$('#cotaa').html(" (a, f(a)) = (" + parseFloat(coleccion[cont]['a']).toFixed(5) + ", " + coleccion[cont]['fa'].toFixed(5) + ")");
+				$('#cotab').html(" (b, f(b)) = (" + parseFloat(coleccion[cont]['b']).toFixed(5) + ", " + coleccion[cont]['fb'].toFixed(5) + ")");
 				$('#raiz').html(" (r, f(r)) = (" + coleccion[cont]['r'].toFixed(5) + ", " + coleccion[cont]['fr'].toFixed(5) + ")");
 				$('#raiz').css({
 					"border": "none"
@@ -239,7 +242,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Aceptar</button>
+						<button id="acep" name="aceptar" type="submit" class="btn btn-success">Calcular</button>
 						<button type="button" class="btn btn-primary" id="ayuda">Ayuda</button>
 					</div>
 				</div>

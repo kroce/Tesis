@@ -70,9 +70,10 @@
 
 			$("#sig").click(function (event) {
 				cont++;
-				$('#atras').removeAttr("disabled");
 				//si todavía no fue cargado
 				if (coleccion[cont] == undefined) {
+					$('#sig').attr('disabled', true);
+					$('#atras').attr('disabled', true);
 					$.ajax({
 						url: "graficar_derivada",
 						type: "POST",
@@ -87,6 +88,8 @@
 						},
 						success: function (json) {
 							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
+							$('#sig').attr('disabled', false);
+							$('#atras').attr('disabled', false);
 							var datos = {
 								funcion: json.server_response['funcion'],
 								derivada: json.server_response['derivada'],
