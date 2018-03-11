@@ -84,6 +84,7 @@
 			$('[name="tipoIntegral"]').on('change', function() {
 				$("#int").show();
 				$("#mensajes").html("");
+				$("#grafico").hide();
 				if($('input[name=tipoIntegral]:checked', '#form').val()=="indefinida") {
 					$('#panelNum').hide();
 					$('#panelFormula').hide();
