@@ -10,8 +10,11 @@
 			$('#ayuda').click(function () {
 				window.open('./ayuda.html#derivadaSimbolica', "ayuda", "width=800, height=600");
 			});
-
+			coleccion = [];
+			cont = 0;
 			$("#acep").click(function () {
+				coleccion = [];
+				cont = 0;
 				fun = $("#id_funcion").val();
 				variable = $("#id_variable").val();
 				inf = $("#id_inf").val();
@@ -19,9 +22,10 @@
 				if (inferior == '' || superior == '')
 					alert("derivarda común, ver como graficar");
 				else {
-					coleccion = [];
+					// coleccion = [];
+					// cont = 0;
 					$('#atras').attr('disabled', true);
-					$('#sig').attr('disabled', false);
+					$('#sig').attr('disabled', true);
 					$.ajax({
 						url: "graficar_derivada",
 						type: "POST",
@@ -35,6 +39,8 @@
 							csrfmiddlewaretoken: '{{ csrf_token }}'
 						},
 						success: function (json) {
+							$('#atras').attr('disabled', false);
+							$('#sig').attr('disabled', false);
 							if (json.server_response['filename'] != ''){
 								str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 								var datos = {
@@ -43,7 +49,8 @@
 									img: str
 								}
 								coleccion.push(datos);
-								cont = 0;
+								fun = datos.derivada;
+								// cont = 0;
 								$('#foo').attr("src", str);
 								$('#grafico').show();
 								$('#valores').show();
@@ -121,6 +128,7 @@
 					fun = coleccion[cont]['derivada'];
 					if (parseInt(coleccion[cont]['derivada']) == 0)
 						$('#sig').attr('disabled', true);
+						$('#atras').attr('disabled', false);
 				}
 			});
 
