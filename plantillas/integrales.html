@@ -86,10 +86,17 @@
 				}
 				if ($('input[name=formula]:checked', '#form').val() == "simpson") {
 					$('#paneltabla').show();
+					for (i = 0; i < 10; i++) {
+						if ($('#id_x' + i).val() != "") {
+							$('#row' + i).show();
+							indice++;
+						}
+					}
 				}
 			}
 
 			$('[name="formula"]').on('change', function () {
+				$("#mensajes").html("");
 				if ($('input[name=formula]:checked', '#form').val() == "trapecio") {
 					$('#paneltabla').show();
 				}
@@ -100,6 +107,7 @@
 
 			$('[name="tipoIntegral"]').on('change', function () {
 				$("#int").show();
+				$('#grafico').hide();
 				$("#mensajes").html("");
 				if ($('input[name=tipoIntegral]:checked', '#form').val() == "numerica") {
 					$('#panelIndef').hide();
@@ -121,11 +129,9 @@
 						$('#panelIndef').show();
 						$('#paneldef').show();
 						$("#graf").show();
-						// $('#paneldef').slideToggle("slow");
 					}
 				}
 			})
-
 			$('#cont').show();
 		});
 	</script>
