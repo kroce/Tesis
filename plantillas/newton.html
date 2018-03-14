@@ -6,9 +6,10 @@
 
 <form id="form" method="POST" class="post-form">{% csrf_token %}
 	<script>
-		var fun, variable, x0, coleccion;
+		var fun, variable, x0, coleccion, cont;
 		$(document).ready(function () {
-
+			coleccion = [];
+			cont = 0;
 			$('#ayuda').click(function () {
 				window.open('./ayuda.html#newton', "ayuda", "width=800, height=600");
 			});
@@ -44,10 +45,11 @@
 							img: str
 						}
 						coleccion.push(datos);
-						cont = 0;
+						// cont = 0;
 						$('#foo').attr("src", str);
-						$('#x0').html(" (x0, f(x0)) = (" + x0 + ", " + json.server_response['fx0'] + ")");
-						$('#x1').html(" (x1, f(x1)) = (" + json.server_response['x1'] + ", " + json.server_response['fx1'] + ")");
+						$('#x0').html(" (x<sub>0</sub>, f(x<sub>0</sub>)) = (" + x0 + ", " + json.server_response['fx0'] + ")");
+						$('#x1').html(" (x<sub>1</sub>, f(x<sub>1</sub>)) = (" + json.server_response['x1'] + ", " + json.server_response['fx1'] + ")");
+						$('#iteracion').html(cont + 1);
 						$('#grafico').show();
 						$('#valores').show();
 
@@ -57,11 +59,13 @@
 								"border-width": "1px",
 								"border-style": "solid"
 							});
+							$('#resultado').html("Raíz x<sub>1</sub> = "+ json.server_response['x1']);
 							$('#sig').attr('disabled', true);
 						} else {
 							$('#x1').css({
 								"border": "none"
 							});
+							$('#resultado').html("");
 							$('#sig').attr('disabled', false);
 							x0 = json.server_response['x1'];
 						}
@@ -106,8 +110,9 @@
 							}
 							coleccion.push(datos);
 							$('#foo').attr("src", str);
-							$('#x0').html(" (x0, f(x0)) = (" + x0 + ", " + json.server_response['fx0'] + ")");
-							$('#x1').html(" (x1, f(x1)) = (" + json.server_response['x1'] + ", " + json.server_response['fx1'] + ")");
+							$('#x0').html(" (x<sub>0</sub>, f(x<sub>0</sub>)) = (" + x0 + ", " + json.server_response['fx0'] + ")");
+							$('#x1').html(" (x<sub>1</sub>, f(x<sub>1</sub>)) = (" + json.server_response['x1'] + ", " + json.server_response['fx1'] + ")");
+							$('#iteracion').html(cont + 1);
 							$('#grafico').show();
 							$('#valores').show();
 							if (esraiz) {
@@ -116,12 +121,15 @@
 									"border-width": "1px",
 									"border-style": "solid"
 								});
+								$('#resultado').html("Raíz x<sub>1</sub> = "+ json.server_response['x1']);
 								$('#sig').attr('disabled', true);
 							} else {
 								$('#x1').css({
 									"border": "none"
 								});
+								$('#resultado').html("");
 								$('#sig').attr('disabled', false);
+								$('#atras').attr('disabled', false);
 								x0 = json.server_response['x1'];
 							}
 						},
@@ -133,11 +141,12 @@
 				} else {
 					event.preventDefault();
 					$('#foo').attr("src", coleccion[cont]['img']);
-					$('#x0').html(" (x0, f(x0)) = (" + x0 + ", " + json.server_response['fx0'] + ")");
-					$('#x1').html(" (x1, f(x1)) = (" + x1 + ", " + json.server_response['fx1'] + ")");;
+					$('#x0').html(" (x<sub>0</sub>, f(x<sub>0</sub>)) = (" + coleccion[cont]['x0'] + ", " + coleccion[cont]['fx0'] + ")");
+					$('#x1').html(" (x<sub>1</sub>, f(x<sub>1</sub>)) = (" + coleccion[cont]['x1'] + ", " + coleccion[cont]['fx1'] + ")");
 					$('#x1').css({
 						"border": "none"
 					});
+					$('#iteracion').html(cont + 1);
 					$('#grafico').show();
 					$('#valores').show();
 					if (coleccion[cont]['esraiz']) {
@@ -146,32 +155,35 @@
 							"border-width": "1px",
 							"border-style": "solid"
 						});
+						$('#resultado').html("Raíz x<sub>1</sub> = "+coleccion[cont]['x1']);
 						$('#sig').attr('disabled', true);
+						$('#atras').attr('disabled', false);
+					} else {
+						$('#resultado').html("");
 					}
 					x0 = coleccion[cont]['x0'];
 					x1 = coleccion[cont]['x1'];
-					// superior = coleccion[cont]['b'];
 				}
 			});
 
 			$("#atras").click(function (event) {
 				event.preventDefault();
 				$('#sig').attr('disabled', false);
+				$('#resultado').html("");
 				cont--;
 				if (cont == 0)
 					$('#atras').attr('disabled', true);
 				$('#foo').attr("src", coleccion[cont]['img']);
-				$('#x0').html(" (x0, f(x0)) = (" + coleccion[cont]['x0'] + ", " + coleccion[cont]['fx0'] + ")");
-				$('#x1').html(" (x1, f(x1)) = (" + coleccion[cont]['x1'] + ", " + coleccion[cont]['fx1'] + ")");
+				$('#x0').html(" (x<sub>0</sub>, f(x<sub>0</sub>)) = (" + coleccion[cont]['x0'] + ", " + coleccion[cont]['fx0'] + ")");
+				$('#x1').html(" (x<sub>1</sub>, f(x<sub>1</sub>)) = (" + coleccion[cont]['x1'] + ", " + coleccion[cont]['fx1'] + ")");
 				$('#x1').css({
 					"border": "none"
 				});
+				$('#iteracion').html(cont + 1);
 				$('#grafico').show();
 				$('#valores').show();
 				x0 = coleccion[cont]['x0'];
-				//superior = coleccion[cont]['b'];
 			});
-
 			$('#cont').show();
 		});
 	</script>
@@ -197,8 +209,7 @@
 				</div>
 				<div class="row">
 					<br>
-					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>X
-						<sub>0</sub>:</div>
+					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>X<sub>0</sub>:</div>
 					<div class="col-md-4">{{form.x0}}</div>
 					{% endif %}
 				</div>
@@ -206,6 +217,21 @@
 					<br>
 					<div class="col-md-2" style='font-weight: bold; color:#638cb5;'>{{form.error.label_tag}}</div>
 					<div class="col-md-4">{{form.error}}</div>
+				</div>
+				<br>
+				<div class="row" id="valores" style="display:none">
+					<div class="col-md-8">
+						<div class="alert alert-success alert-dismissable" role="alert" contenteditable="false">
+							<h4 class="alert-heading">Resultados Iteración
+								<span id="iteracion"></span>:
+							</h4>
+							<div id="x0" style="font-weight: bold"></div>
+							<br>
+							<div id="x1" style="font-weight: bold"></div>
+							<br>							
+							<div id="resultado" style="font-weight: bold"></div>
+						</div>
+					</div>
 				</div>
 				<br>
 				<div class="row">
@@ -219,25 +245,15 @@
 			<div class="col-md-6">
 				<br>
 				<div class="panel" id="grafico">
-					<div class="cell">
+					<figure>
 						<img id="foo" width="420" height="370">
-					</div>
-				</div>
-				<div class="panel" id="valores">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="cell_b" id="x0"></div>
+						<figcaption>
 							<br>
-							<div class="cell_b" id="x1"></div>
-							<br>
-						</div>
-						<div class="col-md-3">
-							<div class="cell" align="center">
-								<button id="atras" class="btn btn-info glyphicon glyphicon-backward" disabled></button>&nbsp;&nbsp;&nbsp;
-								<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button>
-							</div>
-						</div>
-					</div>
+							<button id="atras" class="btn btn-info glyphicon glyphicon-backward"></button>&nbsp;&nbsp;&nbsp;
+							<button id="sig" class="btn btn-info glyphicon glyphicon-forward"></button> &nbsp;&nbsp;&nbsp;
+							<span><i><small>Presionar para seguir iterando</small></i></span>
+						</figcaption>
+					</figure>
 				</div>
 			</div>
 		</div>
