@@ -20,7 +20,7 @@
 				inf = $("#id_inf").val();
 				sup = $("#id_sup").val();
 				if (inferior == '' || superior == '')
-					alert("derivarda común, ver como graficar");
+					alert("Se deben ingresar los límites para graficar la derivada");
 				else {
 					// coleccion = [];
 					// cont = 0;
@@ -42,6 +42,8 @@
 							$('#atras').attr('disabled', false);
 							$('#sig').attr('disabled', false);
 							if (json.server_response['filename'] != ''){
+								$('#respuesta').hide();
+								$('#resultado').hide();
 								str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 								var datos = {
 									funcion: json.server_response['funcion'],
@@ -59,6 +61,8 @@
 							}
 							else{
 								fun = json.server_response['derivada'];
+								$('#grafico').hide();
+								$('#valores').hide();
 								$('#respuesta').html(" <strong>Derivada</strong> = " + json.server_response['derivada']);
 								$('#respuesta').show();
 								$('#resultado').show();
@@ -81,6 +85,7 @@
 				if (coleccion[cont] == undefined) {
 					$('#sig').attr('disabled', true);
 					$('#atras').attr('disabled', true);
+					$('#valores').hide();
 					$.ajax({
 						url: "graficar_derivada",
 						type: "POST",
@@ -97,6 +102,7 @@
 							str = "{% static 'imagenes/' %}" + json.server_response['filename'];
 							$('#sig').attr('disabled', false);
 							$('#atras').attr('disabled', false);
+							$('#valores').show();
 							var datos = {
 								funcion: json.server_response['funcion'],
 								derivada: json.server_response['derivada'],
