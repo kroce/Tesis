@@ -22,7 +22,7 @@ class FuncionForm(forms.Form):
     numerica = forms.BooleanField(label='Integracion Numerica', initial=False, required=False)
     RADIO_CHOICES = (
         ('trapecio', "Trapecio"),
-        ('simpson', "Simpson"),
+        ('simpson', "Simpson 1/3"),
     )
     formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=RADIO_CHOICES, required=False)
     x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
@@ -58,7 +58,7 @@ class FuncionDobleForm(forms.Form):
     # numerica = forms.BooleanField(label='Integracion Numerica', initial=False, required=False)
     FORMULA_CHOICES = (
         ('trapecio', "Trapecio"),
-        ('simpson', "Simpson"),
+        ('simpson', "Simpson 1/3"),
     )
     formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=FORMULA_CHOICES, required=False)
     a = forms.CharField(label='a', required=False, widget=forms.TextInput(attrs={'size' : '5'}))

@@ -49,7 +49,7 @@ def definirCamposIntegrales():
     fields.append({"required": 0, "initial": False, "type": "checkbox",
                    "name": "definida", "label": "Integracion Definida"})
     choices = [{"name": "Trapecio", "value": "trapecio"},
-               {"name": "Simpson", "value": "simpson"}]
+               {"name": "Simpson 1/3", "value": "simpson"}]
     fields.append({"required": 0, "type": "radio",
                    "name": "formula", "label": "", "choices": choices})
     for x in xrange(0, cantidad):
