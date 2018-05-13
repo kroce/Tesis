@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.forms import ModelForm
 from django.template.defaultfilters import join, default
@@ -42,7 +43,7 @@ class FuncionDobleForm(forms.Form):
     TIPOINTEGRAL_CHOICES = (
         ('indefinida', "Integral Indefinida"),
         ('definida', "Integral Definida"),
-        ('numerica', "Integral Numerica"),
+        ('numerica', "Integral Numérica"),
     )
     tipoIntegral = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer, attrs={'style':'width:30px'}),choices=TIPOINTEGRAL_CHOICES, required=False)
     funcion = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size' : '25'}))
@@ -61,24 +62,12 @@ class FuncionDobleForm(forms.Form):
         ('simpson', "Simpson 1/3"),
     )
     formula = forms.ChoiceField(widget=forms.RadioSelect(renderer=HorizRadioRenderer),choices=FORMULA_CHOICES, required=False)
-    a = forms.CharField(label='a', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    b = forms.CharField(label='b', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    c = forms.CharField(label='c', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    d = forms.CharField(label='d', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    a = forms.CharField(label='Lim Inf 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    b = forms.CharField(label='Lim Sup 1', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    c = forms.CharField(label='Lim Inf 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
+    d = forms.CharField(label='Lim Sup 2', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     m = forms.CharField(label='m', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
     n = forms.CharField(label='n', required=False, widget=forms.TextInput(attrs={'size' : '5'}))
-    # x0 = forms.CharField(label='x0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx0 = forms.CharField(label='fx0', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # x1 = forms.CharField(label='x1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx1 = forms.CharField(label='fx1', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # x2 = forms.CharField(label='x2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx2 = forms.CharField(label='fx2', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # x3 = forms.CharField(label='x3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx3 = forms.CharField(label='fx3', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # x4 = forms.CharField(label='x4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx4 = forms.CharField(label='fx4', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # x5 = forms.CharField(label='x5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
-    # fx5 = forms.CharField(label='fx5', required=False, widget=forms.TextInput(attrs={'style' : 'border:1px solid transparent;'}))
 
 class BiseccionForm(forms.Form):
     funcion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'size' : '16'}))

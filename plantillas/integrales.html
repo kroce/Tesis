@@ -18,6 +18,9 @@
 				var variable = $("#id_variable").val();
 				var inferior = $("#id_inferior").val();
 				var superior = $("#id_superior").val();
+				$('#grafico').hide();
+				$('#foo').attr("src", '');
+				
 				if (inferior == '' || superior == '')
 					alert('Para graficar es necesario definir los limites')
 				else {

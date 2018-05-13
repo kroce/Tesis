@@ -32,6 +32,8 @@
 				variable = $("#id_variable").val();
 				inf = $("#id_inf").val();
 				sup = $("#id_sup").val();
+				$('#grafico').hide();
+				$('#foo').attr("src", '');
 				if (inf == '' || sup == '')
 					alert("Debe ingresar los limites");
 				else {
